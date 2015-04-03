@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="loginContainer" maxHeight="200.0" maxWidth="600.0" minHeight="200.0" minWidth="600.0" prefHeight="200.0" prefWidth="600.0" styleClass="background" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.login.view.LoginController">
+   <children>
+      <GridPane layoutX="44.0" layoutY="30.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="5.0" prefWidth="5.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Username" />
+            <Label text="Password" GridPane.rowIndex="2" />
+            <TextField fx:id="usernameField" GridPane.rowIndex="1" />
+            <PasswordField fx:id="passwordField" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+      <ButtonBar layoutX="186.0" layoutY="146.0" prefHeight="40.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="10.0">
+        <buttons>
+          <Button mnemonicParsing="false" onAction="#login" styleClass="button-default" text="Default" />
+            <Button mnemonicParsing="false" styleClass="button-primary" text="Primary" />
+            <Button mnemonicParsing="false" styleClass="button-success" text="Success" />
+            <Button mnemonicParsing="false" styleClass="button-info" text="Info" />
+            <Button mnemonicParsing="false" styleClass="button-warning" text="Warning" />
+            <Button mnemonicParsing="false" styleClass="button-danger" text="Danger" />
+        </buttons>
+      </ButtonBar>
+   </children>
+</AnchorPane>
