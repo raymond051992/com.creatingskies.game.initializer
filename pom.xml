@@ -10,6 +10,11 @@
   </properties>
   <dependencies>
   	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-core</artifactId>
+		<version>4.3.7.Final</version>
+	</dependency>
+  	<dependency>
   		<groupId>com.creatingskies.game</groupId>
   		<artifactId>game-config</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
