@@ -9,6 +9,21 @@
     -fx-opacity: 0.6;
 }
 
+#viewTitle {
+	-fx-font-size: 20pt;
+	-fx-opacity: 1;
+}
+
+#logoutButton {
+	-fx-background-color: transparent;
+	-fx-cursor: hand;
+}
+
+#backToMainButton {
+	-fx-background-color: transparent;
+	-fx-cursor: hand;
+}
+
 Button {
 	-fx-font-size: 15px;
 	-fx-background-radius: 4px;

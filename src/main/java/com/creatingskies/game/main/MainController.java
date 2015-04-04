@@ -7,13 +7,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 
+import com.creatingskies.game.classes.ViewController;
 import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.config.company.CompanyController;
 import com.creatingskies.game.config.user.UsersController;
 
-public class MainController {
+public class MainController extends ViewController{
 
+	@Override
+	protected String getViewTitle() {
+		return null;
+	}
+	
 	public void show(){
 		try {
             FXMLLoader loader = new FXMLLoader();
