@@ -9,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 
 import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.config.company.CompanyController;
 import com.creatingskies.game.config.user.UsersController;
 
 public class MainController {
@@ -43,4 +44,10 @@ public class MainController {
 	private void goToStatisticsPage(){
 		new AlertDialog(AlertType.INFORMATION,"Statistics","Statistics",null).showAndWait();
 	}
+	
+	@FXML
+	private void goToCompaniesPage(){
+		new CompanyController().show();
+	}
+	
 }
