@@ -27,7 +27,7 @@
       </GridPane>
       <ButtonBar layoutX="186.0" layoutY="146.0" prefHeight="40.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="10.0">
         <buttons>
-          	<Button mnemonicParsing="false" onAction="#login" prefHeight="31.0" prefWidth="150.0" styleClass="button-default" text="Default" />
+          	<Button defaultButton="true" mnemonicParsing="false" onAction="#login" prefHeight="31.0" prefWidth="150.0" styleClass="button-default" text="Default" />
             <Button mnemonicParsing="false" onAction="#login" styleClass="button-primary" text="Primary" />
             <Button mnemonicParsing="false" onAction="#login" styleClass="button-success" text="Success" />
             <Button mnemonicParsing="false" onAction="#login" styleClass="button-info" text="Info" />
