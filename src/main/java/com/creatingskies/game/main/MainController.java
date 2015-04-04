@@ -9,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 
 import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.config.user.UsersController;
 
 public class MainController {
 
@@ -25,7 +26,7 @@ public class MainController {
 	
 	@FXML
 	private void goToUsersPage(){
-		new AlertDialog(AlertType.INFORMATION,"Users","Users",null).showAndWait();
+		new UsersController().show();
 	}
 	
 	@FXML

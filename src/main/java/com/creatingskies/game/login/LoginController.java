@@ -39,7 +39,7 @@ public class LoginController {
 			new AlertDialog(AlertType.ERROR, "Ooops", "Username and/or password is required.", null).showAndWait();
 		}else{
 			UserDao userDao = new UserDao();
-			User user = userDao.findUser(usernameField.getText());
+			User user = userDao.findActiveUser(usernameField.getText());
 			
 			if(user == null){
 				new AlertDialog(AlertType.ERROR, "Ooops", "Inavlid username/password.", null).showAndWait();
