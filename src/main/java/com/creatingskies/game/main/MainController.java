@@ -12,6 +12,7 @@ import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.config.company.CompanyController;
 import com.creatingskies.game.config.user.UsersController;
+import com.creatingskies.game.editor.GameController;
 
 public class MainController extends ViewController{
 
@@ -43,7 +44,7 @@ public class MainController extends ViewController{
 	
 	@FXML
 	private void goToGamesPage(){
-		new AlertDialog(AlertType.INFORMATION,"Games","Games",null).showAndWait();
+		new GameController().show();
 	}
 	
 	@FXML
