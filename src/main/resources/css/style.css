@@ -27,6 +27,7 @@
 Button {
 	-fx-font-size: 15px;
 	-fx-background-radius: 4px;
+	-fx-cursor: hand;
 }
 
 .button-default {
