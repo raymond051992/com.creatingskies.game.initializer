@@ -22,6 +22,10 @@ public class LoginController extends ViewController{
 	@FXML private TextField usernameField;
 	@FXML private PasswordField passwordField;
 	
+	public void initialize(){
+		super.init();
+	}
+	
 	@Override
 	protected String getViewTitle() {
 		return null;

@@ -22,6 +22,7 @@ import com.creatingskies.game.config.company.CompanyController;
 import com.creatingskies.game.config.obstacle.ObstaclesController;
 import com.creatingskies.game.config.user.UsersController;
 import com.creatingskies.game.editor.GameController;
+import com.creatingskies.game.map.MapController;
 
 public class MainController extends ViewController{
 
@@ -43,15 +44,14 @@ public class MainController extends ViewController{
         }
 	}
 	
-	@Override
 	public void initialize() {
-		super.initialize();
+		super.init();
 		box.getChildren().clear();
 		
 		createLauncher(0, "Users", "/images/ic_account_child_128.png", this::goToUsersPage);
 		createLauncher(1, "Events", "/images/ic_event_128.png", this::goToEventsPage);
 		createLauncher(2, "Games", "/images/ic_desktop_windows_128.png", this::goToGamesPage);
-		createLauncher(3, "Statistics", "/images/ic_equalizer_128.png", this::goToStatisticsPage);
+		createLauncher(3, "Maps", "/images/ic_swap_calls_128.png", this::goToMaps);
 		createLauncher(4, "Companies", "/images/ic_company_128.png", this::goToCompaniesPage);
 		createLauncher(5, "Obstacles", "/images/ic_obstacle_128.png", this::goToObstaclesPage);
 	}
@@ -88,8 +88,8 @@ public class MainController extends ViewController{
 		new GameController().show();
 	}
 	
-	private void goToStatisticsPage(MouseEvent event){
-		new AlertDialog(AlertType.INFORMATION,"Statistics","Statistics",null).showAndWait();
+	private void goToMaps(MouseEvent event){
+		new MapController().show();
 	}
 	
 	private void goToCompaniesPage(MouseEvent event){
