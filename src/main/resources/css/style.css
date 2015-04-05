@@ -155,3 +155,29 @@ PasswordField:focused {
 .launcher-pane:hover {
 	-fx-background-color: #333333;
 }
+
+.split-pane {
+	-fx-background-color: transparent;
+    -fx-padding: 1 0 0 0;
+}
+
+.split-pane > .split-pane-divider {
+    -fx-border-color: transparent #1d1d1d transparent #1d1d1d;
+    -fx-background-color: transparent, derive(#1d1d1d,20%);
+}
+.scroll-pane {
+	-fx-background-color: transparent;
+}
+.scroll-pane > .viewport  { 
+	-fx-background-color: transparent;
+}
+.scroll-pane > .anchor-pane {
+	-fx-background-color: transparent;
+}
+.background-white {
+	-fx-background-color: #ffffff;
+}
+.border-white {
+	-fx-border-color: transparent, derive(#1d1d1d,20%);
+	-fx-border-width: 5;
+}
