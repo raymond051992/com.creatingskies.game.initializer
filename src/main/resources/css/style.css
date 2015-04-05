@@ -144,3 +144,14 @@ PasswordField:focused {
 	-fx-background-color: transparent;
 }
 
+.choice-box .label {
+     -fx-text-fill: #222222; 
+}
+
+.launcher-pane {
+	-fx-background-radius: 3;
+}
+
+.launcher-pane:hover {
+	-fx-background-color: #333333;
+}

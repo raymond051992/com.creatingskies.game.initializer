@@ -62,8 +62,8 @@ public class MainController extends ViewController{
 		ImageView launcherIcon = new ImageView(imagePath);
 		Label launcherName = new Label(name);
 		
-		launcherIcon.setOnMouseClicked(mouseClickHandler);
-		launcherName.setOnMouseClicked(mouseClickHandler);
+		launcherPane.setOnMouseClicked(mouseClickHandler);
+		launcherPane.getStyleClass().add("launcher-pane");
 		
 		GridPane.setHalignment(launcherName, HPos.CENTER);
 		GridPane.setValignment(launcherName, VPos.CENTER);
