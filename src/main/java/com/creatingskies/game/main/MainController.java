@@ -21,6 +21,7 @@ import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.config.company.CompanyController;
 import com.creatingskies.game.config.obstacle.ObstaclesController;
 import com.creatingskies.game.config.user.UsersController;
+import com.creatingskies.game.config.weather.WeathersController;
 import com.creatingskies.game.editor.GameController;
 import com.creatingskies.game.map.MapController;
 
@@ -54,6 +55,7 @@ public class MainController extends ViewController{
 		createLauncher(3, "Maps", "/images/ic_swap_calls_128.png", this::goToMaps);
 		createLauncher(4, "Companies", "/images/ic_company_128.png", this::goToCompaniesPage);
 		createLauncher(5, "Obstacles", "/images/ic_obstacle_128.png", this::goToObstaclesPage);
+		createLauncher(5, "Weathers", "/images/ic_weather_128.png", this::goToWeathersPage);
 	}
 	
 	private void createLauncher(Integer index, String name, String imagePath,
@@ -98,6 +100,10 @@ public class MainController extends ViewController{
 	
 	private void goToObstaclesPage(MouseEvent event){
 		new ObstaclesController().show();
+	}
+	
+	private void goToWeathersPage(MouseEvent event){
+		new WeathersController().show();
 	}
 	
 }
