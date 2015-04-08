@@ -33,7 +33,6 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		MainLayout.setPrimaryStage(primaryStage);
 		MainLayout.getPrimaryStage().setTitle("Game");
-        
         initMainLayout();
         
         new LoginController().show();
@@ -50,6 +49,7 @@ public class Main extends Application{
             MainLayout.getPrimaryStage().setScene(scene);
             MainLayout.getPrimaryStage().setFullScreen(true);
             MainLayout.getPrimaryStage().show();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }

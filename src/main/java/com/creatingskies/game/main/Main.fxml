@@ -7,12 +7,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="150.0" maxWidth="750.0" minHeight="150.0" minWidth="750.0" prefHeight="150.0" prefWidth="750.0" styleClass="background" stylesheets="/css/style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.main.MainController">
+<AnchorPane maxHeight="150.0" maxWidth="750.0" minHeight="150.0" minWidth="200.0" prefHeight="150.0" prefWidth="750.0" styleClass="background" stylesheets="/css/style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.main.MainController">
 	<children>
-      <HBox fx:id="box" alignment="CENTER" layoutX="38.0" layoutY="25.0" prefHeight="180.0" prefWidth="750.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <padding>
-            <Insets bottom="30.0" />
-         </padding>
-      </HBox>
+      <FlowPane fx:id="box" hgap="20.0" vgap="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-100.0" />
 	</children>
 </AnchorPane>
