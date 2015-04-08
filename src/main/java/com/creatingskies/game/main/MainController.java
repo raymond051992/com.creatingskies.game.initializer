@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 
 import com.creatingskies.game.classes.ViewController;
 import com.creatingskies.game.common.AlertDialog;
+import com.creatingskies.game.common.GameTestController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.config.company.CompanyController;
 import com.creatingskies.game.config.obstacle.ObstaclesController;
@@ -55,7 +56,8 @@ public class MainController extends ViewController{
 		createLauncher(3, "Maps", "/images/ic_swap_calls_128.png", this::goToMaps);
 		createLauncher(4, "Companies", "/images/ic_company_128.png", this::goToCompaniesPage);
 		createLauncher(5, "Obstacles", "/images/ic_obstacle_128.png", this::goToObstaclesPage);
-		createLauncher(5, "Weathers", "/images/ic_weather_128.png", this::goToWeathersPage);
+		createLauncher(6, "Weathers", "/images/ic_weather_128.png", this::goToWeathersPage);
+		createLauncher(7, "Game Test", "/images/ic_test_128.png", this::goToTestPage);
 	}
 	
 	private void createLauncher(Integer index, String name, String imagePath,
@@ -84,6 +86,10 @@ public class MainController extends ViewController{
 	
 	private void goToEventsPage(MouseEvent event){
 		new AlertDialog(AlertType.INFORMATION,"Events","Events",null).showAndWait();
+	}
+	
+	private void goToTestPage(MouseEvent event){
+		new GameTestController().show();
 	}
 	
 	private void goToGamesPage(MouseEvent event){
