@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -16,16 +15,16 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 
 import com.creatingskies.game.classes.ViewController;
-import com.creatingskies.game.common.AlertDialog;
-import com.creatingskies.game.common.GameTestController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.config.company.CompanyController;
 import com.creatingskies.game.config.event.GameEventTableViewController;
 import com.creatingskies.game.config.obstacle.ObstaclesController;
 import com.creatingskies.game.config.user.UsersController;
 import com.creatingskies.game.config.weather.WeathersController;
+import com.creatingskies.game.core.GameCoreController;
 import com.creatingskies.game.editor.GameController;
 import com.creatingskies.game.map.MapController;
+import com.creatingskies.game.statistics.StatisticsController;
 
 public class MainController extends ViewController{
 
@@ -51,14 +50,15 @@ public class MainController extends ViewController{
 	public void initialize() {
 		super.init();
 		
-		createLauncher(0, "Users", "/images/ic_account_child_128.png", this::goToUsersPage);
-		createLauncher(1, "Events", "/images/ic_event_128.png", this::goToEventsPage);
-		createLauncher(2, "Games", "/images/ic_desktop_windows_128.png", this::goToGamesPage);
-		createLauncher(3, "Maps", "/images/ic_swap_calls_128.png", this::goToMaps);
-		createLauncher(4, "Companies", "/images/ic_company_128.png", this::goToCompaniesPage);
-		createLauncher(5, "Obstacles", "/images/ic_obstacle_128.png", this::goToObstaclesPage);
-		createLauncher(6, "Weathers", "/images/ic_weather_128.png", this::goToWeathersPage);
-		createLauncher(7, "Game Test", "/images/ic_test_128.png", this::goToTestPage);
+		createLauncher(0, "Users", "/images/rec_users.png", this::goToUsersPage);
+		createLauncher(1, "Events", "/images/rec_events.png", this::goToEventsPage);
+		createLauncher(2, "Games", "/images/rec_game.png", this::goToGamesPage);
+		createLauncher(3, "Maps", "/images/rec_map.png", this::goToMaps);
+		createLauncher(4, "Companies", "/images/rec_company.png", this::goToCompaniesPage);
+		createLauncher(5, "Obstacles", "/images/rec_obstacle.png", this::goToObstaclesPage);
+		createLauncher(6, "Weathers", "/images/rec_weather.png", this::goToWeathersPage);
+		createLauncher(7, "Game Test", "/images/rec_test.png", this::goToTestPage);
+		createLauncher(8, "Statistics", "/images/rec_statistics.png", this::goToStatisticsPage);
 	}
 	
 	private void createLauncher(Integer index, String name, String imagePath,
@@ -79,8 +79,7 @@ public class MainController extends ViewController{
 		launcherPane.addRow(0, launcherIcon);
 		launcherPane.addRow(1, launcherName);
 		
-		
-		box.getChildren().add(launcherPane);
+		box.getChildren().add(index, launcherPane);
 	}
 	
 	private void goToUsersPage(MouseEvent event){
@@ -92,7 +91,7 @@ public class MainController extends ViewController{
 	}
 	
 	private void goToTestPage(MouseEvent event){
-		new GameTestController().show();
+		new GameCoreController().show();
 	}
 	
 	private void goToGamesPage(MouseEvent event){
@@ -113,6 +112,10 @@ public class MainController extends ViewController{
 	
 	private void goToWeathersPage(MouseEvent event){
 		new WeathersController().show();
+	}
+	
+	private void goToStatisticsPage(MouseEvent event){
+		new StatisticsController().show();
 	}
 	
 }

@@ -17,6 +17,7 @@ public class Main extends Application{
 	public static void main(String[] args) {
 		launch(args);
 	}
+	
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -41,7 +42,7 @@ public class Main extends Application{
 	public void initMainLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("../common/MainLayout.fxml"));
+            loader.setLocation(Main.class.getResource("MainLayout.fxml"));
             MainLayout.setRootLayout((BorderPane) loader.load());
             
             Scene scene = new Scene(MainLayout.getRootLayout());
