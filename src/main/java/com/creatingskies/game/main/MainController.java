@@ -20,6 +20,7 @@ import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.GameTestController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.config.company.CompanyController;
+import com.creatingskies.game.config.event.GameEventTableViewController;
 import com.creatingskies.game.config.obstacle.ObstaclesController;
 import com.creatingskies.game.config.user.UsersController;
 import com.creatingskies.game.config.weather.WeathersController;
@@ -87,7 +88,7 @@ public class MainController extends ViewController{
 	}
 	
 	private void goToEventsPage(MouseEvent event){
-		new AlertDialog(AlertType.INFORMATION,"Events","Events",null).showAndWait();
+		new GameEventTableViewController().show();
 	}
 	
 	private void goToTestPage(MouseEvent event){
