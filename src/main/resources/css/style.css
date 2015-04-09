@@ -86,3 +86,15 @@
     -fx-border-color: transparent;
     -fx-alignment: CENTER-LEFT;
 }
+.map-designer-tile {
+	-fx-border-color: #375a7f;
+	-fx-border-width: 0.5;
+	-fx-background-color: white;
+	-fx-cursor: hand;
+}
+.map-blank-tile {
+	-fx-background-color: white;
+	-fx-cursor: hand;
+	-fx-border-width: 0.5;
+	-fx-border-color: #375a7f;
+}
