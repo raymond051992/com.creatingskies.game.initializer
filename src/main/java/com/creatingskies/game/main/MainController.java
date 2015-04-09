@@ -21,7 +21,6 @@ import com.creatingskies.game.config.event.GameEventTableViewController;
 import com.creatingskies.game.config.obstacle.ObstaclesController;
 import com.creatingskies.game.config.user.UsersController;
 import com.creatingskies.game.config.weather.WeathersController;
-import com.creatingskies.game.core.GameCoreController;
 import com.creatingskies.game.editor.GameController;
 import com.creatingskies.game.map.MapController;
 import com.creatingskies.game.statistics.StatisticsController;
@@ -57,8 +56,7 @@ public class MainController extends ViewController{
 		createLauncher(4, "Companies", "/images/rec_company.png", this::goToCompaniesPage);
 		createLauncher(5, "Obstacles", "/images/rec_obstacle.png", this::goToObstaclesPage);
 		createLauncher(6, "Weathers", "/images/rec_weather.png", this::goToWeathersPage);
-		createLauncher(7, "Game Test", "/images/rec_test.png", this::goToTestPage);
-		createLauncher(8, "Statistics", "/images/rec_statistics.png", this::goToStatisticsPage);
+		createLauncher(7, "Statistics", "/images/rec_statistics.png", this::goToStatisticsPage);
 	}
 	
 	private void createLauncher(Integer index, String name, String imagePath,
@@ -88,10 +86,6 @@ public class MainController extends ViewController{
 	
 	private void goToEventsPage(MouseEvent event){
 		new GameEventTableViewController().show();
-	}
-	
-	private void goToTestPage(MouseEvent event){
-		new GameCoreController().show();
 	}
 	
 	private void goToGamesPage(MouseEvent event){
