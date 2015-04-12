@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="600.0" prefWidth="772.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.core.GameCoreController">
+	<children>
+		<HBox layoutY="82.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+			<children>
+				<VBox alignment="TOP_CENTER" maxWidth="200.0" minWidth="200.0" spacing="5.0">
+					<children>
+						<Button mnemonicParsing="false" onAction="#handleGameStart" prefHeight="33.0" prefWidth="180.0" text="Start Game" />
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="119.0" minWidth="10.0" prefWidth="119.0" />
+                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="84.0" minWidth="10.0" prefWidth="61.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+      								<Label fx:id="durationLabel" text="0.0" GridPane.columnIndex="1">
+      									<font>
+      										<Font size="24.0" />
+      									</font>
+      								</Label>
+                        <Label fx:id="durationLabel1" text="Duration">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+            				<Label fx:id="countDownLabel" prefHeight="17.0" prefWidth="0.0" text="3" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            					<font>
+            						<Font size="24.0" />
+            					</font>
+            				</Label>
+                        <Label fx:id="durationLabel11" text="Countdown" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </GridPane>
+                  <ImageView fx:id="warningImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                     <image>
+                        <Image url="@warning.png" />
+                     </image></ImageView>
+                  <ImageView fx:id="stopImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                     <image>
+                        <Image url="@stop.png" />
+                     </image></ImageView>
+					</children>
+					<padding>
+						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+					</padding>
+				</VBox>
+            <Pane fx:id="pane">
+               <children>
+                  <GridPane fx:id="mapTiles" />
+               </children>
+            </Pane>
+			</children>
+		</HBox>
+	</children>
+</AnchorPane>

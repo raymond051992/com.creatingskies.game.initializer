@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="300.0" maxWidth="500.0" minHeight="300.0" minWidth="500.0" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.config.event.GameEventPropertiesViewController">
+   <children>
+      <VBox layoutX="159.0" layoutY="21.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Label maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Company" />
+                  <ComboBox fx:id="companyComboBox" maxWidth="350.0" minWidth="350.0" prefHeight="25.0" prefWidth="350.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="280.0" spacing="10.0">
+               <children>
+                  <Label maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Game" />
+                  <ComboBox fx:id="gameComboBox" maxWidth="350.0" minWidth="350.0" prefHeight="25.0" prefWidth="350.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Label maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Date" />
+                  <DatePicker fx:id="eventDatePicker" prefHeight="25.0" prefWidth="349.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Label maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Time" />
+                  <ChoiceBox fx:id="hourChoiceBox" prefWidth="140.0" />
+                  <Label text="HH" />
+                  <ChoiceBox fx:id="minuteChoiceBox" prefWidth="140.0" />
+                  <Label text="MM" />
+               </children>
+            </HBox>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER_RIGHT" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1">
+                     <children>
+                        <Button fx:id="saveButton" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#save" prefWidth="100.0" text="Save" />
+                        <Button fx:id="cancelButton" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#cancel" prefWidth="100.0" text="Cancel" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <Button fx:id="backToListButton" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#backToList" prefHeight="25.0" prefWidth="100.0" text="Back" />
+                        <Button fx:id="playButton" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#play" prefWidth="100.0" text="Play" />
+                     </children>
+                  </HBox>
+               </children>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </GridPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

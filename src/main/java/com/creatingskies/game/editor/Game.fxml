@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.editor.GameController">
+   <children>
+      <TableView fx:id="gamesTable" layoutX="14.0" layoutY="71.0" prefHeight="319.0" prefWidth="580.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+        <columns>
+          <TableColumn fx:id="titleColumn" prefWidth="75.0" text="Title" />
+          <TableColumn fx:id="descriptionColumn" prefWidth="75.0" text="Description" />
+            <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Type" />
+            <TableColumn fx:id="mapColumn" prefWidth="75.0" text="Map" />
+            <TableColumn fx:id="actionColumn" editable="false" prefWidth="75.0" sortable="false" />
+        </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#addNewGame" styleClass="button-default" text="Add Game" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+   </children>
+</AnchorPane>

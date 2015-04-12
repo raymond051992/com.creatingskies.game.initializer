@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="550.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.config.obstacle.ObstaclePropertiesController">
+   <children>
+      <VBox alignment="CENTER" layoutX="104.0" layoutY="56.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <Label minWidth="100.0" text="Name" />
+                  <TextField fx:id="nameField" prefHeight="25.0" prefWidth="375.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="310.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <Label minWidth="100.0" text="Game Type" wrapText="true" />
+                  <CheckBox fx:id="forRowingCheckBox" mnemonicParsing="false" text="Rowing" />
+                  <CheckBox fx:id="forCyclingCheckBox" mnemonicParsing="false" text="Cycling" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="235.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <Label minWidth="100.0" text="Difficulty" />
+                  <Slider fx:id="difficultySlider" majorTickUnit="1.0" max="7.0" minorTickCount="0" prefHeight="14.0" prefWidth="375.0" showTickLabels="true" snapToTicks="true" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="260.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <Label minWidth="100.0" text="Image" />
+                  <TextField fx:id="imageFileNameField" editable="false" prefHeight="25.0" prefWidth="375.0" />
+                  <Button minWidth="75.0" mnemonicParsing="false" onAction="#handleImageBrowseDialog" text="Browse" />
+               </children>
+            </HBox>
+            <HBox alignment="TOP_RIGHT" layoutX="35.0" layoutY="260.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <ButtonBar prefHeight="50.0" prefWidth="451.0">
+                     <buttons>
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#handleSave" text="Save" />
+                        <Button cancelButton="true" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+                     </buttons>
+                  </ButtonBar>
+               </children>
+            </HBox>
+         </children></VBox>
+   </children>
+</AnchorPane>

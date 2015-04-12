@@ -23,16 +23,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.creatingskies.game</groupId>
-			<artifactId>game-config</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.creatingskies.game</groupId>
-			<artifactId>game-editor</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.creatingskies.game</groupId>
 			<artifactId>game-model</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

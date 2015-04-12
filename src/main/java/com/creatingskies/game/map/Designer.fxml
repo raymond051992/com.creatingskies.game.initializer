@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" style=": ;" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.map.MapDesignerController">
+   <children>
+      <SplitPane fx:id="mapDesignerContainer" dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <items>
+          <AnchorPane maxWidth="230.0" minWidth="230.0" prefWidth="230.0">
+               <children>
+                  <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                     <buttons>
+                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonClicked" styleClass="button-primary" text="Save" />
+                        <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelButtonClicked" styleClass="button-default" text="Cancel" />
+                     </buttons>
+                  </ButtonBar>
+                  <Label id="viewTitle" fx:id="viewTitle" layoutX="14.0" layoutY="14.0" text="Map" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <ImageView fx:id="selectedTileImageView" fitHeight="45.0" fitWidth="45.0" layoutX="165.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                  <VBox layoutX="46.0" layoutY="89.0" prefHeight="350.0" prefWidth="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="65.0">
+                     <children>
+                        <HBox alignment="BOTTOM_LEFT" prefHeight="27.0" prefWidth="209.0">
+                           <children>
+                              <Label text="Design" />
+                              <Button mnemonicParsing="false" onAction="#uploadTileImage" prefWidth="75.0" styleClass="button-default" text="Add Tile">
+                                 <HBox.margin>
+                                    <Insets left="90.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <FlowPane fx:id="tileImageSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </FlowPane>
+                        <Label text="Obstacle" />
+                        <FlowPane fx:id="obstacleImageSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </FlowPane>
+                        <VBox fx:id="requiredBox">
+                           <children>
+                              <Label text="Required" />
+                              <FlowPane fx:id="requiredTileSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin>
+                              </FlowPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane fx:id="mapContainer">
+               <children>
+                  <ScrollPane layoutX="7.0" styleClass="background-white" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <content>
+                        <GridPane fx:id="mapTiles" gridLinesVisible="true" />
+                     </content>
+                  </ScrollPane>
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+   <styleClass>
+      <String fx:value="background" />
+      <String fx:value="border-white" />
+   </styleClass>
+</AnchorPane>
