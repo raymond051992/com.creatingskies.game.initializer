@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="150.0" maxWidth="750.0" minHeight="150.0" minWidth="200.0" prefHeight="150.0" prefWidth="750.0" styleClass="background" stylesheets="/css/style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.main.MainController">
+<AnchorPane maxHeight="150.0" maxWidth="750.0" minHeight="150.0" minWidth="200.0" prefHeight="150.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.main.MainController">
 	<children>
       <FlowPane fx:id="box" hgap="20.0" vgap="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-100.0" />
 	</children>
