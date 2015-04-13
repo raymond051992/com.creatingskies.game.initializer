@@ -46,6 +46,8 @@ public class CompanyController extends TableViewController{
 	@FXML private Button addTeamButton;
 	@FXML private Button addPlayerButton;
 	
+	private final int MAX_TEAM_PER_GROUP = 2;
+	
 	private CompanyDAO companyDAO;
 	
 	private Company selectedCompany;
@@ -124,7 +126,6 @@ public class CompanyController extends TableViewController{
 	private void loadGroupDetails(Group group){
 		selectedGroup = group;
 		resetTeamTableView();
-		addTeamButton.setVisible(true);
 	}
 	
 	private void loadTeamDetails(Team team){
@@ -151,6 +152,7 @@ public class CompanyController extends TableViewController{
 		teamsTable.setItems(
 				FXCollections.observableArrayList(
 						companyDAO.findAllTeamsForGroup(selectedGroup)));
+		addTeamButton.setVisible(teamsTable.getItems().size() < MAX_TEAM_PER_GROUP);
 	}
 	
 	private void resetPlayerTableView(){
@@ -207,7 +209,16 @@ public class CompanyController extends TableViewController{
 		if(result.get() == ButtonType.OK){
 			try {
 				companyDAO.delete(record);
-				resetTableView();
+				
+				if(record instanceof Player){
+					resetPlayerTableView();
+				} else if (record instanceof Team) {
+					resetTeamTableView();
+				} else if (record instanceof Group){
+					resetGroupTableView();
+				} else {
+					resetTableView();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
