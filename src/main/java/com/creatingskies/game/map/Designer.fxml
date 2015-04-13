@@ -14,7 +14,7 @@
    <children>
       <SplitPane fx:id="mapDesignerContainer" dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
         <items>
-          <AnchorPane maxWidth="230.0" minWidth="230.0" prefWidth="230.0">
+          <AnchorPane minWidth="230.0" prefWidth="230.0">
                <children>
                   <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
                      <buttons>
