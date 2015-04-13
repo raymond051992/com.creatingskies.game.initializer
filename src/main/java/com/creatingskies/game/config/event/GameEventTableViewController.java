@@ -33,6 +33,7 @@ public class GameEventTableViewController extends TableViewController{
 	@FXML private DatePicker filterFromDatePicker;
 	@FXML private DatePicker filterToDatePicker;
 	@FXML private TableView<GameEvent> eventsTable;
+	@FXML private TableColumn<GameEvent, String> groupTableColumn;
 	@FXML private TableColumn<GameEvent, String> companyTableColumn;
 	@FXML private TableColumn<GameEvent, String> gameTableColumn;
 	@FXML private TableColumn<GameEvent, String> dateTableColumn;
@@ -42,8 +43,10 @@ public class GameEventTableViewController extends TableViewController{
 	public void initialize(){
 		super.init();
 		
+		groupTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+				cellData.getValue().getGroup().getName()));
 		companyTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
-				cellData.getValue().getCompany().getName()));
+				cellData.getValue().getGroup().getCompany().getName()));
 		gameTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
 				cellData.getValue().getGame().getTitle()));
 		dateTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(

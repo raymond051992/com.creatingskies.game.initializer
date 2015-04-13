@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 import com.creatingskies.game.classes.PropertiesViewController;
 import com.creatingskies.game.classes.Util;
@@ -27,15 +29,14 @@ import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.GameConverter;
 import com.creatingskies.game.core.GameCoreController;
 import com.creatingskies.game.core.GameDao;
-import com.creatingskies.game.model.company.Company;
-import com.creatingskies.game.model.company.CompanyConverter;
 import com.creatingskies.game.model.company.CompanyDAO;
+import com.creatingskies.game.model.company.Group;
 import com.creatingskies.game.model.event.GameEvent;
 import com.creatingskies.game.model.event.GameEventDao;
 
 public class GameEventPropertiesViewController extends PropertiesViewController{
 
-	@FXML private ComboBox<Company> companyComboBox;
+	@FXML private ComboBox<Group> groupComboBox;
 	@FXML private ComboBox<Game> gameComboBox;
 	@FXML private DatePicker eventDatePicker;
 	@FXML private ChoiceBox<Integer> hourChoiceBox;
@@ -45,34 +46,24 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	@FXML private Button backToListButton;
 	@FXML private Button playButton;
 	
+	@SuppressWarnings("unchecked")
 	public void init(){
 		super.init();
 		
-		companyComboBox.getItems().clear();
-		companyComboBox.getItems().add(null);
-		companyComboBox.getItems().addAll(new CompanyDAO().findAllCompanies());
-		companyComboBox.setConverter(new CompanyConverter());
-		companyComboBox.setCellFactory(new Callback<ListView<Company>,ListCell<Company>>(){
-            @Override
-            public ListCell<Company> call(ListView<Company> p) {
-                 
-                final ListCell<Company> cell = new ListCell<Company>(){
- 
-                    @Override
-                    protected void updateItem(Company t, boolean bln) {
-                        super.updateItem(t, bln);
-                         
-                        if(t != null){
-                            setText(t.getName());
-                        }else{
-                            setText(null);
-                        }
-                    }
-  
-                };
-                return cell;
-            }
-        });
+		groupComboBox.getItems().clear();
+		groupComboBox.getItems().add(null);
+		groupComboBox.getItems().addAll((List<Group>) new CompanyDAO().findAll(Group.class));
+		groupComboBox.setConverter(new StringConverter<Group>() {
+			@Override
+			public String toString(Group group) {
+				return group.getName() + " - " + group.getCompany().getName();
+			}
+			
+			@Override
+			public Group fromString(String string) {
+				return null;
+			}
+		});
 		
 		gameComboBox.getItems().clear();
 		gameComboBox.getItems().add(null);
@@ -106,7 +97,7 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 		minuteChoiceBox.getItems().clear();
 		minuteChoiceBox.setItems(FXCollections.observableArrayList(Util.getListMinutes()));
 		
-		companyComboBox.getSelectionModel().select(getGameEvent().getCompany());;
+		groupComboBox.getSelectionModel().select(getGameEvent().getGroup());
 		gameComboBox.getSelectionModel().select(getGameEvent().getGame());
 		
 		eventDatePicker.setValue(Util.toLocalDate(getGameEvent().getEventDate()));
@@ -119,7 +110,7 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	private void disableFields(){
 		boolean isViewAction = getCurrentAction() == Action.VIEW;
 		
-		companyComboBox.setDisable(isViewAction);
+		groupComboBox.setDisable(isViewAction);
 		gameComboBox.setDisable(isViewAction);
 		eventDatePicker.setDisable(isViewAction);
 		hourChoiceBox.setDisable(isViewAction);
@@ -134,7 +125,7 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	@FXML
 	private void save(){
 		if(isValid()){
-			getGameEvent().setCompany(companyComboBox.getValue());
+			getGameEvent().setGroup(groupComboBox.getValue());
 			getGameEvent().setGame(gameComboBox.getValue());
 			getGameEvent().setEventDate(getEventDate());
 			new GameEventDao().saveOrUpdate(getGameEvent());
@@ -160,8 +151,8 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	}
 	
 	private boolean isValid(){
-		if(companyComboBox.getSelectionModel().getSelectedItem() == null){
-			new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Company is required.").showAndWait();
+		if(groupComboBox.getSelectionModel().getSelectedItem() == null){
+			new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Group is required.").showAndWait();
 			return false;
 		}
 		if(gameComboBox.getSelectionModel().getSelectedItem() == null){
