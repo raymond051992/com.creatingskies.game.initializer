@@ -65,4 +65,10 @@ public class LoginController extends ViewController{
 			new MainController().show();
 		}
 	}
+	
+	@FXML
+	private void handleForgotPassword(){
+		super.close();
+		new ChangePasswordController().show();
+	}
 }
