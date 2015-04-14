@@ -23,6 +23,7 @@
                   <TableColumn fx:id="gameTypeColumn" prefWidth="450.0" text="Game Type" />
                   <TableColumn fx:id="imageColumn" prefWidth="450.0" text="Image" />
                   <TableColumn fx:id="difficultyColumn" maxWidth="1000.0" minWidth="70.0" prefWidth="200.0" text="Difficulty" />
+                  <TableColumn fx:id="radiusColumn" maxWidth="1000.0" minWidth="70.0" prefWidth="200.0" text="Radius" />
                 <TableColumn fx:id="actionColumn" maxWidth="80.0" minWidth="80.0" />
               </columns>
                <columnResizePolicy>

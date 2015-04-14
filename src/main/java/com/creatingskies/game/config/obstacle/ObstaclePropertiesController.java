@@ -25,6 +25,7 @@ public class ObstaclePropertiesController extends PropertiesViewController {
 	@FXML private CheckBox forRowingCheckBox;
 	@FXML private CheckBox forCyclingCheckBox;
 	@FXML private Slider difficultySlider;
+	@FXML private Slider radiusSlider;
 	@FXML private TextField imageFileNameField;
 	
 	private final String NO_FILE_MESSAGE = "Please choose a file.";
@@ -53,6 +54,9 @@ public class ObstaclePropertiesController extends PropertiesViewController {
         difficultySlider.setValue(obstacle.getDifficulty() != null ?
         		obstacle.getDifficulty() : 0.0);
         
+        radiusSlider.setValue(obstacle.getRadius() != null ?
+        		obstacle.getRadius() : 0.0);
+        
         forRowingCheckBox.setSelected(obstacle.getForRowing());
         forCyclingCheckBox.setSelected(obstacle.getForCycling());
         
@@ -71,6 +75,7 @@ public class ObstaclePropertiesController extends PropertiesViewController {
         if (isInputValid()) {
             getObstacle().setName(nameField.getText());
             getObstacle().setDifficulty((int) difficultySlider.getValue());
+            getObstacle().setRadius((int) radiusSlider.getValue());
             getObstacle().setForRowing(forRowingCheckBox.isSelected());
             getObstacle().setForCycling(forCyclingCheckBox.isSelected());
             

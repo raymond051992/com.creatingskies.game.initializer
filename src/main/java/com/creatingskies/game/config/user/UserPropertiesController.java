@@ -45,33 +45,20 @@ public class UserPropertiesController extends PropertiesViewController{
 	}
 	
 	private void initFields(){
-		if(getCurrentAction() == Action.VIEW){
-			firstNameTextField.setEditable(false);
-			lastNameTextField.setEditable(false);
-			userNameTextField.setEditable(false);
-			passwordField.setEditable(false);
-			confirmPasswordField.setEditable(false);
-			securityAnswerField.setEditable(false);
-			statusChoices.setDisable(true);
-			typeChoices.setDisable(true);
-			questionChoices.setDisable(true);
-			backToListButton.setVisible(true);
-			saveButton.setVisible(false);
-			cancelButton.setVisible(false);
-		}else{
-			firstNameTextField.setEditable(true);
-			lastNameTextField.setEditable(true);
-			userNameTextField.setEditable(true);
-			passwordField.setEditable(true);
-			confirmPasswordField.setEditable(true);
-			securityAnswerField.setEditable(true);
-			statusChoices.setDisable(false);
-			typeChoices.setDisable(false);
-			questionChoices.setDisable(false);
-			backToListButton.setVisible(false);
-			saveButton.setVisible(true);
-			cancelButton.setVisible(true);
-		}
+		boolean isViewAction = getCurrentAction() == Action.VIEW; 
+		
+		firstNameTextField.setEditable(!isViewAction);
+		lastNameTextField.setEditable(!isViewAction);
+		userNameTextField.setEditable(!isViewAction);
+		passwordField.setEditable(!isViewAction);
+		confirmPasswordField.setEditable(!isViewAction);
+		securityAnswerField.setEditable(!isViewAction);
+		statusChoices.setDisable(isViewAction);
+		typeChoices.setDisable(isViewAction);
+		questionChoices.setDisable(isViewAction);
+		backToListButton.setVisible(isViewAction);
+		saveButton.setVisible(!isViewAction);
+		cancelButton.setVisible(!isViewAction);
 	}
 	
 	@Override

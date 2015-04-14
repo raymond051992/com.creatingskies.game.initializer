@@ -25,6 +25,12 @@
                   <CheckBox fx:id="forCyclingCheckBox" mnemonicParsing="false" text="Cycling" />
                </children>
             </HBox>
+            <HBox alignment="CENTER_LEFT" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <Label minWidth="100.0" text="Radius" />
+                  <Slider fx:id="radiusSlider" majorTickUnit="1.0" max="7.0" minorTickCount="0" prefHeight="14.0" prefWidth="375.0" showTickLabels="true" snapToTicks="true" />
+               </children>
+            </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="235.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
                   <Label minWidth="100.0" text="Difficulty" />
