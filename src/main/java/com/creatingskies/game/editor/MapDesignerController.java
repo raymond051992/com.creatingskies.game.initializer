@@ -1,4 +1,4 @@
-package com.creatingskies.game.map;
+package com.creatingskies.game.editor;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,13 +12,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -29,6 +27,7 @@ import com.creatingskies.game.classes.Util;
 import com.creatingskies.game.classes.ViewController.Action;
 import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.Map;
 import com.creatingskies.game.core.MapDao;
 import com.creatingskies.game.core.Tile;
@@ -51,18 +50,20 @@ public class MapDesignerController {
 	@FXML private VBox requiredBox;
 	
 	@FXML private ImageView selectedTileImageView;
-	private byte[] selectedTileImageByteArray;
 	
 	@FXML private Button saveButton;
 	@FXML private Button cancelButton;
 
 	private Obstacle selectedObstacle;
-	private Pane startTilePane;
-	private Pane endTilePane;
+	private TileImage selectedTileImage;
+	
+	private ImageView startTileImageView;
+	private ImageView endTileImageView;
+	
 	private boolean startTileSelected;
 	private boolean endTileSelected;
 	
-	private Map map;
+	private Game game;
 	private Stage stage;
 	
 	private Action currentAction;
@@ -81,23 +82,24 @@ public class MapDesignerController {
 	
 	private void initMapTiles(){
 		mapTiles.getChildren().clear();
-		for(Tile tile : map.getTiles()){
+		
+		for(Tile tile : getMap().getTiles()){
 			ImageView imageView = new ImageView();
 			imageView.setFitHeight(Constant.TILE_HEIGHT);
 			imageView.setFitWidth(Constant.TILE_WIDTH);
-			imageView.setImage(Util.byteArrayToImage(tile.getImage()));
-			Pane tilePane = new Pane(imageView);
-			tilePane.getStyleClass().add("map-designer-tile");
-			mapTiles.add(tilePane, tile.getColIndex(), tile.getRowIndex());
+			imageView.setImage(Util.byteArrayToImage(tile.getImage() != null ?
+					tile.getImage().getImage() : getMap().getDefaultTileImage().getImage()));
 			
-			tilePane.setOnMousePressed(new EventHandler<MouseEvent>() {
+			mapTiles.add(imageView, tile.getColIndex(), tile.getRowIndex());
+			
+			imageView.setOnMousePressed(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
 					handlePaintTile(tile, imageView);
 				}
 			});
 			
-			tilePane.setOnMouseEntered(new EventHandler<MouseEvent>() {
+			imageView.setOnMouseEntered(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
 					if(event.isAltDown()){
@@ -109,40 +111,45 @@ public class MapDesignerController {
 	}
 	
 	private void handlePaintTile(Tile tile, ImageView imageView) {
-		if(getCurrentAction() != null && selectedTileImageView.getImage() != null){
-			tile.setImage(selectedTileImageByteArray);
-			imageView.setImage(selectedTileImageView.getImage());
+		if(getCurrentAction() != null && (selectedTileImage != null || selectedObstacle != null)){
+			tile.setObstacle(selectedObstacle != null ? selectedObstacle : null);
+			tile.setImage(selectedTileImage != null ? selectedTileImage : null);
+			
+			if(selectedObstacle != null){
+				imageView.setImage(Util.byteArrayToImage(selectedObstacle.getImage()));
+			} else {
+				imageView.setImage(Util.byteArrayToImage(tile.getImage() != null ?
+						tile.getImage().getImage() : getMap().getDefaultTileImage().getImage()));
+			}
 			
 			if(tile.getStartPoint()){
 				tile.setStartPoint(false);
-				requiredTileSelections.getChildren().add(startTilePane);
+				requiredTileSelections.getChildren().add(startTileImageView);
 			}
 			
 			if(tile.getEndPoint()){
 				tile.setEndPoint(false);
-				requiredTileSelections.getChildren().add(endTilePane);
+				requiredTileSelections.getChildren().add(endTileImageView);
 			}
 			
 			if(startTileSelected || endTileSelected){
+				selectedTileImage = null;
 				selectedTileImageView.setImage(null);
 				tile.setStartPoint(startTileSelected);
 				tile.setEndPoint(endTileSelected);
 			}
 			
 			validateRequiredTiles();
-			
-			tile.setObstacleDifficulty(selectedObstacle != null ? selectedObstacle
-					.getDifficulty() : null);
 		}
 	}
 	
 	private void validateRequiredTiles(){
-		if(map.getStartPoint() != null){
-			requiredTileSelections.getChildren().remove(startTilePane);
+		if(getMap().getStartPoint() != null){
+			requiredTileSelections.getChildren().remove(startTileImageView);
 		}
 		
-		if(map.getEndPoint() != null){
-			requiredTileSelections.getChildren().remove(endTilePane);
+		if(getMap().getEndPoint() != null){
+			requiredTileSelections.getChildren().remove(endTileImageView);
 		}
 		
 		requiredBox.setVisible(!requiredTileSelections.getChildren().isEmpty());
@@ -151,8 +158,7 @@ public class MapDesignerController {
 	private void initTileImageSelections(){
 		tileImageSelections.getChildren().clear();
 		MapDao mapDao = new MapDao();
-		List<TileImage> tileImages = mapDao.findAllTileImages();
-		addTileImageSelection(new TileImage());
+		List<TileImage> tileImages = mapDao.findAllTileImages(false);
 		if(tileImages != null && !tileImages.isEmpty()){
 			for(TileImage tileImage : tileImages){
 				addTileImageSelection(tileImage);
@@ -179,17 +185,18 @@ public class MapDesignerController {
 	}
 	
 	private void initStartTile(){
-		Image image = new Image(Constant.PATH_TILE_IMAGE_START_POINT);
-		ImageView imageView = new ImageView(image);
-		imageView.setFitHeight(Constant.TILE_HEIGHT);
-		imageView.setFitWidth(Constant.TILE_WIDTH);
-		startTilePane = new Pane(imageView);
+		MapDao mapDao = new MapDao();
+		TileImage startTileImage = mapDao.findTileImageByOwner(Constant.IMAGE_START_POINT_OWNER);
 		
-		startTilePane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		startTileImageView = new ImageView(Util.byteArrayToImage(startTileImage.getImage()));
+		startTileImageView.setFitHeight(Constant.TILE_HEIGHT);
+		startTileImageView.setFitWidth(Constant.TILE_WIDTH);
+		
+		startTileImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				selectedTileImageView.setImage(imageView.getImage());
-				selectedTileImageByteArray = Util.imageToByteArray(image, "png");
+				selectedTileImageView.setImage(startTileImageView.getImage());
+				selectedTileImage = startTileImage;
 				selectedObstacle = null;
 				
 				startTileSelected = true;
@@ -197,42 +204,42 @@ public class MapDesignerController {
 			}
 		});
 		
-		requiredTileSelections.getChildren().add(startTilePane);
+		requiredTileSelections.getChildren().add(startTileImageView);
 	}
 	
 	private void initEndTile(){
-		Image image = new Image(Constant.PATH_TILE_IMAGE_END_POINT);
-		ImageView imageView = new ImageView(image);
-		imageView.setFitHeight(Constant.TILE_HEIGHT);
-		imageView.setFitWidth(Constant.TILE_WIDTH);
-		endTilePane = new Pane(imageView);
+		MapDao mapDao = new MapDao();
+		TileImage endTileImage = mapDao.findTileImageByOwner(Constant.IMAGE_END_POINT_OWNER);
 		
-		endTilePane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		endTileImageView = new ImageView(Util.byteArrayToImage(endTileImage.getImage()));
+		endTileImageView.setFitHeight(Constant.TILE_HEIGHT);
+		endTileImageView.setFitWidth(Constant.TILE_WIDTH);
+		
+		endTileImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				selectedTileImageView.setImage(imageView.getImage());
-				selectedTileImageByteArray = Util.imageToByteArray(image, "png");
+				selectedTileImageView.setImage(endTileImageView.getImage());
+				selectedTileImage = endTileImage;
 				selectedObstacle = null;
 				
-				endTileSelected = true;
 				startTileSelected = false;
+				endTileSelected = true;
 			}
 		});
 		
-		requiredTileSelections.getChildren().add(endTilePane);
+		requiredTileSelections.getChildren().add(endTileImageView);
 	}
 	
 	private void addObstacleSelection(Obstacle obstacle){
 		ImageView imageView = new ImageView(Util.byteArrayToImage(obstacle.getImage()));
 		imageView.setFitHeight(Constant.TILE_HEIGHT);
 		imageView.setFitWidth(Constant.TILE_WIDTH);
-		Pane pane = new Pane(imageView);
 		
-		pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				selectedTileImageView.setImage(imageView.getImage());
-				selectedTileImageByteArray = obstacle.getImage();
+				selectedTileImage = null;
 				selectedObstacle = obstacle;
 				
 				startTileSelected = false;
@@ -240,24 +247,19 @@ public class MapDesignerController {
 			}
 		});
 		
-		obstacleImageSelections.getChildren().add(pane);
+		obstacleImageSelections.getChildren().add(imageView);
 	}
 	
 	private void addTileImageSelection(TileImage tileImage){
 		ImageView imageView = new ImageView(Util.byteArrayToImage(tileImage.getImage()));
 		imageView.setFitHeight(Constant.TILE_HEIGHT);
 		imageView.setFitWidth(Constant.TILE_WIDTH);
-		Pane pane = new Pane(imageView);
 		
-		if(imageView.getImage() == null){
-			pane.getStyleClass().add("map-blank-tile");
-		}
-		
-		pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				selectedTileImageView.setImage(imageView.getImage());
-				selectedTileImageByteArray = tileImage.getImage();
+				selectedTileImage = tileImage;
 				selectedObstacle = null;
 				
 				startTileSelected = false;
@@ -265,10 +267,10 @@ public class MapDesignerController {
 			}
 		});
 		
-		tileImageSelections.getChildren().add(pane);
+		tileImageSelections.getChildren().add(imageView);
 	}
 	
-	public void show(Action action, Map map){
+	public void show(Action action, Game game){
 		try{
 			FXMLLoader loader = new FXMLLoader();
 	        loader.setLocation(getClass().getResource("Designer.fxml"));
@@ -276,7 +278,6 @@ public class MapDesignerController {
 	        
 	        designer.getStylesheets().add("/css/style.css");
 	        stage = new Stage();
-	        stage.setTitle(map.getName());
 	        stage.initModality(Modality.WINDOW_MODAL);
 	        stage.initOwner(MainLayout.getPrimaryStage());
 	        stage.initStyle(StageStyle.UNDECORATED);
@@ -285,9 +286,8 @@ public class MapDesignerController {
 	        stage.setScene(scene);
 	        
 	        MapDesignerController controller = (MapDesignerController) loader.getController();
-	        controller.setMap(map);
+	        controller.setGame(game);
 	        controller.setStage(stage);
-        	controller.setViewTitle(map.getName());
 	        
 	        controller.setCurrentAction(action);
 	        controller.init();
@@ -315,17 +315,16 @@ public class MapDesignerController {
             tileImage.setImage(Util.fileToByteArray(file));
             
             new MapDao().save(tileImage);
-            
             addTileImageSelection(tileImage);
         }
 	}
 	
 	@FXML
 	private void saveButtonClicked(){
-		if(map.getStartPoint() == null || map.getEndPoint() == null){
+		if(getMap().getStartPoint() == null || getMap().getEndPoint() == null){
 			new AlertDialog(AlertType.ERROR, "Invalid Map", null, "Map should have 1 start point and 1 end point.",stage).showAndWait();
-		}else{
-			new MapPropertiesController().show(currentAction, map);
+		} else {
+			new GamePropertiesController().show(currentAction, getGame());
 			stage.close();
 		}
 	}
@@ -336,11 +335,15 @@ public class MapDesignerController {
 	}
 	
 	public Map getMap() {
-		return map;
+		return getGame().getMap();
 	}
 	
-	public void setMap(Map map) {
-		this.map = map;
+	public Game getGame(){
+		return game;
+	}
+	
+	public void setGame(Game game){
+		this.game = game;
 	}
 	
 	public void setStage(Stage stage) {

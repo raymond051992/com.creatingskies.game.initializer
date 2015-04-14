@@ -3,6 +3,7 @@ package com.creatingskies.game.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -15,6 +16,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -45,6 +48,9 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
 
+	private ConcurrentHashMap<KeyCode, Integer> leftCodes;
+	private ConcurrentHashMap<KeyCode, Integer> rightCodes;
+	
 	private List<Shape> obstacles;
 	private List<Shape> obstacleEdges;
 	
@@ -59,6 +65,8 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private Double preferredDeg = 0.0;
 	private Timeline timeline;
+	
+	private boolean playFromDevice;
 	
 	private StackPane playerStackPane;
 	private ImageView playerImageView;
@@ -104,9 +112,11 @@ public class GameCoreController extends PropertiesViewController {
 		MapDao mapDao = new MapDao();
 		map = mapDao.findMapWithDetails(getGameEvent().getGame().getMap().getIdNo());
 		
-		initDevice();
 		loadPlayer();
 		initMapTiles();
+		playFromDevice = false;
+		initKeyCodes();
+		initKeyboardListeners();
 		initTimeline();
 		initCountdownTimer();
 	}
@@ -145,13 +155,13 @@ public class GameCoreController extends PropertiesViewController {
 			ImageView imageView = new ImageView();
 			imageView.setFitHeight(Constant.TILE_HEIGHT);
 			imageView.setFitWidth(Constant.TILE_WIDTH);
-			imageView.setImage(Util.byteArrayToImage(tile.getImage()));
+			imageView.setImage(Util.byteArrayToImage(tile.getImage().getImage()));
 			
 			Pane tilePane = new Pane(imageView);
 			tilePane.getStyleClass().add("map-designer-tile");
 			mapTiles.add(tilePane, tile.getColIndex(), tile.getRowIndex());
 			
-			if(tile.getObstacleDifficulty() != null){
+			if(tile.getObstacle() != null){
 				createObstacle(tile);
 			} else if(tile.getStartPoint()){
 				playerNode.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
@@ -193,7 +203,9 @@ public class GameCoreController extends PropertiesViewController {
 		    	float result = millisGameDuration / 1000.0f;
 		    	durationLabel.setText(String.format("%.1f", result));
 		    	
-		    	readFromDevice();
+	    		if(playFromDevice){
+		    		readFromDevice();
+		    	}
 				computeMovement();
 		    }
 		}));
@@ -290,7 +302,6 @@ public class GameCoreController extends PropertiesViewController {
 		mapTiles.getChildren().clear();
 		obstacles.clear();
 		obstacleEdges.clear();
-		k8055.CloseDevice();
 		super.close();
 	}
 
@@ -304,36 +315,57 @@ public class GameCoreController extends PropertiesViewController {
         	
         	if(k8055.ReadDigitalChannel(4) == 1) rightPow += 1;
         	if(k8055.ReadDigitalChannel(5) == 1) rightPow += 2;
+        	
+        	System.out.println("L: " + leftPow);
+        	System.out.println("R: " + rightPow);
         } catch (Exception e){
         	e.printStackTrace();
         	k8055.CloseDevice();
         }
 	}
 	
+	private void initKeyboardListeners() {
+		MainLayout.getRootLayout().setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				if(leftCodes.containsKey(event.getCode())){
+					leftPow = leftCodes.get(event.getCode());
+				}
+				
+				if(rightCodes.containsKey(event.getCode())){
+					rightPow = rightCodes.get(event.getCode());
+				}
+			}
+		});
+		
+		MainLayout.getRootLayout().setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				leftPow = 0;
+				rightPow = 0;
+			}
+		});
+	}
+
 	public void initDevice() {
-		k8055.OpenDevice(0);
+		//k8055.OpenDevice(0);
 	}
 	
 	public void createObstacle(Tile tile){
 		Rectangle obstacle = createDefaultRectangle(tile);
 		pane.getChildren().add(obstacle);
 		obstacles.add(obstacle);
-		
 		createObstacleEdge(tile);
 	}
 	
 	public void createObstacleEdge(Tile tile){
-		Rectangle obstacleEdge = new Rectangle();
+		Circle obstacleEdge = new Circle();
+		obstacleEdge.setRadius(Constant.TILE_WIDTH * ((tile.getObstacle().getRadius() * 2) + 1));
+		obstacleEdge.setLayoutX((tile.getColIndex() - tile.getObstacle().getRadius()) * Constant.TILE_WIDTH);
+		obstacleEdge.setLayoutY((tile.getRowIndex() - tile.getObstacle().getRadius()) * Constant.TILE_HEIGHT);
 		
-		//Adjust pag maliit sa zero or lagpas sa boundary
-		
-		obstacleEdge.setWidth(Constant.TILE_WIDTH * ((tile.getObstacleDifficulty() * 2) + 1));
-		obstacleEdge.setHeight(Constant.TILE_HEIGHT * ((tile.getObstacleDifficulty() * 2) + 1));
-		obstacleEdge.setLayoutX((tile.getColIndex() - tile.getObstacleDifficulty()) * Constant.TILE_WIDTH);
-		obstacleEdge.setLayoutY((tile.getRowIndex() - tile.getObstacleDifficulty()) * Constant.TILE_HEIGHT);
-		
-		obstacleEdge.setFill(Color.TRANSPARENT);
-		//obstacleEdge.setOpacity(0.1);
+		obstacleEdge.setFill(Color.DODGERBLUE);
+		obstacleEdge.setOpacity(0.20);
 		
 		pane.getChildren().add(obstacleEdge);
 		obstacleEdges.add(obstacleEdge);
@@ -352,6 +384,30 @@ public class GameCoreController extends PropertiesViewController {
 		rect.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
 		rect.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT);
 		return rect;
+	}
+	
+	private void initKeyCodes() {
+		leftCodes = new ConcurrentHashMap<KeyCode, Integer>();
+		leftCodes.put(KeyCode.DIGIT1, 1);
+		leftCodes.put(KeyCode.DIGIT2, 2);
+		leftCodes.put(KeyCode.DIGIT3, 3);
+		leftCodes.put(KeyCode.DIGIT4, 4);
+		leftCodes.put(KeyCode.DIGIT5, 5);
+		leftCodes.put(KeyCode.DIGIT6, 6);
+		leftCodes.put(KeyCode.DIGIT7, 7);
+		leftCodes.put(KeyCode.DIGIT8, 8);
+		leftCodes.put(KeyCode.DIGIT9, 9);
+		
+		rightCodes = new ConcurrentHashMap<KeyCode, Integer>();
+		rightCodes.put(KeyCode.NUMPAD1, 1);
+		rightCodes.put(KeyCode.NUMPAD2, 2);
+		rightCodes.put(KeyCode.NUMPAD3, 3);
+		rightCodes.put(KeyCode.NUMPAD4, 4);
+		rightCodes.put(KeyCode.NUMPAD5, 5);
+		rightCodes.put(KeyCode.NUMPAD6, 6);
+		rightCodes.put(KeyCode.NUMPAD7, 7);
+		rightCodes.put(KeyCode.NUMPAD8, 8);
+		rightCodes.put(KeyCode.NUMPAD9, 9);
 	}
 	
 	private void loadPlayer(){

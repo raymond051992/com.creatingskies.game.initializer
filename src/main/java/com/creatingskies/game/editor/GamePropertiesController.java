@@ -2,31 +2,34 @@ package com.creatingskies.game.editor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
-import javafx.util.StringConverter;
 
 import com.creatingskies.game.classes.PropertiesViewController;
 import com.creatingskies.game.classes.Util;
 import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.core.Game;
-import com.creatingskies.game.core.Game.Type;
-import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.core.Map;
 import com.creatingskies.game.core.MapDao;
+import com.creatingskies.game.core.Tile;
+import com.creatingskies.game.core.Game.Type;
+import com.creatingskies.game.core.GameDao;
+import com.creatingskies.game.model.Constant;
 
 public class GamePropertiesController extends PropertiesViewController{
 
@@ -34,9 +37,12 @@ public class GamePropertiesController extends PropertiesViewController{
 	@FXML private TextArea descriptionField;
 	@FXML private RadioButton gameTypeCyclingButton;
 	@FXML private RadioButton gameTypeRowingButton;
-	@FXML private ComboBox<Map> mapSelectionDropdown;
 	@FXML private TextField audioFileNameField;
 	@FXML private ButtonBar actionButtonBar;
+	
+	@FXML private TextField widthTextField;
+	@FXML private TextField heightTextField;
+	@FXML private Button openDesignerButton;
 	
 	@Override
 	public void init() {
@@ -45,7 +51,6 @@ public class GamePropertiesController extends PropertiesViewController{
 	}
 	
 	private void initFields(){
-		initMapSelections();
 		titleField.textProperty().addListener((observable, oldValue, newValue) -> {
 		    getGame().setTitle(newValue);
 		});
@@ -58,9 +63,6 @@ public class GamePropertiesController extends PropertiesViewController{
 		gameTypeRowingButton.setOnAction((event) -> {
 		    getGame().setType(Type.ROWING);
 		});
-		mapSelectionDropdown.setOnAction((event) -> {
-			getGame().setMap(mapSelectionDropdown.getSelectionModel().getSelectedItem());
-		});
 		
 		if(getCurrentAction() == Action.VIEW){
 			actionButtonBar.setVisible(false);
@@ -69,22 +71,9 @@ public class GamePropertiesController extends PropertiesViewController{
 			actionButtonBar.setVisible(true);
 			disableFields(false);
 		}
-	}
-	
-	private void initMapSelections(){
-		MapDao mapDao = new MapDao();
-		mapSelectionDropdown.setItems(FXCollections.observableArrayList(mapDao.findAllMaps()));
-		mapSelectionDropdown.setConverter(new StringConverter<Map>() {
-			@Override
-			public String toString(Map object) {
-				return object.getName();
-			}
-			
-			@Override
-			public Map fromString(String string) {
-				return null;
-			}
-		});
+		
+		widthTextField.addEventFilter(KeyEvent.KEY_TYPED, Util.createIntegerOnlyKeyEvent());
+		heightTextField.addEventFilter(KeyEvent.KEY_TYPED, Util.createIntegerOnlyKeyEvent());
 	}
 	
 	@FXML
@@ -108,7 +97,7 @@ public class GamePropertiesController extends PropertiesViewController{
 	
 	@FXML
     private void handleSave() {
-        if (isInputValid()) {
+        if (isInputValid() && isValidDetails() && isValidMap()) {
         	Alert waitDialog = new AlertDialog(AlertType.INFORMATION, "Saving", null, "Please wait.");
         	waitDialog.initModality(Modality.WINDOW_MODAL);
 			waitDialog.show();
@@ -126,22 +115,25 @@ public class GamePropertiesController extends PropertiesViewController{
 	}
 	
 	private boolean isInputValid() {
+		String errorMessage = "";
+		
         if (Util.isBlank(titleField.getText())) {
-        	new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Title is required.").showAndWait();
-        	return false;
+        	errorMessage += "Title is required.\n";
         }
         
         if(Util.isBlank(descriptionField.getText())){
-        	new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Description is required.").showAndWait();
-        	return false;
+        	errorMessage += "Description is required.\n";
         }
         
         if (!gameTypeCyclingButton.isSelected() && !gameTypeRowingButton.isSelected()){
-        	new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Game Type is required").showAndWait();
-        	return false;
+        	errorMessage += "Game Type is required.\n";
         }
         
-        return true;
+        if(!errorMessage.isEmpty()){
+			new AlertDialog(AlertType.ERROR, "Oops", "", errorMessage).showAndWait();
+		}
+
+		return errorMessage.isEmpty();
     }
 	
 	@Override
@@ -163,12 +155,17 @@ public class GamePropertiesController extends PropertiesViewController{
 		setCurrentRecord(game);
 		titleField.setText(getGame().getTitle());
 		descriptionField.setText(getGame().getDescription());
+		widthTextField.setText(getMap().getWidth() != null ?
+				getMap().getWidth().toString() : "");
+		heightTextField.setText(getMap().getHeight() != null ?
+				getMap().getHeight().toString() : "");
 		
 		if(getGame().getType() == null){
 			getGame().setType(Type.CYCLING);
 		}
 		
 		gameTypeCyclingButton.setSelected(game.getType() == Type.CYCLING);
+		gameTypeRowingButton.setSelected(game.getType() == Type.ROWING);
 	}
 	
 	public void show(Action action, Game game){
@@ -193,7 +190,88 @@ public class GamePropertiesController extends PropertiesViewController{
 		descriptionField.setDisable(disable);
 		gameTypeCyclingButton.setDisable(disable);
 		gameTypeRowingButton.setDisable(disable);
-		mapSelectionDropdown.setDisable(disable);
 		audioFileNameField.setDisable(disable);
 	}
+	
+	@FXML
+	private void showMapDesigner(){
+		if(isValidDetails()){
+			loadMapDetails();
+			new MapDesignerController().show(getCurrentAction(), getGame());
+			close();
+		}
+	}
+	
+	private void loadMapDetails(){
+		if(!getMap().isReady()){
+			getMap().setWidth(Integer.parseInt(widthTextField.getText()));
+			getMap().setHeight(Integer.parseInt(heightTextField.getText()));
+			
+			MapDao mapDao = new MapDao();
+			String owner = gameTypeRowingButton.isSelected() ?
+					Constant.IMAGE_ROWING_TILE_OWNER : Constant.IMAGE_CYCLING_TILE_OWNER;
+			getMap().setDefaultTileImage(mapDao.findTileImageByOwner(owner));
+			
+			List<Tile> tiles = new ArrayList<Tile>();
+			for (int r = 0; r < getMap().getHeight(); r++) {
+				for (int c = 0; c < getMap().getWidth(); c++) {
+					Tile tile = new Tile();
+					tile.setMap(getMap());
+					tile.setColIndex(c);
+					tile.setRowIndex(r);
+					tiles.add(tile);
+				}
+			}
+			getMap().setTiles(tiles);
+		}
+	}
+	
+	private boolean isValidDetails(){
+		String errorMessage = "";
+		
+		if(widthTextField.getText() == null || widthTextField.getText().isEmpty()){
+			errorMessage += "Width is required.\n";
+		} else if(Integer.parseInt(widthTextField.getText()) <= 0){
+			errorMessage += "Width should be 1 or greater.\n";
+		}
+		
+		if(heightTextField.getText() == null || heightTextField.getText().isEmpty()){
+			errorMessage += "Height is required.\n";
+		} else if(Integer.parseInt(heightTextField.getText()) <= 0){
+			errorMessage += "Height should be 1 or greater.\n";
+		}
+		
+		if(!errorMessage.isEmpty()){
+			new AlertDialog(AlertType.ERROR, "Oops", "", errorMessage).showAndWait();
+		}
+
+		return errorMessage.isEmpty();
+	}
+	
+	private Boolean isValidMap(){
+		String errorMessage = "";
+		
+		if(getMap().getTiles() == null){
+			errorMessage += "Please design your map.\n";
+		} else {
+			if(getMap().getStartPoint() == null){
+				errorMessage += "Please assign an start point to the map.\n";
+			}
+			
+			if(getMap().getEndPoint() == null){
+				errorMessage += "Please assign an end point to the map.\n";
+			}
+		}
+		
+		if(!errorMessage.isEmpty()){
+			new AlertDialog(AlertType.ERROR, "Oops", "", errorMessage).showAndWait();
+		}
+
+		return errorMessage.isEmpty();
+	}
+	
+	private Map getMap(){
+		return getGame().getMap();
+	}
+	
 }

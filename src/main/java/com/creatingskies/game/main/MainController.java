@@ -23,7 +23,6 @@ import com.creatingskies.game.config.obstacle.ObstaclesController;
 import com.creatingskies.game.config.user.UsersController;
 import com.creatingskies.game.config.weather.WeathersController;
 import com.creatingskies.game.editor.GameController;
-import com.creatingskies.game.map.MapController;
 import com.creatingskies.game.model.user.User.Type;
 import com.creatingskies.game.statistics.StatisticsController;
 
@@ -54,14 +53,13 @@ public class MainController extends ViewController{
 		if(UserManager.getCurrentUser() != null){
 			if(UserManager.getCurrentUser().getType().equals(Type.ADMIN)){
 				createLauncher(0, "Users", "/images/rec_users.png", this::goToUsersPage);
-				createLauncher(1, "Maps", "/images/rec_map.png", this::goToMaps);
-				createLauncher(2, "Obstacles", "/images/rec_obstacle.png", this::goToObstaclesPage);
-				createLauncher(3, "Weathers", "/images/rec_weather.png", this::goToWeathersPage);
-				createLauncher(4, "Games", "/images/rec_game.png", this::goToGamesPage);
+				createLauncher(1, "Obstacles", "/images/rec_obstacle.png", this::goToObstaclesPage);
+				createLauncher(2, "Weathers", "/images/rec_weather.png", this::goToWeathersPage);
+				createLauncher(3, "Games", "/images/rec_game.png", this::goToGamesPage);
 			}
-			createLauncher(5, "Companies", "/images/rec_company.png", this::goToCompaniesPage);
-			createLauncher(6, "Events", "/images/rec_events.png", this::goToEventsPage);
-			createLauncher(7, "Statistics", "/images/rec_statistics.png", this::goToStatisticsPage);
+			createLauncher(4, "Companies", "/images/rec_company.png", this::goToCompaniesPage);
+			createLauncher(5, "Events", "/images/rec_events.png", this::goToEventsPage);
+			createLauncher(6, "Statistics", "/images/rec_statistics.png", this::goToStatisticsPage);
 		}
 		
 	}
@@ -97,10 +95,6 @@ public class MainController extends ViewController{
 	
 	private void goToGamesPage(MouseEvent event){
 		new GameController().show();
-	}
-	
-	private void goToMaps(MouseEvent event){
-		new MapController().show();
 	}
 	
 	private void goToCompaniesPage(MouseEvent event){
