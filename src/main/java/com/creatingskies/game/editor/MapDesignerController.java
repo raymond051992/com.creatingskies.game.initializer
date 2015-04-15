@@ -23,10 +23,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import com.creatingskies.game.classes.Util;
 import com.creatingskies.game.classes.ViewController.Action;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.Map;
 import com.creatingskies.game.core.MapDao;
@@ -35,6 +34,7 @@ import com.creatingskies.game.core.TileImage;
 import com.creatingskies.game.model.Constant;
 import com.creatingskies.game.model.obstacle.Obstacle;
 import com.creatingskies.game.model.obstacle.ObstacleDAO;
+import com.creatingskies.game.util.Util;
 
 public class MapDesignerController {
 	

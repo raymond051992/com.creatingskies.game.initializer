@@ -20,14 +20,14 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 import com.creatingskies.game.classes.TableViewController;
-import com.creatingskies.game.classes.Util;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game.Type;
 import com.creatingskies.game.model.Constant;
 import com.creatingskies.game.model.IRecord;
 import com.creatingskies.game.model.obstacle.Obstacle;
 import com.creatingskies.game.model.obstacle.ObstacleDAO;
+import com.creatingskies.game.util.Util;
 
 public class ObstaclesController extends TableViewController{
 

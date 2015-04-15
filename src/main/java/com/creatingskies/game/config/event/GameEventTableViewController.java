@@ -21,12 +21,12 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
 import com.creatingskies.game.classes.TableViewController;
-import com.creatingskies.game.classes.Util;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.model.IRecord;
 import com.creatingskies.game.model.event.GameEvent;
 import com.creatingskies.game.model.event.GameEventDao;
+import com.creatingskies.game.util.Util;
 
 public class GameEventTableViewController extends TableViewController{
 

@@ -22,9 +22,8 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import com.creatingskies.game.classes.PropertiesViewController;
-import com.creatingskies.game.classes.Util;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.GameConverter;
 import com.creatingskies.game.core.GameCoreController;
@@ -33,6 +32,7 @@ import com.creatingskies.game.model.company.CompanyDAO;
 import com.creatingskies.game.model.company.Group;
 import com.creatingskies.game.model.event.GameEvent;
 import com.creatingskies.game.model.event.GameEventDao;
+import com.creatingskies.game.util.Util;
 
 public class GameEventPropertiesViewController extends PropertiesViewController{
 

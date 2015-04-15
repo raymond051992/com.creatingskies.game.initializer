@@ -14,8 +14,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 
 import com.creatingskies.game.classes.TableViewController;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game.Type;
 import com.creatingskies.game.model.IRecord;
 import com.creatingskies.game.model.weather.Weather;

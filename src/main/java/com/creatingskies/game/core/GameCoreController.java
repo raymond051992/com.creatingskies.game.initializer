@@ -30,12 +30,12 @@ import javafx.util.Duration;
 import k8055.K8055JavaCall;
 
 import com.creatingskies.game.classes.PropertiesViewController;
-import com.creatingskies.game.classes.Util;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.config.event.GameEventTableViewController;
 import com.creatingskies.game.model.Constant;
 import com.creatingskies.game.model.event.GameEvent;
+import com.creatingskies.game.util.Util;
 
 public class GameCoreController extends PropertiesViewController {
 	

@@ -11,11 +11,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import com.creatingskies.game.classes.Util;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.model.company.CompanyDAO;
 import com.creatingskies.game.model.company.Team;
+import com.creatingskies.game.util.Util;
 
 public class TeamDialogController  {
 

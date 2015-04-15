@@ -7,21 +7,21 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 
 import com.creatingskies.game.classes.TableViewController;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.model.IRecord;
 import com.creatingskies.game.model.user.User;
+import com.creatingskies.game.model.user.User.Status;
 import com.creatingskies.game.model.user.User.Type;
 import com.creatingskies.game.model.user.UserDao;
-import com.creatingskies.game.model.user.User.Status;
 
 public class UsersController extends TableViewController {
 

@@ -11,12 +11,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
-import com.creatingskies.game.classes.Util;
 import com.creatingskies.game.classes.ViewController;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.model.user.User;
 import com.creatingskies.game.model.user.UserDao;
+import com.creatingskies.game.util.Util;
 
 public class ChangePasswordController extends ViewController {
 

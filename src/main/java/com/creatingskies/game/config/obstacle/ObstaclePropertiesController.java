@@ -13,11 +13,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 
 import com.creatingskies.game.classes.PropertiesViewController;
-import com.creatingskies.game.classes.Util;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.model.obstacle.Obstacle;
 import com.creatingskies.game.model.obstacle.ObstacleDAO;
+import com.creatingskies.game.util.Util;
 
 public class ObstaclePropertiesController extends PropertiesViewController {
 

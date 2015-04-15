@@ -20,16 +20,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 
 import com.creatingskies.game.classes.PropertiesViewController;
-import com.creatingskies.game.classes.Util;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game;
+import com.creatingskies.game.core.Game.Type;
+import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.core.Map;
 import com.creatingskies.game.core.MapDao;
 import com.creatingskies.game.core.Tile;
-import com.creatingskies.game.core.Game.Type;
-import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.model.Constant;
+import com.creatingskies.game.util.Util;
 
 public class GamePropertiesController extends PropertiesViewController{
 

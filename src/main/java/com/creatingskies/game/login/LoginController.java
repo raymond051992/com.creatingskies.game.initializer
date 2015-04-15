@@ -11,8 +11,8 @@ import javafx.scene.layout.AnchorPane;
 
 import com.creatingskies.game.classes.UserManager;
 import com.creatingskies.game.classes.ViewController;
-import com.creatingskies.game.common.AlertDialog;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.main.MainController;
 import com.creatingskies.game.model.user.User;
 import com.creatingskies.game.model.user.UserDao;
