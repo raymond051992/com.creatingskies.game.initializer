@@ -7,11 +7,13 @@ import java.util.List;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -90,7 +92,15 @@ public class MapDesignerController {
 			imageView.setImage(Util.byteArrayToImage(tile.getImage() != null ?
 					tile.getImage().getImage() : getMap().getDefaultTileImage().getImage()));
 			
-			mapTiles.add(imageView, tile.getColIndex(), tile.getRowIndex());
+			ImageView obs = new ImageView();
+			obs.setFitHeight(Constant.TILE_HEIGHT);
+			obs.setFitWidth(Constant.TILE_WIDTH);
+			obs.setImage(tile.getObstacle() != null ?
+					Util.byteArrayToImage(tile.getObstacle().getImage()) : null);
+
+			imageView.setBlendMode(BlendMode.DIFFERENCE);
+			Group group = new Group(imageView, obs);
+			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
 			
 			imageView.setOnMousePressed(new EventHandler<MouseEvent>() {
 				@Override
