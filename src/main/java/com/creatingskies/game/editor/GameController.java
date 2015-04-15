@@ -1,17 +1,21 @@
 package com.creatingskies.game.editor;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 
 import com.creatingskies.game.classes.TableViewController;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.model.IRecord;
@@ -29,14 +33,13 @@ public class GameController extends TableViewController{
 	@SuppressWarnings("unchecked")
 	public void initialize(){
 		super.init();
-		GameDao gameDao = new GameDao();
 		
 		titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
 		descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
 		typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType().toString()));
 		
 		actionColumn.setCellFactory(generateCellFactory(Action.DELETE, Action.EDIT, Action.VIEW));
-		gamesTable.setItems(FXCollections.observableArrayList(gameDao.findAllGames()));
+		resetTableView();
 	}
 	
 	public void show(){
@@ -58,6 +61,26 @@ public class GameController extends TableViewController{
 	@Override
 	protected void editRecord(IRecord record) {
 		new GamePropertiesController().show(Action.EDIT, (Game) record);
+	}
+	
+	@Override
+	protected void deleteRecord(IRecord record) {
+		Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
+				"Are you sure you want to delete this game?", null).showAndWait();
+		
+		if(result.get() == ButtonType.OK){
+			super.deleteRecord(record);
+			try {
+				new GameDao().delete(record);
+				resetTableView();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void resetTableView(){
+		gamesTable.setItems(FXCollections.observableArrayList(new GameDao().findAllGames()));
 	}
 	
 	public void addNewGame(){

@@ -69,17 +69,17 @@
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <children>
                   <TextField fx:id="audioFileNameField" editable="false" prefHeight="25.0" prefWidth="380.0" />
-                  <Button mnemonicParsing="false" onAction="#handleAudioBrowseDialog" prefWidth="90.0" text="Browse" />
+                  <Button fx:id="browseButton" mnemonicParsing="false" onAction="#handleAudioBrowseDialog" prefWidth="90.0" text="Browse" />
                </children>
             </HBox>
          </children>
       </GridPane>
-      <ButtonBar fx:id="actionButtonBar" layoutX="184.0" layoutY="361.0" prefHeight="25.0" prefWidth="406.0">
+      <ButtonBar fx:id="actionButtonBar" layoutX="237.0" layoutY="361.0" prefHeight="25.0" prefWidth="353.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
         <buttons>
-            <Button fx:id="openDesignerButton" maxWidth="150.0" minHeight="-Infinity" minWidth="150.0" mnemonicParsing="false" onAction="#showMapDesigner" prefWidth="150.0" styleClass="button-primary" text="Map Designer" />
           <Button mnemonicParsing="false" onAction="#handleSave" text="Save" />
             <Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
         </buttons>
       </ButtonBar>
+      <Button fx:id="openDesignerButton" layoutX="14.0" layoutY="361.0" maxWidth="150.0" minHeight="-Infinity" minWidth="150.0" mnemonicParsing="false" onAction="#showMapDesigner" prefWidth="150.0" styleClass="button-primary" text="Map Designer" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
    </children>
 </AnchorPane>

@@ -13,12 +13,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -86,68 +86,78 @@ public class MapDesignerController {
 		mapTiles.getChildren().clear();
 		
 		for(Tile tile : getMap().getTiles()){
-			ImageView imageView = new ImageView();
-			imageView.setFitHeight(Constant.TILE_HEIGHT);
-			imageView.setFitWidth(Constant.TILE_WIDTH);
-			imageView.setImage(Util.byteArrayToImage(tile.getImage() != null ?
-					tile.getImage().getImage() : getMap().getDefaultTileImage().getImage()));
+			ImageView backImage = new ImageView();
+			backImage.setFitHeight(Constant.TILE_HEIGHT);
+			backImage.setFitWidth(Constant.TILE_WIDTH);
+			backImage.setImage(Util.byteArrayToImage(tile.getBackImage() != null ?
+					tile.getBackImage().getImage() : getMap().getDefaultTileImage().getImage()));
 			
-			ImageView obs = new ImageView();
-			obs.setFitHeight(Constant.TILE_HEIGHT);
-			obs.setFitWidth(Constant.TILE_WIDTH);
-			obs.setImage(tile.getObstacle() != null ?
-					Util.byteArrayToImage(tile.getObstacle().getImage()) : null);
+			ImageView frontImage = new ImageView();
+			frontImage.setFitHeight(Constant.TILE_HEIGHT);
+			frontImage.setFitWidth(Constant.TILE_WIDTH);
+			
+			if(tile.getObstacle() != null || tile.getStartPoint() || tile.getEndPoint()){
+				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
+						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
+			}
 
-			imageView.setBlendMode(BlendMode.DIFFERENCE);
-			Group group = new Group(imageView, obs);
+			Group group = new Group(backImage, frontImage);
 			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
 			
-			imageView.setOnMousePressed(new EventHandler<MouseEvent>() {
+			backImage.setOnMousePressed(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
-					handlePaintTile(tile, imageView);
+					handlePaintTile(tile, frontImage, backImage);
 				}
 			});
 			
-			imageView.setOnMouseEntered(new EventHandler<MouseEvent>() {
+			backImage.setOnMouseEntered(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
 					if(event.isAltDown()){
-						handlePaintTile(tile, imageView);	
+						handlePaintTile(tile, frontImage, backImage);	
+					}
+				}
+			});
+			
+			frontImage.setOnMousePressed(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					handlePaintTile(tile, frontImage, backImage);
+				}
+			});
+			
+			frontImage.setOnMouseEntered(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					if(event.isAltDown()){
+						handlePaintTile(tile, frontImage, backImage);	
 					}
 				}
 			});
 		}
 	}
 	
-	private void handlePaintTile(Tile tile, ImageView imageView) {
+	private void handlePaintTile(Tile tile, ImageView frontImage, ImageView backImage) {
 		if(getCurrentAction() != null && (selectedTileImage != null || selectedObstacle != null)){
 			tile.setObstacle(selectedObstacle != null ? selectedObstacle : null);
-			tile.setImage(selectedTileImage != null ? selectedTileImage : null);
 			
 			if(selectedObstacle != null){
-				imageView.setImage(Util.byteArrayToImage(selectedObstacle.getImage()));
-			} else {
-				imageView.setImage(Util.byteArrayToImage(tile.getImage() != null ?
-						tile.getImage().getImage() : getMap().getDefaultTileImage().getImage()));
-			}
-			
-			if(tile.getStartPoint()){
+				frontImage.setImage(Util.byteArrayToImage(selectedObstacle.getImage()));
+				tile.setFrontImage(null);
 				tile.setStartPoint(false);
-				requiredTileSelections.getChildren().add(startTileImageView);
-			}
-			
-			if(tile.getEndPoint()){
 				tile.setEndPoint(false);
-				requiredTileSelections.getChildren().add(endTileImageView);
+			} else if (startTileSelected || endTileSelected) {
+				tile.setFrontImage(selectedTileImage);
+				frontImage.setImage(Util.byteArrayToImage(selectedTileImage.getImage()));
+				selectedTileImageView.setImage(null);
+				selectedTileImage = null;
+			} else {
+				backImage.setImage(Util.byteArrayToImage(selectedTileImage.getImage()));
 			}
 			
-			if(startTileSelected || endTileSelected){
-				selectedTileImage = null;
-				selectedTileImageView.setImage(null);
-				tile.setStartPoint(startTileSelected);
-				tile.setEndPoint(endTileSelected);
-			}
+			tile.setStartPoint(startTileSelected);
+			tile.setEndPoint(endTileSelected);
 			
 			validateRequiredTiles();
 		}
@@ -156,10 +166,14 @@ public class MapDesignerController {
 	private void validateRequiredTiles(){
 		if(getMap().getStartPoint() != null){
 			requiredTileSelections.getChildren().remove(startTileImageView);
+		} else if(!requiredTileSelections.getChildren().contains(startTileImageView)){
+			requiredTileSelections.getChildren().add(startTileImageView);
 		}
 		
 		if(getMap().getEndPoint() != null){
 			requiredTileSelections.getChildren().remove(endTileImageView);
+		} else if(!requiredTileSelections.getChildren().contains(endTileImageView)){
+			requiredTileSelections.getChildren().add(endTileImageView);
 		}
 		
 		requiredBox.setVisible(!requiredTileSelections.getChildren().isEmpty());
@@ -174,6 +188,22 @@ public class MapDesignerController {
 				addTileImageSelection(tileImage);
 			}
 		}
+		addTileUploadImage();
+	}
+	
+	private void addTileUploadImage(){
+		ImageView imageView = new ImageView("/images/tiles/quickadd.png");
+		imageView.setFitHeight(Constant.TILE_HEIGHT);
+		imageView.setFitWidth(Constant.TILE_WIDTH);
+		
+		Pane pane = new Pane(imageView);
+		pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				uploadTileImage();
+			}
+		});
+		tileImageSelections.getChildren().add(pane);
 	}
 	
 	private void initObstacleSelections(){

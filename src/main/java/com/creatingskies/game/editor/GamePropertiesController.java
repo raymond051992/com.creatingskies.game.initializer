@@ -38,6 +38,7 @@ public class GamePropertiesController extends PropertiesViewController{
 	@FXML private RadioButton gameTypeCyclingButton;
 	@FXML private RadioButton gameTypeRowingButton;
 	@FXML private TextField audioFileNameField;
+	@FXML private Button browseButton;
 	@FXML private ButtonBar actionButtonBar;
 	
 	@FXML private TextField widthTextField;
@@ -191,11 +192,18 @@ public class GamePropertiesController extends PropertiesViewController{
 		gameTypeCyclingButton.setDisable(disable);
 		gameTypeRowingButton.setDisable(disable);
 		audioFileNameField.setDisable(disable);
+		widthTextField.setDisable(disable);
+		heightTextField.setDisable(disable);
+		browseButton.setDisable(disable);
 	}
 	
 	@FXML
 	private void showMapDesigner(){
 		if(isValidDetails()){
+			Alert waitDialog = new AlertDialog(AlertType.INFORMATION, "Loading resources", null, "Please wait.");
+        	waitDialog.initModality(Modality.WINDOW_MODAL);
+			waitDialog.show();
+			
 			if(getCurrentAction() != Action.ADD){
 				Map map = new MapDao().findMapWithDetails(getGame().getMap().getIdNo());
 				getGame().setMap(map);
@@ -204,6 +212,8 @@ public class GamePropertiesController extends PropertiesViewController{
 			loadMapDetails();
 			new MapDesignerController().show(getCurrentAction(), getGame());
 			close();
+			
+			waitDialog.hide();
 		}
 	}
 	

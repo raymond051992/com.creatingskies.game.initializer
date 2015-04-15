@@ -72,7 +72,6 @@ public class ObstaclesController extends TableViewController{
 		gameTypeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
 						getGameTypeDisplay(cellData.getValue())));
 		
-		imageColumn.setCellFactory(generateImageCellFactory());
 		actionColumn.setCellFactory(generateCellFactory(Action.EDIT, Action.DELETE));
 		resetTableView();
 	}
@@ -123,6 +122,7 @@ public class ObstaclesController extends TableViewController{
 	}
 	
 	private void resetTableView(){
+		imageColumn.setCellFactory(generateImageCellFactory());
 		obstaclesTable.setItems(FXCollections
 				.observableArrayList(obstacleDAO.findAll()));
 	}

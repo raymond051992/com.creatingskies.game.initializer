@@ -155,7 +155,7 @@ public class GameCoreController extends PropertiesViewController {
 			ImageView imageView = new ImageView();
 			imageView.setFitHeight(Constant.TILE_HEIGHT);
 			imageView.setFitWidth(Constant.TILE_WIDTH);
-			imageView.setImage(Util.byteArrayToImage(tile.getImage().getImage()));
+			imageView.setImage(Util.byteArrayToImage(tile.getBackImage().getImage()));
 			
 			Pane tilePane = new Pane(imageView);
 			tilePane.getStyleClass().add("map-designer-tile");
