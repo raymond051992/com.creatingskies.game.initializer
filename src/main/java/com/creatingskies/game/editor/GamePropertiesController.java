@@ -196,6 +196,11 @@ public class GamePropertiesController extends PropertiesViewController{
 	@FXML
 	private void showMapDesigner(){
 		if(isValidDetails()){
+			if(getCurrentAction() != Action.ADD){
+				Map map = new MapDao().findMapWithDetails(getGame().getMap().getIdNo());
+				getGame().setMap(map);
+			}
+			
 			loadMapDetails();
 			new MapDesignerController().show(getCurrentAction(), getGame());
 			close();
