@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -18,6 +19,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -147,7 +149,12 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	
 	@FXML
 	private void play(){
+		Alert waitDialog = new AlertDialog(AlertType.INFORMATION, "Loading map", null, "Please wait.");
+    	waitDialog.initModality(Modality.WINDOW_MODAL);
+		waitDialog.show();
 		new GameCoreController().show(getGameEvent());
+		close();
+		waitDialog.hide();
 	}
 	
 	private boolean isValid(){

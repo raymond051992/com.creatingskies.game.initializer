@@ -212,7 +212,6 @@ public class GamePropertiesController extends PropertiesViewController{
 			loadMapDetails();
 			new MapDesignerController().show(getCurrentAction(), getGame());
 			close();
-			
 			waitDialog.hide();
 		}
 	}

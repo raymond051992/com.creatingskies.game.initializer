@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
@@ -111,14 +112,20 @@ public class GameCoreController extends PropertiesViewController {
 
 		MapDao mapDao = new MapDao();
 		map = mapDao.findMapWithDetails(getGameEvent().getGame().getMap().getIdNo());
+		playFromDevice = false;
 		
 		loadPlayer();
 		initMapTiles();
-		playFromDevice = false;
 		initKeyCodes();
 		initKeyboardListeners();
 		initTimeline();
 		initCountdownTimer();
+		initWarningImages();
+	}
+	
+	private void initWarningImages(){
+		warningImageView.setImage(new Image("/images/warning.png"));
+		stopImageView.setImage(new Image("/images/stop.png"));
 	}
 	
 	private void initCountdownTimer(){
@@ -152,24 +159,33 @@ public class GameCoreController extends PropertiesViewController {
 		mapTiles.getChildren().clear();
 		
 		for(Tile tile : map.getTiles()){
-			ImageView imageView = new ImageView();
-			imageView.setFitHeight(Constant.TILE_HEIGHT);
-			imageView.setFitWidth(Constant.TILE_WIDTH);
-			imageView.setImage(Util.byteArrayToImage(tile.getBackImage().getImage()));
+			ImageView backImage = new ImageView();
+			backImage.setFitHeight(Constant.TILE_HEIGHT);
+			backImage.setFitWidth(Constant.TILE_WIDTH);
+			backImage.setImage(Util.byteArrayToImage(tile.getBackImage() != null ?
+					tile.getBackImage().getImage() : map.getDefaultTileImage().getImage()));
 			
-			Pane tilePane = new Pane(imageView);
-			tilePane.getStyleClass().add("map-designer-tile");
-			mapTiles.add(tilePane, tile.getColIndex(), tile.getRowIndex());
+			Group group = new Group(backImage);
 			
-			if(tile.getObstacle() != null){
-				createObstacle(tile);
-			} else if(tile.getStartPoint()){
-				playerNode.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
-				playerNode.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT);
-				pane.getChildren().add(playerNode);
-			} else if(tile.getEndPoint()){
-				createEndRectangle(tile);
+			if(tile.getObstacle() != null || tile.getStartPoint() || tile.getEndPoint()){
+				ImageView frontImage = new ImageView();
+				frontImage.setFitHeight(Constant.TILE_HEIGHT);
+				frontImage.setFitWidth(Constant.TILE_WIDTH);
+				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
+						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
+				group.getChildren().add(frontImage);
+				
+				if(tile.getObstacle() != null){
+					createObstacle(tile);
+				} else if(tile.getStartPoint()){
+					playerNode.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
+					playerNode.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT);
+					pane.getChildren().add(playerNode);
+				} else if(tile.getEndPoint()){
+					createEndRectangle(tile);
+				}
 			}
+			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
 		}
 		
 		initPlayingArea();
@@ -231,7 +247,7 @@ public class GameCoreController extends PropertiesViewController {
 			checkWarning(playerCircle);
 			
 			double speed = (leftPow + rightPow)
-					* (speedFactor + weatherSlowFactor + obstacleSlowFactor);
+					* (speedFactor - (weatherSlowFactor + obstacleSlowFactor));
 			
 			double cosValue = (speed * Math.cos(Math.toRadians(currentDeg)));
 			double sinValue = (speed * Math.sin(Math.toRadians(currentDeg)));
@@ -258,7 +274,8 @@ public class GameCoreController extends PropertiesViewController {
 			}
 		}
 		
-		obstacleSlowFactor = hasCollision ? 0.5 : 0.0;
+		//TODO Multiply factor by difficulty
+		obstacleSlowFactor = hasCollision ? 0.2 : 0.0;
 		warningImageView.setVisible(hasCollision);
 	}
 	
@@ -360,9 +377,9 @@ public class GameCoreController extends PropertiesViewController {
 	
 	public void createObstacleEdge(Tile tile){
 		Circle obstacleEdge = new Circle();
-		obstacleEdge.setRadius(Constant.TILE_WIDTH * ((tile.getObstacle().getRadius() * 2) + 1));
-		obstacleEdge.setLayoutX((tile.getColIndex() - tile.getObstacle().getRadius()) * Constant.TILE_WIDTH);
-		obstacleEdge.setLayoutY((tile.getRowIndex() - tile.getObstacle().getRadius()) * Constant.TILE_HEIGHT);
+		obstacleEdge.setRadius(Constant.TILE_WIDTH * tile.getObstacle().getRadius());
+		obstacleEdge.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH + (Constant.TILE_WIDTH / 2));
+		obstacleEdge.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT + (Constant.TILE_WIDTH / 2));
 		
 		obstacleEdge.setFill(Color.DODGERBLUE);
 		obstacleEdge.setOpacity(0.20);
