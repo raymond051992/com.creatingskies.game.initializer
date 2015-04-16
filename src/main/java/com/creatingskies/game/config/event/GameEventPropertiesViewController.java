@@ -137,7 +137,7 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	
 	private boolean isValid(){
 		if(companyComboBox.getSelectionModel().getSelectedItem() == null){
-			new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Group is required.").showAndWait();
+			new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Company is required.").showAndWait();
 			return false;
 		}
 		if(gameComboBox.getSelectionModel().getSelectedItem() == null){

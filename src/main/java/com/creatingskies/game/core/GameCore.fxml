@@ -17,8 +17,8 @@
 						<Button mnemonicParsing="false" onAction="#handleGameStart" prefHeight="33.0" prefWidth="180.0" text="Start Game" />
                   <GridPane>
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="119.0" minWidth="10.0" prefWidth="119.0" />
-                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="84.0" minWidth="10.0" prefWidth="61.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="119.0" minWidth="10.0" prefWidth="101.0" />
+                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="84.0" minWidth="10.0" prefWidth="79.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -31,7 +31,7 @@
       										<Font size="24.0" />
       									</font>
       								</Label>
-                        <Label fx:id="durationLabel1" text="Duration">
+                        <Label text="Duration">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -41,7 +41,12 @@
             						<Font size="24.0" />
             					</font>
             				</Label>
-                        <Label fx:id="durationLabel11" text="Countdown" GridPane.rowIndex="1">
+                        <Label text="Countdown" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label text="Difficulty" GridPane.rowIndex="2">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -49,6 +54,11 @@
                      </children>
                   </GridPane>
                   <ImageView fx:id="warningImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" visible="false" />
+                  <Label fx:id="difficultyLabel" prefHeight="35.0" prefWidth="119.0" text="0">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
                   <ImageView fx:id="stopImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" visible="false" />
 					</children>
 					<padding>

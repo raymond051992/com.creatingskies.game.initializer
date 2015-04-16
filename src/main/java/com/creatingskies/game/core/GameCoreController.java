@@ -3,7 +3,6 @@ package com.creatingskies.game.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -12,13 +11,10 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -28,8 +24,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
-import k8055.K8055JavaCall;
 
+import com.creatingskies.game.classes.AbstractInputReader;
+import com.creatingskies.game.classes.AbstractInputReader.InputForce;
 import com.creatingskies.game.classes.PropertiesViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
@@ -45,41 +42,37 @@ public class GameCoreController extends PropertiesViewController {
 	
 	@FXML private Label durationLabel;
 	@FXML private Label countDownLabel;
+	@FXML private Label difficultyLabel;
 	
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
 
-	private ConcurrentHashMap<KeyCode, Integer> leftCodes;
-	private ConcurrentHashMap<KeyCode, Integer> rightCodes;
-	
 	private List<Shape> obstacles;
 	private List<Shape> obstacleEdges;
 	
 	private Rectangle playingArea;
 	private Rectangle endTile;
 	
-	private Double speedFactor = 0.5, weatherSlowFactor = 0.0, obstacleSlowFactor = 0.0;
-	private Double maxPow = 3.0, minPow = 1.0;
-	private Integer leftPow = 0, rightPow = 0;
+	private Double speedFactor = 0.5;
+	private Double weatherSlowFactor = 0.0;
+	private Double obstacleSlowFactor = 0.0;
+	private Double degreesInterval = 3.0;
+	private Double degreesPreferred = 0.0;
+	private Double maxPow = 3.0;
+	private Double minPow = 1.0;
 	
-	private Double rotationInterval = 3.0;
-	
-	private Double preferredDeg = 0.0;
-	private Timeline timeline;
-	
-	private boolean playFromDevice;
-	
-	private StackPane playerStackPane;
-	private ImageView playerImageView;
+	private StackPane player;
 	private Circle playerCircle;
-	private Node playerNode;
 	
 	private Map map;
-	private K8055JavaCall k8055 = new K8055JavaCall();
-	
+	private Timeline gameLoop;
 	private Timeline countDownTimer;
-	private int countDown = 3;
+	
 	private long millisGameDuration;
+	private int countDown = 3;
+	
+	private AbstractInputReader inputReader;
+	private InputForce inputForce;
 	
 	@Override
 	protected String getViewTitle() {
@@ -108,19 +101,19 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	public void init() {
+		inputReader = new KeyboardInputReader();
+		
 		super.init();
-
 		MapDao mapDao = new MapDao();
 		map = mapDao.findMapWithDetails(getGameEvent().getGame().getMap().getIdNo());
-		playFromDevice = false;
 		
 		loadPlayer();
 		initMapTiles();
-		initKeyCodes();
-		initKeyboardListeners();
 		initTimeline();
 		initCountdownTimer();
 		initWarningImages();
+		
+		inputReader.init();
 	}
 	
 	private void initWarningImages(){
@@ -178,9 +171,9 @@ public class GameCoreController extends PropertiesViewController {
 				if(tile.getObstacle() != null){
 					createObstacle(tile);
 				} else if(tile.getStartPoint()){
-					playerNode.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
-					playerNode.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT);
-					pane.getChildren().add(playerNode);
+					player.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
+					player.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT);
+					pane.getChildren().add(player);
 				} else if(tile.getEndPoint()){
 					createEndRectangle(tile);
 				}
@@ -202,16 +195,14 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML
 	private void handleReset(){
 		millisGameDuration = 0;
-		leftPow = 0;
-		rightPow = 0;
-		preferredDeg = 0.0;
-		playerNode.setRotate(preferredDeg);
-		timeline.play();
+		degreesPreferred = 0.0;
+		player.setRotate(degreesPreferred);
+		gameLoop.play();
 	}
 	
 	private void initTimeline() {
 		final float frameDuration = 50;
-		timeline = new Timeline(new KeyFrame(Duration.millis(frameDuration),
+		gameLoop = new Timeline(new KeyFrame(Duration.millis(frameDuration),
 				new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent event) {
@@ -219,70 +210,74 @@ public class GameCoreController extends PropertiesViewController {
 		    	float result = millisGameDuration / 1000.0f;
 		    	durationLabel.setText(String.format("%.1f", result));
 		    	
-	    		if(playFromDevice){
-		    		readFromDevice();
-		    	}
+		    	inputForce = inputReader.readInput();
 				computeMovement();
 		    }
 		}));
-		timeline.setCycleCount(Timeline.INDEFINITE);
+		gameLoop.setCycleCount(Timeline.INDEFINITE);
 	}
 	
 	private void computeMovement() {
-		Double currentDeg = playerNode.getRotate();
-		Double deltaDeg = ((45/(maxPow - minPow)) * (leftPow - rightPow));
+		Double currentDeg = player.getRotate();
+		Double deltaDeg = ((45/(maxPow - minPow)) * (inputForce.left - inputForce.right));
 		
-		preferredDeg = currentDeg + deltaDeg;
+		degreesPreferred = currentDeg + deltaDeg;
 		
-		if(currentDeg.compareTo(preferredDeg) != 0){
-			int multiplier = currentDeg.compareTo(preferredDeg) < 0 ? 1 : -1;
+		if(currentDeg.compareTo(degreesPreferred) != 0){
+			int multiplier = currentDeg.compareTo(degreesPreferred) < 0 ? 1 : -1;
 			
-			Double rotation = Math.abs(deltaDeg) > rotationInterval ?
-					rotationInterval * multiplier : deltaDeg * multiplier;
+			Double rotation = Math.abs(deltaDeg) > degreesInterval ?
+					degreesInterval * multiplier : deltaDeg * multiplier;
 			currentDeg += rotation; 
 		}
-		playerNode.setRotate(currentDeg);
+		player.setRotate(currentDeg);
+
+		checkWarning(playerCircle);
+		checkGameStatus(playerCircle);
 		
-		if(rightPow != 0 && leftPow != 0){
-			checkWarning(playerCircle);
-			
-			double speed = (leftPow + rightPow)
-					* (speedFactor - (weatherSlowFactor + obstacleSlowFactor));
+		if(inputForce.left != 0 && inputForce.right != 0){
+			double speed = (inputForce.left + inputForce.right)
+					* Math.max((speedFactor - (weatherSlowFactor + obstacleSlowFactor)), 0);
 			
 			double cosValue = (speed * Math.cos(Math.toRadians(currentDeg)));
 			double sinValue = (speed * Math.sin(Math.toRadians(currentDeg)));
-			playerNode.setLayoutX(playerNode.getLayoutX() + cosValue);
-			playerNode.setLayoutY(playerNode.getLayoutY() + sinValue);
-			
-			checkGameStatus(playerCircle);
+			player.setLayoutX(player.getLayoutX() + cosValue);
+			player.setLayoutY(player.getLayoutY() + sinValue);
 			
 			if(checkCollision(playerCircle)){
-				playerNode.setLayoutX(playerNode.getLayoutX() - cosValue);
-				playerNode.setLayoutY(playerNode.getLayoutY() - sinValue);
+				player.setLayoutX(player.getLayoutX() - cosValue);
+				player.setLayoutY(player.getLayoutY() - sinValue);
 			}
 		}
 	}
 	
 	private void checkWarning(Shape block){
-		boolean hasCollision = false;
+		Boolean hasCollision = false;
+		Integer totalDifficulty = 0;
 		
-		for (Shape o : obstacleEdges) {
-			Shape intersect = Shape.intersect(block, o);
+		for (Shape edge : obstacleEdges) {
+			Shape intersect = Shape.intersect(block, edge);
 			if (intersect.getBoundsInLocal().getWidth() != -1) {
-				hasCollision = true;		
-				break;
+				hasCollision = true;
+				edge.setFill(Color.DODGERBLUE);
+				totalDifficulty += edge.getUserData() != null ?
+						Integer.valueOf(String.valueOf(edge.getUserData())) : 0;
+			} else {
+				edge.setFill(Color.TRANSPARENT);
 			}
 		}
 		
-		//TODO Multiply factor by difficulty
-		obstacleSlowFactor = hasCollision ? 0.2 : 0.0;
 		warningImageView.setVisible(hasCollision);
+		obstacleSlowFactor = (hasCollision ? 0.05 : 0.0) * totalDifficulty;
+		String s = String.format("%.2f", obstacleSlowFactor);
+		System.out.println(s);
+		difficultyLabel.setText(s);
 	}
 	
 	private void checkGameStatus(Shape block){
 		Shape intersect = Shape.intersect(block, endTile);
 		if (intersect.getBoundsInLocal().getWidth() != -1) {
-			timeline.stop();
+			gameLoop.stop();
 			float result = millisGameDuration / 1000.0f;
 			new AlertDialog(AlertType.INFORMATION, "Finish!",  null,
 					"Duration: " + String.format("%.1f", result)).showAndWait();
@@ -315,57 +310,11 @@ public class GameCoreController extends PropertiesViewController {
 	@Override
 	protected void close() {
 		map = null;
-		timeline = null;
+		gameLoop = null;
 		mapTiles.getChildren().clear();
 		obstacles.clear();
 		obstacleEdges.clear();
 		super.close();
-	}
-
-	public void readFromDevice() {
-		try {
-        	leftPow = 0;
-        	rightPow = 0;
-        	
-        	if(k8055.ReadDigitalChannel(1) == 1) leftPow += 1;
-        	if(k8055.ReadDigitalChannel(2) == 1) leftPow += 2;
-        	
-        	if(k8055.ReadDigitalChannel(4) == 1) rightPow += 1;
-        	if(k8055.ReadDigitalChannel(5) == 1) rightPow += 2;
-        	
-        	System.out.println("L: " + leftPow);
-        	System.out.println("R: " + rightPow);
-        } catch (Exception e){
-        	e.printStackTrace();
-        	k8055.CloseDevice();
-        }
-	}
-	
-	private void initKeyboardListeners() {
-		MainLayout.getRootLayout().setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				if(leftCodes.containsKey(event.getCode())){
-					leftPow = leftCodes.get(event.getCode());
-				}
-				
-				if(rightCodes.containsKey(event.getCode())){
-					rightPow = rightCodes.get(event.getCode());
-				}
-			}
-		});
-		
-		MainLayout.getRootLayout().setOnKeyReleased(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				leftPow = 0;
-				rightPow = 0;
-			}
-		});
-	}
-
-	public void initDevice() {
-		//k8055.OpenDevice(0);
 	}
 	
 	public void createObstacle(Tile tile){
@@ -378,10 +327,12 @@ public class GameCoreController extends PropertiesViewController {
 	public void createObstacleEdge(Tile tile){
 		Circle obstacleEdge = new Circle();
 		obstacleEdge.setRadius(Constant.TILE_WIDTH * tile.getObstacle().getRadius());
+		obstacleEdge.setUserData(tile.getObstacle().getDifficulty());
+		
 		obstacleEdge.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH + (Constant.TILE_WIDTH / 2));
 		obstacleEdge.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT + (Constant.TILE_WIDTH / 2));
-		
-		obstacleEdge.setFill(Color.DODGERBLUE);
+
+		obstacleEdge.setFill(Color.TRANSPARENT);
 		obstacleEdge.setOpacity(0.20);
 		
 		pane.getChildren().add(obstacleEdge);
@@ -403,44 +354,19 @@ public class GameCoreController extends PropertiesViewController {
 		return rect;
 	}
 	
-	private void initKeyCodes() {
-		leftCodes = new ConcurrentHashMap<KeyCode, Integer>();
-		leftCodes.put(KeyCode.DIGIT1, 1);
-		leftCodes.put(KeyCode.DIGIT2, 2);
-		leftCodes.put(KeyCode.DIGIT3, 3);
-		leftCodes.put(KeyCode.DIGIT4, 4);
-		leftCodes.put(KeyCode.DIGIT5, 5);
-		leftCodes.put(KeyCode.DIGIT6, 6);
-		leftCodes.put(KeyCode.DIGIT7, 7);
-		leftCodes.put(KeyCode.DIGIT8, 8);
-		leftCodes.put(KeyCode.DIGIT9, 9);
-		
-		rightCodes = new ConcurrentHashMap<KeyCode, Integer>();
-		rightCodes.put(KeyCode.NUMPAD1, 1);
-		rightCodes.put(KeyCode.NUMPAD2, 2);
-		rightCodes.put(KeyCode.NUMPAD3, 3);
-		rightCodes.put(KeyCode.NUMPAD4, 4);
-		rightCodes.put(KeyCode.NUMPAD5, 5);
-		rightCodes.put(KeyCode.NUMPAD6, 6);
-		rightCodes.put(KeyCode.NUMPAD7, 7);
-		rightCodes.put(KeyCode.NUMPAD8, 8);
-		rightCodes.put(KeyCode.NUMPAD9, 9);
-	}
-	
 	private void loadPlayer(){
 		playerCircle = new Circle((Constant.TILE_WIDTH/2), Color.BLACK);
 		playerCircle.setOpacity(0.2);
 		
-		playerImageView = new ImageView();
-		playerImageView.setFitWidth(Constant.TILE_WIDTH);
-		playerImageView.setFitHeight(Constant.TILE_HEIGHT);
+		ImageView playerImageView = new ImageView();
+		playerImageView.setFitWidth(Constant.TILE_WIDTH * 0.8);
+		playerImageView.setFitHeight(Constant.TILE_HEIGHT * 0.8);
 		playerImageView.setImage(new Image("/images/cyclist.png"));
 		
-		playerStackPane = new StackPane();
-		playerStackPane.setPrefWidth(Constant.TILE_WIDTH);
-		playerStackPane.setPrefHeight(Constant.TILE_HEIGHT);
-		playerStackPane.getChildren().addAll(playerCircle, playerImageView);
-		playerNode = playerStackPane;
+		player = new StackPane();
+		player.setPrefWidth(Constant.TILE_WIDTH);
+		player.setPrefHeight(Constant.TILE_HEIGHT);
+		player.getChildren().addAll(playerCircle, playerImageView);
 	}
 	
 }
