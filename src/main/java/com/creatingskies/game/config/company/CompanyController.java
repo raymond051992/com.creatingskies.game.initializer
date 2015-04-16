@@ -36,6 +36,7 @@ public class CompanyController extends TableViewController{
 	public void init() {
 		super.init();
 		initTable();
+		loadCompanies();
 		addGroupButton.setVisible(false);
 	}
 	
@@ -46,12 +47,14 @@ public class CompanyController extends TableViewController{
 		
 		companyActionTableColumn.setCellFactory(generateCellFactory(Action.EDIT));
 		
-		companyTableView.setItems(FXCollections.observableArrayList(new CompanyDAO().findAllCompanies()));
-		
 		companyTableView.getSelectionModel().selectedItemProperty()
     	.addListener(
     			(observable, oldValue, newValue) -> showDetails(newValue));
 		
+	}
+	
+	private void loadCompanies(){
+		companyTableView.setItems(FXCollections.observableArrayList(new CompanyDAO().findAllCompanies()));
 	}
 	
 	public void addNewGroup(){
@@ -79,6 +82,12 @@ public class CompanyController extends TableViewController{
 	@Override
 	protected String getViewTitle() {
 		return "Companies";
+	}
+	
+	public void handleAdd() {
+		if(new CompanyDialogController().show(new Company())){
+			loadCompanies();
+		}
 	}
 	
 	public void show(){
