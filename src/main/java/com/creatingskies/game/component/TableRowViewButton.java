@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 public class TableRowViewButton extends Button{
 	
 	private static final Image image = 
-			new Image(MainLayout.class.getResourceAsStream("/images/search_ffffff_32.png"),16,16,true,true);
+			new Image(MainLayout.class.getResourceAsStream("/images/eye_000000_32.png"),16,16,true,true);
 	
 	public TableRowViewButton() {
 		super("a",new ImageView(image));
