@@ -1,6 +1,7 @@
 package com.creatingskies.game.config.event;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Date;
@@ -33,7 +34,6 @@ public class GameEventTableViewController extends TableViewController{
 	@FXML private DatePicker filterFromDatePicker;
 	@FXML private DatePicker filterToDatePicker;
 	@FXML private TableView<GameEvent> eventsTable;
-	@FXML private TableColumn<GameEvent, String> groupTableColumn;
 	@FXML private TableColumn<GameEvent, String> companyTableColumn;
 	@FXML private TableColumn<GameEvent, String> gameTableColumn;
 	@FXML private TableColumn<GameEvent, String> dateTableColumn;
@@ -43,15 +43,13 @@ public class GameEventTableViewController extends TableViewController{
 	public void initialize(){
 		super.init();
 		
-		groupTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
-				cellData.getValue().getGroup().getName()));
 		companyTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
-				cellData.getValue().getGroup().getCompany().getName()));
+				cellData.getValue().getCompany().getName()));
 		gameTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
 				cellData.getValue().getGame().getTitle()));
 		dateTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
-				cellData.getValue().getEventDate().toString()));
-		actionTableColumn.setCellFactory(generateCellFactory(Action.DELETE,Action.EDIT,Action.VIEW));
+				new SimpleDateFormat("MM/dd/yyyy").format(cellData.getValue().getEventDate())));
+		actionTableColumn.setCellFactory(generateCellFactory(Action.VIEW,Action.EDIT,Action.DELETE));
 		
 		filterFromDatePicker.setValue(Util.toLocalDate(new Date()));
 		filterToDatePicker.setValue(Util.toLocalDate(new Date()));

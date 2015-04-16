@@ -2,14 +2,13 @@ package com.creatingskies.game.classes;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 
 import com.creatingskies.game.component.TableRowActivateButton;
@@ -65,26 +64,26 @@ public abstract class TableViewController extends ViewController{
 		return actionColumnCellFactory;
 	}
 	
-	private ButtonBar createButtonBar(TableView<? extends IRecord> tableView,
+	private HBox createButtonBar(TableView<? extends IRecord> tableView,
 			TableColumn<? extends IRecord, Object> param,
 			Integer index, Action... actions){
-		ButtonBar buttonBar = new ButtonBar();
-		buttonBar.setButtonMinWidth(BUTTON_MIN_WIDTH);
-		buttonBar.setMinWidth(BUTTON_BAR_MIN_WIDTH_MULTIPLIER * buttonBar.getButtons().size());
-		buttonBar.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-
+		HBox box = new HBox(5);
+		box.setAlignment(Pos.CENTER);
+		
 		for(Action action : actions){
 			if(action.equals(Action.VIEW)){
-				buttonBar.getButtons().add(createViewButton(tableView, param, index));
+				box.getChildren().add(createViewButton(tableView, param, index));
 			} else if(action.equals(Action.EDIT)){
-				buttonBar.getButtons().add(createEditButton(tableView, param, index));
+				box.getChildren().add(createEditButton(tableView, param, index));
 			} else if(action.equals(Action.DELETE)){
-				buttonBar.getButtons().add(createDeleteButton(tableView, param, index));
+				box.getChildren().add(createDeleteButton(tableView, param, index));
 			} else if(action.equals(Action.ACTIVATE)){
-				buttonBar.getButtons().add(createActivateButton(tableView, param, index));
+				box.getChildren().add(createActivateButton(tableView, param, index));
 			}
 		}
-		return buttonBar;
+		
+		box.setMinWidth(BUTTON_BAR_MIN_WIDTH_MULTIPLIER * box.getChildren().size());
+		return box;
 	}
 	
 	private Button createViewButton(TableView<? extends IRecord> tableView,
