@@ -64,6 +64,7 @@ public class MapDesignerController {
 	
 	private boolean startTileSelected;
 	private boolean endTileSelected;
+	private boolean isViewAction;
 	
 	private Game game;
 	private Stage stage;
@@ -71,15 +72,15 @@ public class MapDesignerController {
 	private Action currentAction;
 	
 	public void init(){
+		isViewAction = getCurrentAction() == Action.VIEW;
+		saveButton.setVisible(!isViewAction);
+		cancelButton.setText(isViewAction ? "OK" : "Cancel");
+		
 		initMapTiles();
 		initTileImageSelections();
 		initObstacleSelections();
 		initRequiredTiles();
 		validateRequiredTiles();
-		
-		mapDesignerContainer.setDisable(getCurrentAction() == Action.VIEW);
-		saveButton.setVisible(getCurrentAction() != Action.VIEW);
-		cancelButton.setText(getCurrentAction() == Action.VIEW ? "OK" : "Cancel");
 	}
 	
 	private void initMapTiles(){
@@ -104,38 +105,46 @@ public class MapDesignerController {
 			Group group = new Group(backImage, frontImage);
 			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
 			
-			backImage.setOnMousePressed(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
-					handlePaintTile(tile, frontImage, backImage);
-				}
-			});
-			
-			backImage.setOnMouseEntered(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
-					if(event.isAltDown()){
-						handlePaintTile(tile, frontImage, backImage);	
-					}
-				}
-			});
-			
-			frontImage.setOnMousePressed(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
-					handlePaintTile(tile, frontImage, backImage);
-				}
-			});
-			
-			frontImage.setOnMouseEntered(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
-					if(event.isAltDown()){
-						handlePaintTile(tile, frontImage, backImage);	
-					}
-				}
-			});
+			if(!isViewAction){
+				addHandler(tile, backImage, frontImage);
+			}
 		}
+	}
+
+	private void addHandler(Tile tile, ImageView backImage, ImageView frontImage) {
+		backImage.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if(event.isControlDown()){
+					handleRemoveFrontImage(tile, frontImage, backImage);
+				} else {
+					handlePaintTile(tile, frontImage, backImage);
+				}
+			}
+		});
+		
+		backImage.setOnMouseEntered(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if(event.isControlDown()){
+					handleRemoveFrontImage(tile, frontImage, backImage);
+				} else if(event.isAltDown()){
+					handlePaintTile(tile, frontImage, backImage);
+				}
+			}
+		});
+		
+		frontImage.setOnMousePressed(backImage.getOnMousePressed());
+		frontImage.setOnMouseEntered(backImage.getOnMouseEntered());
+	}
+	
+	private void handleRemoveFrontImage(Tile tile, ImageView frontImage, ImageView backImage){
+		tile.setObstacle(null);
+		tile.setFrontImage(null);
+		tile.setStartPoint(false);
+		tile.setEndPoint(false);
+		frontImage.setImage(null);
+		validateRequiredTiles();
 	}
 	
 	private void handlePaintTile(Tile tile, ImageView frontImage, ImageView backImage) {
@@ -197,12 +206,16 @@ public class MapDesignerController {
 		imageView.setFitWidth(Constant.TILE_WIDTH);
 		
 		Pane pane = new Pane(imageView);
-		pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				uploadTileImage();
-			}
-		});
+		
+		if(!isViewAction){
+			pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					uploadTileImage();
+				}
+			});
+		}
+		
 		tileImageSelections.getChildren().add(pane);
 	}
 	
@@ -232,17 +245,19 @@ public class MapDesignerController {
 		startTileImageView.setFitHeight(Constant.TILE_HEIGHT);
 		startTileImageView.setFitWidth(Constant.TILE_WIDTH);
 		
-		startTileImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				selectedTileImageView.setImage(startTileImageView.getImage());
-				selectedTileImage = startTileImage;
-				selectedObstacle = null;
-				
-				startTileSelected = true;
-				endTileSelected = false;
-			}
-		});
+		if(!isViewAction){
+			startTileImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					selectedTileImageView.setImage(startTileImageView.getImage());
+					selectedTileImage = startTileImage;
+					selectedObstacle = null;
+					
+					startTileSelected = true;
+					endTileSelected = false;
+				}
+			});
+		}
 		
 		requiredTileSelections.getChildren().add(startTileImageView);
 	}
@@ -255,17 +270,19 @@ public class MapDesignerController {
 		endTileImageView.setFitHeight(Constant.TILE_HEIGHT);
 		endTileImageView.setFitWidth(Constant.TILE_WIDTH);
 		
-		endTileImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				selectedTileImageView.setImage(endTileImageView.getImage());
-				selectedTileImage = endTileImage;
-				selectedObstacle = null;
-				
-				startTileSelected = false;
-				endTileSelected = true;
-			}
-		});
+		if(!isViewAction){
+			endTileImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					selectedTileImageView.setImage(endTileImageView.getImage());
+					selectedTileImage = endTileImage;
+					selectedObstacle = null;
+					
+					startTileSelected = false;
+					endTileSelected = true;
+				}
+			});
+		}
 		
 		requiredTileSelections.getChildren().add(endTileImageView);
 	}
@@ -275,17 +292,19 @@ public class MapDesignerController {
 		imageView.setFitHeight(Constant.TILE_HEIGHT);
 		imageView.setFitWidth(Constant.TILE_WIDTH);
 		
-		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				selectedTileImageView.setImage(imageView.getImage());
-				selectedTileImage = null;
-				selectedObstacle = obstacle;
-				
-				startTileSelected = false;
-				endTileSelected = false;
-			}
-		});
+		if(!isViewAction){
+			imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					selectedTileImageView.setImage(imageView.getImage());
+					selectedTileImage = null;
+					selectedObstacle = obstacle;
+					
+					startTileSelected = false;
+					endTileSelected = false;
+				}
+			});
+		}
 		
 		obstacleImageSelections.getChildren().add(imageView);
 	}
@@ -295,17 +314,19 @@ public class MapDesignerController {
 		imageView.setFitHeight(Constant.TILE_HEIGHT);
 		imageView.setFitWidth(Constant.TILE_WIDTH);
 		
-		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				selectedTileImageView.setImage(imageView.getImage());
-				selectedTileImage = tileImage;
-				selectedObstacle = null;
-				
-				startTileSelected = false;
-				endTileSelected = false;
-			}
-		});
+		if(!isViewAction){
+			imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent event) {
+					selectedTileImageView.setImage(imageView.getImage());
+					selectedTileImage = tileImage;
+					selectedObstacle = null;
+					
+					startTileSelected = false;
+					endTileSelected = false;
+				}
+			});
+		}
 		
 		tileImageSelections.getChildren().add(imageView);
 	}
@@ -371,6 +392,7 @@ public class MapDesignerController {
 	
 	@FXML
 	private void cancelButtonClicked(){
+		getMap().setTiles(null);
 		stage.close();
 	}
 	

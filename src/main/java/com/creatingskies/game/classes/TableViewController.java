@@ -20,7 +20,6 @@ import com.creatingskies.game.model.IRecord;
 public abstract class TableViewController extends ViewController{
 	
 	private final int BUTTON_BAR_MIN_WIDTH_MULTIPLIER = 30;
-	private final int BUTTON_MIN_WIDTH = 20;
 	
 	private Action currentAction;
 	

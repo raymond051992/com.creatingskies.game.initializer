@@ -46,7 +46,7 @@ public class GameCoreController extends PropertiesViewController {
 	
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
-
+	
 	private List<Shape> obstacles;
 	private List<Shape> obstacleEdges;
 	
@@ -269,9 +269,7 @@ public class GameCoreController extends PropertiesViewController {
 		
 		warningImageView.setVisible(hasCollision);
 		obstacleSlowFactor = (hasCollision ? 0.05 : 0.0) * totalDifficulty;
-		String s = String.format("%.2f", obstacleSlowFactor);
-		System.out.println(s);
-		difficultyLabel.setText(s);
+		difficultyLabel.setText(String.format("%.2f", obstacleSlowFactor));
 	}
 	
 	private void checkGameStatus(Shape block){

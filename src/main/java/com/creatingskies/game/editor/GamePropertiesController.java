@@ -263,25 +263,12 @@ public class GamePropertiesController extends PropertiesViewController{
 	}
 	
 	private Boolean isValidMap(){
-		String errorMessage = "";
-		
-		if(getMap().getTiles() == null){
-			errorMessage += "Please design your map.\n";
-		} else {
-			if(getMap().getStartPoint() == null){
-				errorMessage += "Please assign an start point to the map.\n";
-			}
-			
-			if(getMap().getEndPoint() == null){
-				errorMessage += "Please assign an end point to the map.\n";
-			}
-		}
-		
-		if(!errorMessage.isEmpty()){
-			new AlertDialog(AlertType.ERROR, "Oops", "", errorMessage).showAndWait();
+		if(getMap().getTiles() == null || getMap().getStartPoint() == null || getMap().getEndPoint() == null){
+			new AlertDialog(AlertType.ERROR, "Oops", "", "Please design your map.").showAndWait();
+			return false;
 		}
 
-		return errorMessage.isEmpty();
+		return true;
 	}
 	
 	private Map getMap(){

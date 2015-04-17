@@ -77,8 +77,8 @@ public class UsersController extends TableViewController {
 		typeChoices.getSelectionModel().selectFirst();
 		statusChoices.getSelectionModel().selectFirst();
 		
-		actionColumn.setCellFactory(generateCellFactory(Action.ACTIVATE,
-				Action.EDIT, Action.VIEW));
+		actionColumn.setCellFactory(generateCellFactory(Action.VIEW,
+				Action.EDIT, Action.ACTIVATE));
 		resetTableView();
 	}
 	
@@ -132,7 +132,6 @@ public class UsersController extends TableViewController {
 	
 	@FXML
 	private void handleFilter(){
-		//TODO Filter by all types/status
 		resetTableView(typeChoices.getValue(), statusChoices.getValue());
 	}
 	

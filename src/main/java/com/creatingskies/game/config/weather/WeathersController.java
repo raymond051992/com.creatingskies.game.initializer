@@ -61,7 +61,7 @@ public class WeathersController extends TableViewController {
 				cellData.getValue().getDifficulty() != null ? cellData
 						.getValue().getDifficulty().toString() : null));
 		
-		actionColumn.setCellFactory(generateCellFactory(Action.DELETE, Action.EDIT));
+		actionColumn.setCellFactory(generateCellFactory(Action.EDIT, Action.DELETE));
 		resetTableView();
 	}
 	

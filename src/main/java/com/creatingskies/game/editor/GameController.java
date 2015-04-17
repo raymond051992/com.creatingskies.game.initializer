@@ -38,7 +38,7 @@ public class GameController extends TableViewController{
 		descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
 		typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType().toString()));
 		
-		actionColumn.setCellFactory(generateCellFactory(Action.DELETE, Action.EDIT, Action.VIEW));
+		actionColumn.setCellFactory(generateCellFactory(Action.VIEW, Action.EDIT, Action.DELETE));
 		resetTableView();
 	}
 	
