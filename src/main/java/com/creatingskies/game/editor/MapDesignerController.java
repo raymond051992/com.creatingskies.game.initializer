@@ -161,12 +161,11 @@ public class MapDesignerController {
 				frontImage.setImage(Util.byteArrayToImage(selectedTileImage.getImage()));
 				selectedTileImageView.setImage(null);
 				selectedTileImage = null;
+				tile.setStartPoint(startTileSelected);
+				tile.setEndPoint(endTileSelected);
 			} else {
 				backImage.setImage(Util.byteArrayToImage(selectedTileImage.getImage()));
 			}
-			
-			tile.setStartPoint(startTileSelected);
-			tile.setEndPoint(endTileSelected);
 			
 			validateRequiredTiles();
 		}

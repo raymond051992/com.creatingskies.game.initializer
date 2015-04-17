@@ -32,26 +32,26 @@
                      <children>
                         <HBox alignment="BOTTOM_LEFT" prefHeight="27.0" prefWidth="209.0">
                            <children>
-                              <Label text="Design" />
+                              <Label text="Design" textFill="#8d8d8d" />
                            </children>
                         </HBox>
                         <FlowPane fx:id="tileImageSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
                            <VBox.margin>
-                              <Insets bottom="10.0" />
+                              <Insets bottom="5.0" top="5.0" />
                            </VBox.margin>
                         </FlowPane>
-                        <Label text="Obstacle" />
+                        <Label text="Obstacle" textFill="#8d8d8d" />
                         <FlowPane fx:id="obstacleImageSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
                            <VBox.margin>
-                              <Insets bottom="10.0" />
+                              <Insets bottom="5.0" top="5.0" />
                            </VBox.margin>
                         </FlowPane>
                         <VBox fx:id="requiredBox">
                            <children>
-                              <Label text="Required" />
+                              <Label text="Required" textFill="#8d8d8d" />
                               <FlowPane fx:id="requiredTileSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
                                  <VBox.margin>
-                                    <Insets bottom="10.0" />
+                                    <Insets bottom="5.0" top="5.0" />
                                  </VBox.margin>
                               </FlowPane>
                            </children>

@@ -42,6 +42,7 @@ public class GameCoreController extends PropertiesViewController {
 	
 	@FXML private Label durationLabel;
 	@FXML private Label countDownLabel;
+	@FXML private Label countDownValue;
 	@FXML private Label difficultyLabel;
 	
 	@FXML private ImageView warningImageView;
@@ -55,7 +56,8 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private Double speedFactor = 0.5;
 	private Double weatherSlowFactor = 0.0;
-	private Double obstacleSlowFactor = 0.0;
+	private Double obstacleSlowFactor = 0.025;
+	private Double totalObstacleSlowFactor = 0.0;
 	private Double degreesInterval = 3.0;
 	private Double degreesPreferred = 0.0;
 	private Double maxPow = 3.0;
@@ -64,7 +66,6 @@ public class GameCoreController extends PropertiesViewController {
 	private StackPane player;
 	private Circle playerCircle;
 	
-	private Map map;
 	private Timeline gameLoop;
 	private Timeline countDownTimer;
 	
@@ -105,34 +106,52 @@ public class GameCoreController extends PropertiesViewController {
 		
 		super.init();
 		MapDao mapDao = new MapDao();
-		map = mapDao.findMapWithDetails(getGameEvent().getGame().getMap().getIdNo());
+		Map map = mapDao.findMapWithDetails(getGameEvent().getGame().getMap().getIdNo());
 		
 		loadPlayer();
-		initMapTiles();
 		initTimeline();
 		initCountdownTimer();
-		initWarningImages();
+		
+		initMap(map);
+		initWarningImages(map.getWidth(), map.getHeight());
+		
 		
 		inputReader.init();
 	}
 	
-	private void initWarningImages(){
+	private void initWarningImages(Integer width, Integer height){
+		double centerX = ((width / 2) * Constant.TILE_WIDTH) - (warningImageView.getFitWidth() / 2);
+		double centerY = ((height / 2) * Constant.TILE_HEIGHT) - (warningImageView.getFitHeight() / 2);
+		
+		warningImageView.setOpacity(0.5);
+		stopImageView.setOpacity(0.5);
+		
 		warningImageView.setImage(new Image("/images/warning.png"));
 		stopImageView.setImage(new Image("/images/stop.png"));
+		
+		warningImageView.setLayoutX(centerX);
+		warningImageView.setLayoutY(centerY);
+		warningImageView.toFront();
+		
+		stopImageView.setLayoutX(centerX);
+		stopImageView.setLayoutY(centerY);
+		stopImageView.toFront();
 	}
 	
 	private void initCountdownTimer(){
+		renderCountdown(false);
 		countDownTimer = new Timeline();
 		countDownTimer.setCycleCount(Timeline.INDEFINITE);
 		countDownTimer.getKeyFrames().add(new KeyFrame(Duration.millis(800),
 			new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					countDownLabel.setText(String.valueOf(countDown));
+					renderCountdown(true);
+					countDownValue.setText(String.valueOf(countDown));
 					countDown--;
 					
 					if(countDown < 0){
-						countDownLabel.setVisible(false);
+						renderCountdown(false);
 						countDownTimer.stop();
 						handleReset();
 					}
@@ -141,12 +160,17 @@ public class GameCoreController extends PropertiesViewController {
 		));
 	}
 	
+	private void renderCountdown(boolean visible){
+		countDownValue.setVisible(visible);
+		countDownLabel.setVisible(visible);
+	}
+	
 	@FXML
 	private void handleGameStart(){
         countDownTimer.play();
 	}
 	
-	private void initMapTiles(){
+	private void initMap(Map map){
 		obstacleEdges = new ArrayList<Shape>();
 		obstacles = new ArrayList<Shape>();
 		mapTiles.getChildren().clear();
@@ -181,10 +205,10 @@ public class GameCoreController extends PropertiesViewController {
 			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
 		}
 		
-		initPlayingArea();
+		initPlayingArea(map);
 	}
 	
-	private void initPlayingArea(){
+	private void initPlayingArea(Map map){
 		playingArea = new Rectangle();
 		playingArea.setWidth(Constant.TILE_WIDTH * map.getWidth());
 		playingArea.setHeight(Constant.TILE_HEIGHT * map.getHeight());
@@ -232,12 +256,11 @@ public class GameCoreController extends PropertiesViewController {
 		}
 		player.setRotate(currentDeg);
 
-		checkWarning(playerCircle);
-		checkGameStatus(playerCircle);
+		boolean encounteredBlockage = false;
 		
 		if(inputForce.left != 0 && inputForce.right != 0){
 			double speed = (inputForce.left + inputForce.right)
-					* Math.max((speedFactor - (weatherSlowFactor + obstacleSlowFactor)), 0);
+					* Math.max((speedFactor - (weatherSlowFactor + totalObstacleSlowFactor)), 0.1);
 			
 			double cosValue = (speed * Math.cos(Math.toRadians(currentDeg)));
 			double sinValue = (speed * Math.sin(Math.toRadians(currentDeg)));
@@ -245,13 +268,18 @@ public class GameCoreController extends PropertiesViewController {
 			player.setLayoutY(player.getLayoutY() + sinValue);
 			
 			if(checkCollision(playerCircle)){
+				encounteredBlockage = true;
 				player.setLayoutX(player.getLayoutX() - cosValue);
 				player.setLayoutY(player.getLayoutY() - sinValue);
 			}
 		}
+		
+		stopImageView.setVisible(encounteredBlockage);
+		checkWarning(playerCircle, encounteredBlockage);
+		checkGameStatus(playerCircle);
 	}
 	
-	private void checkWarning(Shape block){
+	private void checkWarning(Shape block, boolean encounteredBlockage){
 		Boolean hasCollision = false;
 		Integer totalDifficulty = 0;
 		
@@ -267,9 +295,9 @@ public class GameCoreController extends PropertiesViewController {
 			}
 		}
 		
-		warningImageView.setVisible(hasCollision);
-		obstacleSlowFactor = (hasCollision ? 0.05 : 0.0) * totalDifficulty;
-		difficultyLabel.setText(String.format("%.2f", obstacleSlowFactor));
+		warningImageView.setVisible(hasCollision && !encounteredBlockage);
+		totalObstacleSlowFactor = (hasCollision ? obstacleSlowFactor : 0.0) * totalDifficulty;
+		difficultyLabel.setText(String.format("%.2f", totalObstacleSlowFactor));
 	}
 	
 	private void checkGameStatus(Shape block){
@@ -301,13 +329,11 @@ public class GameCoreController extends PropertiesViewController {
 			}
 		}
 		
-		stopImageView.setVisible(hasCollision);
 		return hasCollision;
 	}
 	
 	@Override
 	protected void close() {
-		map = null;
 		gameLoop = null;
 		mapTiles.getChildren().clear();
 		obstacles.clear();
