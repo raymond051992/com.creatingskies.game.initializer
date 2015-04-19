@@ -31,6 +31,7 @@ import com.creatingskies.game.classes.PropertiesViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.config.event.GameEventTableViewController;
+import com.creatingskies.game.core.resources.GameResourcesManager;
 import com.creatingskies.game.model.Constant;
 import com.creatingskies.game.model.event.GameEvent;
 import com.creatingskies.game.util.Util;
@@ -75,6 +76,8 @@ public class GameCoreController extends PropertiesViewController {
 	private AbstractInputReader inputReader;
 	private InputForce inputForce;
 	
+	private GameResourcesManager gameResourceManager;
+	
 	@Override
 	protected String getViewTitle() {
 		return "Game";
@@ -117,6 +120,7 @@ public class GameCoreController extends PropertiesViewController {
 		
 		
 		inputReader.init();
+		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame());
 	}
 	
 	private void initWarningImages(Integer width, Integer height){
@@ -222,6 +226,7 @@ public class GameCoreController extends PropertiesViewController {
 		degreesPreferred = 0.0;
 		player.setRotate(degreesPreferred);
 		gameLoop.play();
+		gameResourceManager.start();
 	}
 	
 	private void initTimeline() {
@@ -304,6 +309,7 @@ public class GameCoreController extends PropertiesViewController {
 		Shape intersect = Shape.intersect(block, endTile);
 		if (intersect.getBoundsInLocal().getWidth() != -1) {
 			gameLoop.stop();
+			gameResourceManager.stop();
 			float result = millisGameDuration / 1000.0f;
 			new AlertDialog(AlertType.INFORMATION, "Finish!",  null,
 					"Duration: " + String.format("%.1f", result)).showAndWait();
@@ -338,6 +344,7 @@ public class GameCoreController extends PropertiesViewController {
 		mapTiles.getChildren().clear();
 		obstacles.clear();
 		obstacleEdges.clear();
+		gameResourceManager.stop();
 		super.close();
 	}
 	

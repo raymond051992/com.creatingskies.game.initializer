@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.core.resources.GameResourcesManager;
 import com.creatingskies.game.login.LoginController;
 import com.creatingskies.game.model.HibernateSessionManager;
 
@@ -32,9 +33,11 @@ public class Main extends Application{
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		GameResourcesManager.removeTmpFiles();
 		MainLayout.setPrimaryStage(primaryStage);
 		MainLayout.getPrimaryStage().setTitle("Game");
         initMainLayout();
+		
         
         new LoginController().show();
 	}
