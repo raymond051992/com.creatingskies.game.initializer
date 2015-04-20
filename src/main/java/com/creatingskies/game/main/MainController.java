@@ -19,6 +19,7 @@ import com.creatingskies.game.classes.ViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.config.company.CompanyController;
 import com.creatingskies.game.config.event.GameEventTableViewController;
+import com.creatingskies.game.config.icon.IconEditorController;
 import com.creatingskies.game.config.obstacle.ObstaclesController;
 import com.creatingskies.game.config.user.UsersController;
 import com.creatingskies.game.config.weather.WeathersController;
@@ -56,10 +57,11 @@ public class MainController extends ViewController{
 				createLauncher(1, "Obstacles", "/images/rec_obstacle.png", this::goToObstaclesPage);
 				createLauncher(2, "Weathers", "/images/rec_weather.png", this::goToWeathersPage);
 				createLauncher(3, "Games", "/images/rec_game.png", this::goToGamesPage);
+				createLauncher(4, "Icon Editor", "/images/rec_game.png", this::goToIconEditorPage);
 			}
-			createLauncher(4, "Companies", "/images/rec_company.png", this::goToCompaniesPage);
-			createLauncher(5, "Events", "/images/rec_events.png", this::goToEventsPage);
-			createLauncher(6, "Statistics", "/images/rec_statistics.png", this::goToStatisticsPage);
+			createLauncher(5, "Companies", "/images/rec_company.png", this::goToCompaniesPage);
+			createLauncher(6, "Events", "/images/rec_events.png", this::goToEventsPage);
+			createLauncher(7, "Statistics", "/images/rec_statistics.png", this::goToStatisticsPage);
 		}
 		
 	}
@@ -111,6 +113,10 @@ public class MainController extends ViewController{
 	
 	private void goToStatisticsPage(MouseEvent event){
 		new StatisticsController().show();
+	}
+	
+	private void goToIconEditorPage(MouseEvent event){
+		new IconEditorController().show();
 	}
 	
 }
