@@ -41,28 +41,30 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML private Pane pane;
 	@FXML private GridPane mapTiles;
 	
-	@FXML private Label durationLabel;
 	@FXML private Label countDownLabel;
 	@FXML private Label countDownValue;
-	@FXML private Label difficultyLabel;
+	
+	@FXML private Label durationLabel;
+	@FXML private Label obstacleSlowLabel;
+	@FXML private Label tileSlowLabel;
 	
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
 	
 	private List<Shape> obstacles;
 	private List<Shape> obstacleEdges;
+	private List<Shape> tileShapes;
 	
 	private Rectangle playingArea;
 	private Rectangle endTile;
 	
-	private Double speedFactor = 0.5;
 	private Double weatherSlowFactor = 0.0;
-	private Double obstacleSlowFactor = 0.025;
-	private Double totalObstacleSlowFactor = 0.0;
+	private Double obstacleSlowFactor = 0.0;
+	private Double tileSlowFactor = 0.0;
+	
 	private Double degreesInterval = 3.0;
 	private Double degreesPreferred = 0.0;
-	private Double maxPow = 3.0;
-	private Double minPow = 1.0;
+	private Double maxMovementSpeed = 7.0;
 	
 	private StackPane player;
 	private Circle playerCircle;
@@ -105,7 +107,7 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	public void init() {
-		inputReader = new KeyboardInputReader();
+		inputReader = new K8055AnalogInputReader();
 		
 		super.init();
 		MapDao mapDao = new MapDao();
@@ -177,6 +179,7 @@ public class GameCoreController extends PropertiesViewController {
 	private void initMap(Map map){
 		obstacleEdges = new ArrayList<Shape>();
 		obstacles = new ArrayList<Shape>();
+		tileShapes = new ArrayList<Shape>();
 		mapTiles.getChildren().clear();
 		
 		for(Tile tile : map.getTiles()){
@@ -205,6 +208,8 @@ public class GameCoreController extends PropertiesViewController {
 				} else if(tile.getEndPoint()){
 					createEndRectangle(tile);
 				}
+				
+				createTileShapes(tile, map.getDefaultTileImage().getDifficulty());
 			}
 			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
 		}
@@ -248,7 +253,7 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private void computeMovement() {
 		Double currentDeg = player.getRotate();
-		Double deltaDeg = ((45/(maxPow - minPow)) * (inputForce.left - inputForce.right));
+		Double deltaDeg = ((45 / maxMovementSpeed) * (inputForce.left - inputForce.right));
 		
 		degreesPreferred = currentDeg + deltaDeg;
 		
@@ -261,11 +266,16 @@ public class GameCoreController extends PropertiesViewController {
 		}
 		player.setRotate(currentDeg);
 
+		checkWarning(playerCircle);
+		checkTileProperty(playerCircle);
+		checkGameStatus(playerCircle);
+		
 		boolean encounteredBlockage = false;
 		
 		if(inputForce.left != 0 && inputForce.right != 0){
-			double speed = (inputForce.left + inputForce.right)
-					* Math.max((speedFactor - (weatherSlowFactor + totalObstacleSlowFactor)), 0.1);
+			double totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
+			double speed = Math.max((((inputForce.left + inputForce.right)
+					/ (maxMovementSpeed * 2)) * maxMovementSpeed) - totalSlowFactor, 0.1);
 			
 			double cosValue = (speed * Math.cos(Math.toRadians(currentDeg)));
 			double sinValue = (speed * Math.sin(Math.toRadians(currentDeg)));
@@ -279,30 +289,42 @@ public class GameCoreController extends PropertiesViewController {
 			}
 		}
 		
+		warningImageView.setVisible(warningImageView.isVisible() && !encounteredBlockage);
 		stopImageView.setVisible(encounteredBlockage);
-		checkWarning(playerCircle, encounteredBlockage);
-		checkGameStatus(playerCircle);
 	}
 	
-	private void checkWarning(Shape block, boolean encounteredBlockage){
+	private void checkTileProperty(Shape block){
+		tileSlowFactor = 0.0;
+		
+		for (Shape tileShape : tileShapes) {
+			Shape intersect = Shape.intersect(block, tileShape);
+			if (intersect.getBoundsInLocal().getWidth() != -1) {
+				tileSlowFactor = (double) Math.max(tileShape.getUserData() != null ?
+						Integer.valueOf(String.valueOf(tileShape.getUserData())) : 0, tileSlowFactor);
+			}
+		}
+		
+		tileSlowLabel.setText(String.format("%.2f", tileSlowFactor));
+	}
+	
+	private void checkWarning(Shape block){
 		Boolean hasCollision = false;
-		Integer totalDifficulty = 0;
+		obstacleSlowFactor = 0.0;
 		
 		for (Shape edge : obstacleEdges) {
 			Shape intersect = Shape.intersect(block, edge);
 			if (intersect.getBoundsInLocal().getWidth() != -1) {
 				hasCollision = true;
 				edge.setFill(Color.DODGERBLUE);
-				totalDifficulty += edge.getUserData() != null ?
-						Integer.valueOf(String.valueOf(edge.getUserData())) : 0;
+				obstacleSlowFactor = (double) Math.max(edge.getUserData() != null ?
+						Integer.valueOf(String.valueOf(edge.getUserData())) : 0, obstacleSlowFactor);
 			} else {
 				edge.setFill(Color.TRANSPARENT);
 			}
 		}
 		
-		warningImageView.setVisible(hasCollision && !encounteredBlockage);
-		totalObstacleSlowFactor = (hasCollision ? obstacleSlowFactor : 0.0) * totalDifficulty;
-		difficultyLabel.setText(String.format("%.2f", totalObstacleSlowFactor));
+		warningImageView.setVisible(hasCollision);
+		obstacleSlowLabel.setText(String.format("%.2f", obstacleSlowFactor));
 	}
 	
 	private void checkGameStatus(Shape block){
@@ -346,6 +368,14 @@ public class GameCoreController extends PropertiesViewController {
 		obstacleEdges.clear();
 		gameResourceManager.stop();
 		super.close();
+	}
+	
+	public void createTileShapes(Tile tile, Integer defaultDifficulty){
+		Rectangle tileShape = createDefaultRectangle(tile);
+		tileShape.setUserData(tile.getBackImage() != null ?
+			tile.getBackImage().getDifficulty() : defaultDifficulty);
+		pane.getChildren().add(tileShape);
+		tileShapes.add(tileShape);
 	}
 	
 	public void createObstacle(Tile tile){

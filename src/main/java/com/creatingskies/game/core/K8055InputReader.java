@@ -11,6 +11,7 @@ public class K8055InputReader extends AbstractInputReader {
 	
 	@Override
 	public void init() {
+		inputForce = new InputForce();
 		k8055 = new K8055JavaCall();
 		k8055.OpenDevice(0);
 	}
