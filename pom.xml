@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.creatingskies.game</groupId>
 	<artifactId>game-main</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>com.creatingskies.game</groupId>
 			<artifactId>game-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
