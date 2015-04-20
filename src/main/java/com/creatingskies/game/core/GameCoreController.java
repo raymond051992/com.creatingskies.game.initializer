@@ -271,10 +271,12 @@ public class GameCoreController extends PropertiesViewController {
 		checkGameStatus(playerCircle);
 		
 		boolean encounteredBlockage = false;
+		double totalSlowFactor = 0;
+		double speed = 0;
 		
 		if(inputForce.left != 0 && inputForce.right != 0){
-			double totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
-			double speed = Math.max((((inputForce.left + inputForce.right)
+			totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
+			speed = Math.max((((inputForce.left + inputForce.right)
 					/ (maxMovementSpeed * 2)) * maxMovementSpeed) - totalSlowFactor, 0.1);
 			
 			double cosValue = (speed * Math.cos(Math.toRadians(currentDeg)));
@@ -289,6 +291,7 @@ public class GameCoreController extends PropertiesViewController {
 			}
 		}
 		
+		inputReader.display(speed, totalSlowFactor, currentDeg);
 		warningImageView.setVisible(warningImageView.isVisible() && !encounteredBlockage);
 		stopImageView.setVisible(encounteredBlockage);
 	}

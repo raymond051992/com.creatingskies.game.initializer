@@ -77,4 +77,7 @@ public class KeyboardInputReader extends AbstractInputReader {
 		});
 	}
 
+	@Override
+	public void display(Double speed, Double slowFactor, Double degree) {}
+
 }

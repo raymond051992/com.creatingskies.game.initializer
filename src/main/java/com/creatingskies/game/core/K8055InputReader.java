@@ -41,4 +41,7 @@ public class K8055InputReader extends AbstractInputReader {
 		return inputForce;
 	}
 
+	@Override
+	public void display(Double speed, Double slowFactor, Double degree) {}
+
 }
