@@ -90,6 +90,13 @@ public class CompanyController extends TableViewController{
 		}
 	}
 	
+	@Override
+	protected void editRecord(IRecord record) {
+		if(new CompanyDialogController().show(selectedCompany)){
+			loadCompanies();
+		}
+	}
+	
 	public void show(){
 		try {
             FXMLLoader loader = new FXMLLoader();
