@@ -3,14 +3,17 @@ package com.creatingskies.game.config.event;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
@@ -36,6 +39,10 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	@FXML private ComboBox<Company> companyComboBox;
 	@FXML private ComboBox<Game> gameComboBox;
 	@FXML private DatePicker eventDatePicker;
+	@FXML private ChoiceBox<Integer> hourChoiceBox;
+	@FXML private ChoiceBox<Integer> minuteChoiceBox;
+	@FXML private ChoiceBox<String> periodChoiceBox;
+	
 	@FXML private Button saveButton;
 	@FXML private Button cancelButton;
 	@FXML private Button backToListButton;
@@ -86,10 +93,20 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
             }
         });
 		
+		hourChoiceBox.setItems(FXCollections.observableArrayList(Util.getListOfHours()));
+		minuteChoiceBox.setItems(FXCollections.observableArrayList(Util.getListMinutes()));
+		
+		periodChoiceBox.getItems().clear();
+		periodChoiceBox.getItems().addAll(Arrays.asList("AM","PM"));
+		
 		companyComboBox.getSelectionModel().select(getGameEvent().getCompany());
 		gameComboBox.getSelectionModel().select(getGameEvent().getGame());
 		
 		eventDatePicker.setValue(Util.toLocalDate(getGameEvent().getEventDate()));
+		
+		hourChoiceBox.getSelectionModel().select(Util.getHourFromDate(getGameEvent().getEventDate()));
+		minuteChoiceBox.getSelectionModel().select(Util.getMinuteFromDate(getGameEvent().getEventDate()));
+		periodChoiceBox.getSelectionModel().select(Util.getTimePeriodFromDate(getGameEvent().getEventDate()));
 		
 		disableFields();
 	}
@@ -100,6 +117,9 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 		companyComboBox.setDisable(isViewAction);
 		gameComboBox.setDisable(isViewAction);
 		eventDatePicker.setDisable(isViewAction);
+		hourChoiceBox.setDisable(isViewAction);
+		minuteChoiceBox.setDisable(isViewAction);
+		periodChoiceBox.setDisable(isViewAction);
 		
 		saveButton.setVisible(!isViewAction);
 		cancelButton.setVisible(!isViewAction);
@@ -148,6 +168,14 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 			new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Date is required.").showAndWait();
 			return false;
 		}
+		if(hourChoiceBox.getSelectionModel().getSelectedItem() == null){
+			new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Event hour is required.").showAndWait();
+			return false;
+		}
+		if(minuteChoiceBox.getSelectionModel().getSelectedItem() == null){
+			new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Event minute is required.").showAndWait();
+			return false;
+		}
 		GameEvent event = new GameEventDao().findEventByDate(getEventDate());
 		if(event != null){
 			new AlertDialog(AlertType.ERROR, "Ooops", null, "Event time is not available.").showAndWait();
@@ -160,7 +188,14 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	private Date getEventDate(){
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(Date.from(Instant.from(eventDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()))));
-		
+		cal.set(Calendar.HOUR, hourChoiceBox.getSelectionModel().getSelectedItem());
+		cal.set(Calendar.MINUTE, minuteChoiceBox.getSelectionModel().getSelectedItem());
+		if(periodChoiceBox.getSelectionModel().getSelectedItem().equals("AM")){
+			cal.set(Calendar.AM_PM, Calendar.AM);
+		}else{
+			cal.set(Calendar.AM_PM, Calendar.PM);
+		}
+		cal.set(Calendar.SECOND, 0);
 		return cal.getTime();
 	}
 	

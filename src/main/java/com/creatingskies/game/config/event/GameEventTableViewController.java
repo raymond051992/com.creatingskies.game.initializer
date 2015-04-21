@@ -48,7 +48,7 @@ public class GameEventTableViewController extends TableViewController{
 		gameTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
 				cellData.getValue().getGame().getTitle()));
 		dateTableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
-				new SimpleDateFormat("MM/dd/yyyy").format(cellData.getValue().getEventDate())));
+				new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(cellData.getValue().getEventDate())));
 		actionTableColumn.setCellFactory(generateCellFactory(Action.VIEW,Action.EDIT,Action.DELETE));
 		
 		filterFromDatePicker.setValue(Util.toLocalDate(new Date()));
@@ -76,7 +76,9 @@ public class GameEventTableViewController extends TableViewController{
 	@FXML
 	private void addRecord(){
 		close();
-		new GameEventPropertiesViewController().show(Action.ADD, new GameEvent());
+		GameEvent gameEvent = new GameEvent();
+		gameEvent.setEventDate(new Date());
+		new GameEventPropertiesViewController().show(Action.ADD, gameEvent);
 	}
 	
 	@Override

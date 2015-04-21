@@ -107,7 +107,7 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	public void init() {
-		inputReader = new K8055AnalogInputReader();
+		inputReader = new KeyboardInputReader();
 		
 		super.init();
 		MapDao mapDao = new MapDao();
