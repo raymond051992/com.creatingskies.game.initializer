@@ -104,7 +104,11 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 		
 		eventDatePicker.setValue(Util.toLocalDate(getGameEvent().getEventDate()));
 		
-		hourChoiceBox.getSelectionModel().select(Util.getHourFromDate(getGameEvent().getEventDate()));
+		if(Util.getHourFromDate(getGameEvent().getEventDate()) == 0){
+			hourChoiceBox.getSelectionModel().select(Integer.valueOf(12));
+		}else{
+			hourChoiceBox.getSelectionModel().select(Util.getHourFromDate(getGameEvent().getEventDate()));
+		}
 		minuteChoiceBox.getSelectionModel().select(Util.getMinuteFromDate(getGameEvent().getEventDate()));
 		periodChoiceBox.getSelectionModel().select(Util.getTimePeriodFromDate(getGameEvent().getEventDate()));
 		
@@ -176,10 +180,12 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 			new AlertDialog(AlertType.ERROR, "Invalid fields", null, "Event minute is required.").showAndWait();
 			return false;
 		}
-		GameEvent event = new GameEventDao().findEventByDate(getEventDate());
-		if(event != null){
-			new AlertDialog(AlertType.ERROR, "Ooops", null, "Event time is not available.").showAndWait();
-			return false;
+		if(getCurrentAction().equals(Action.EDIT) && getGameEvent().getEventDate().compareTo(getEventDate()) != 0){
+			GameEvent event = new GameEventDao().findEventByDate(getEventDate());
+			if(event != null){
+				new AlertDialog(AlertType.ERROR, "Ooops", null, "Event time is not available.").showAndWait();
+				return false;
+			}
 		}
 		
 		return true;
@@ -188,14 +194,15 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	private Date getEventDate(){
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(Date.from(Instant.from(eventDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()))));
+		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.HOUR, hourChoiceBox.getSelectionModel().getSelectedItem());
 		cal.set(Calendar.MINUTE, minuteChoiceBox.getSelectionModel().getSelectedItem());
+		cal.set(Calendar.DATE,cal.get(Calendar.DATE));
 		if(periodChoiceBox.getSelectionModel().getSelectedItem().equals("AM")){
-			cal.set(Calendar.AM_PM, Calendar.AM);
+			cal.set(Calendar.AM_PM, 0);
 		}else{
-			cal.set(Calendar.AM_PM, Calendar.PM);
+			cal.set(Calendar.AM_PM, 1);
 		}
-		cal.set(Calendar.SECOND, 0);
 		return cal.getTime();
 	}
 	

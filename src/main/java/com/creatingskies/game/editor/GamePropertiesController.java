@@ -167,6 +167,8 @@ public class GamePropertiesController extends PropertiesViewController{
 		
 		gameTypeCyclingButton.setSelected(game.getType() == Type.CYCLING);
 		gameTypeRowingButton.setSelected(game.getType() == Type.ROWING);
+		
+		audioFileNameField.setText(game.getAudioFileName());
 	}
 	
 	public void show(Action action, Game game){
@@ -175,6 +177,9 @@ public class GamePropertiesController extends PropertiesViewController{
             loader.setLocation(getClass().getResource("GameProperties.fxml"));
             AnchorPane pane = (AnchorPane) loader.load();
             
+            if(!action.equals(Action.VIEW)){
+            	game = new GameDao().findGameWithDetails(game.getIdNo());
+            }
             GamePropertiesController controller = (GamePropertiesController) loader
 					.getController();
             controller.setCurrentAction(action);
