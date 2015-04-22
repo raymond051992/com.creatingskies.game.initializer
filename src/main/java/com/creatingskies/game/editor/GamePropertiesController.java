@@ -177,7 +177,7 @@ public class GamePropertiesController extends PropertiesViewController{
             loader.setLocation(getClass().getResource("GameProperties.fxml"));
             AnchorPane pane = (AnchorPane) loader.load();
             
-            if(!action.equals(Action.VIEW)){
+            if(action.equals(Action.EDIT)){
             	game = new GameDao().findGameWithDetails(game.getIdNo());
             }
             GamePropertiesController controller = (GamePropertiesController) loader
