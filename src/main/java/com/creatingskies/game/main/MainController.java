@@ -57,7 +57,7 @@ public class MainController extends ViewController{
 				createLauncher(1, "Obstacles", "/images/rec_obstacle.png", this::goToObstaclesPage);
 				createLauncher(2, "Weathers", "/images/rec_weather.png", this::goToWeathersPage);
 				createLauncher(3, "Games", "/images/rec_game.png", this::goToGamesPage);
-				createLauncher(4, "Icon Editor", "/images/rec_game.png", this::goToIconEditorPage);
+				createLauncher(4, "Icon Editor", "/images/rec_editor.png", this::goToIconEditorPage);
 			}
 			createLauncher(5, "Companies", "/images/rec_company.png", this::goToCompaniesPage);
 			createLauncher(6, "Events", "/images/rec_events.png", this::goToEventsPage);

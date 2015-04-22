@@ -11,8 +11,10 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -38,12 +40,15 @@ import com.creatingskies.game.util.Util;
 
 public class GameCoreController extends PropertiesViewController {
 	
+	private static final Integer SCALE_FACTOR = 15;
+	
 	@FXML private Pane pane;
 	@FXML private GridPane mapTiles;
+	@FXML private ScrollPane mapScroller;
+	@FXML private GridPane miniMapTiles;
+	@FXML private Pane miniMapPane;
 	
-	@FXML private Label countDownLabel;
 	@FXML private Label countDownValue;
-	
 	@FXML private Label durationLabel;
 	@FXML private Label obstacleSlowLabel;
 	@FXML private Label tileSlowLabel;
@@ -67,7 +72,9 @@ public class GameCoreController extends PropertiesViewController {
 	private Double maxMovementSpeed = 7.0;
 	
 	private StackPane player;
+	private StackPane miniPlayer;
 	private Circle playerCircle;
+	private Circle miniPlayerCircle;
 	
 	private Timeline gameLoop;
 	private Timeline countDownTimer;
@@ -107,22 +114,34 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	public void init() {
-		inputReader = new KeyboardInputReader();
+		inputReader = new K8055AnalogInputReader();
 		
 		super.init();
 		MapDao mapDao = new MapDao();
 		Map map = mapDao.findMapWithDetails(getGameEvent().getGame().getMap().getIdNo());
 		
 		loadPlayer();
-		initTimeline();
+		initGameLoop();
 		initCountdownTimer();
 		
 		initMap(map);
 		initWarningImages(map.getWidth(), map.getHeight());
 		
-		
 		inputReader.init();
 		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame());
+		
+		mapScroller.setHmax(mapScroller.getContent().getBoundsInLocal().getWidth());
+		mapScroller.setVmax(mapScroller.getContent().getBoundsInLocal().getHeight());
+		
+		//TODO Replace workaround
+		mapScroller.setHvalue(player.getLayoutX() - 200);
+		mapScroller.setVvalue(player.getLayoutY() + 400);
+		
+		centerNode(stopImageView);
+		centerNode(warningImageView);
+		centerNode(countDownValue);
+		
+		countDownTimer.play();
 	}
 	
 	private void initWarningImages(Integer width, Integer height){
@@ -168,7 +187,6 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private void renderCountdown(boolean visible){
 		countDownValue.setVisible(visible);
-		countDownLabel.setVisible(visible);
 	}
 	
 	@FXML
@@ -181,30 +199,52 @@ public class GameCoreController extends PropertiesViewController {
 		obstacles = new ArrayList<Shape>();
 		tileShapes = new ArrayList<Shape>();
 		mapTiles.getChildren().clear();
+		miniMapTiles.getChildren().clear();
 		
 		for(Tile tile : map.getTiles()){
 			ImageView backImage = new ImageView();
-			backImage.setFitHeight(Constant.TILE_HEIGHT);
-			backImage.setFitWidth(Constant.TILE_WIDTH);
+			ImageView minibackImage = new ImageView();
+			
+			backImage.setFitHeight(getMainScreenTileHeight());
+			backImage.setFitWidth(getMainScreenTileWidth());
 			backImage.setImage(Util.byteArrayToImage(tile.getBackImage() != null ?
 					tile.getBackImage().getImage() : map.getDefaultTileImage().getImage()));
 			
+			
+			minibackImage.setFitHeight(Constant.TILE_HEIGHT);
+			minibackImage.setFitWidth(Constant.TILE_WIDTH);
+			minibackImage.setImage(Util.byteArrayToImage(tile.getBackImage() != null ?
+					tile.getBackImage().getImage() : map.getDefaultTileImage().getImage()));
+			
 			Group group = new Group(backImage);
+			Group minigroup = new Group(minibackImage);
 			
 			if(tile.getObstacle() != null || tile.getStartPoint() || tile.getEndPoint()){
 				ImageView frontImage = new ImageView();
-				frontImage.setFitHeight(Constant.TILE_HEIGHT);
-				frontImage.setFitWidth(Constant.TILE_WIDTH);
+				ImageView minifrontImage = new ImageView();
+				frontImage.setFitHeight(getMainScreenTileHeight());
+				frontImage.setFitWidth(getMainScreenTileWidth());
 				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
+				
+				minifrontImage.setFitHeight(Constant.TILE_HEIGHT);
+				minifrontImage.setFitWidth(Constant.TILE_WIDTH);
+				minifrontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
+						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
+				
 				group.getChildren().add(frontImage);
+				minigroup.getChildren().add(minifrontImage);
 				
 				if(tile.getObstacle() != null){
 					createObstacle(tile);
 				} else if(tile.getStartPoint()){
-					player.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
-					player.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT);
+					player.setLayoutX(tile.getColIndex() * getMainScreenTileWidth());
+					player.setLayoutY(tile.getRowIndex() * getMainScreenTileHeight());
 					pane.getChildren().add(player);
+					
+					miniPlayer.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
+					miniPlayer.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT);
+					miniMapPane.getChildren().add(miniPlayer);
 				} else if(tile.getEndPoint()){
 					createEndRectangle(tile);
 				}
@@ -212,6 +252,7 @@ public class GameCoreController extends PropertiesViewController {
 				createTileShapes(tile, map.getDefaultTileImage().getDifficulty());
 			}
 			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
+			miniMapTiles.add(minigroup, tile.getColIndex(), tile.getRowIndex());
 		}
 		
 		initPlayingArea(map);
@@ -219,8 +260,8 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private void initPlayingArea(Map map){
 		playingArea = new Rectangle();
-		playingArea.setWidth(Constant.TILE_WIDTH * map.getWidth());
-		playingArea.setHeight(Constant.TILE_HEIGHT * map.getHeight());
+		playingArea.setWidth(getMainScreenTileWidth() * map.getWidth());
+		playingArea.setHeight(getMainScreenTileHeight() * map.getHeight());
 		playingArea.setFill(Color.TRANSPARENT);
 		pane.getChildren().add(playingArea);
 	}
@@ -234,7 +275,7 @@ public class GameCoreController extends PropertiesViewController {
 		gameResourceManager.start();
 	}
 	
-	private void initTimeline() {
+	private void initGameLoop() {
 		final float frameDuration = 50;
 		gameLoop = new Timeline(new KeyFrame(Duration.millis(frameDuration),
 				new EventHandler<ActionEvent>() {
@@ -245,13 +286,14 @@ public class GameCoreController extends PropertiesViewController {
 		    	durationLabel.setText(String.format("%.1f", result));
 		    	
 		    	inputForce = inputReader.readInput();
+		    	computeRotation();
 				computeMovement();
 		    }
 		}));
 		gameLoop.setCycleCount(Timeline.INDEFINITE);
 	}
 	
-	private void computeMovement() {
+	private void computeRotation(){
 		Double currentDeg = player.getRotate();
 		Double deltaDeg = ((45 / maxMovementSpeed) * (inputForce.left - inputForce.right));
 		
@@ -265,7 +307,10 @@ public class GameCoreController extends PropertiesViewController {
 			currentDeg += rotation; 
 		}
 		player.setRotate(currentDeg);
-
+		miniPlayer.setRotate(currentDeg);
+	}
+	
+	private void computeMovement() {
 		checkWarning(playerCircle);
 		checkTileProperty(playerCircle);
 		checkGameStatus(playerCircle);
@@ -279,35 +324,42 @@ public class GameCoreController extends PropertiesViewController {
 			speed = Math.max((((inputForce.left + inputForce.right)
 					/ (maxMovementSpeed * 2)) * maxMovementSpeed) - totalSlowFactor, 0.1);
 			
-			double cosValue = (speed * Math.cos(Math.toRadians(currentDeg)));
-			double sinValue = (speed * Math.sin(Math.toRadians(currentDeg)));
+			double cosValue = (speed * Math.cos(Math.toRadians(player.getRotate())));
+			double sinValue = (speed * Math.sin(Math.toRadians(player.getRotate())));
+			
 			player.setLayoutX(player.getLayoutX() + cosValue);
 			player.setLayoutY(player.getLayoutY() + sinValue);
+			miniPlayer.setLayoutX(miniPlayer.getLayoutX() + (cosValue / SCALE_FACTOR));
+			miniPlayer.setLayoutY(miniPlayer.getLayoutY() + (sinValue / SCALE_FACTOR));
+			
+			//TODO Replace workaround
+			double multiplier = 1.4;
+			mapScroller.setHvalue(mapScroller.getHvalue() + (cosValue * multiplier));
+			mapScroller.setVvalue(mapScroller.getVvalue() + (sinValue * multiplier));
 			
 			if(checkCollision(playerCircle)){
 				encounteredBlockage = true;
 				player.setLayoutX(player.getLayoutX() - cosValue);
 				player.setLayoutY(player.getLayoutY() - sinValue);
+				miniPlayer.setLayoutX(miniPlayer.getLayoutX() - (cosValue / SCALE_FACTOR));
+				miniPlayer.setLayoutY(miniPlayer.getLayoutY() - (sinValue / SCALE_FACTOR));
+				
+				mapScroller.setHvalue(mapScroller.getHvalue() - (cosValue * multiplier));
+				mapScroller.setVvalue(mapScroller.getVvalue() - (sinValue * multiplier));
 			}
 		}
 		
-		inputReader.display(speed, totalSlowFactor, currentDeg);
+		centerNode(stopImageView);
+		centerNode(warningImageView);
+		
+		inputReader.display(speed, totalSlowFactor, player.getRotate());
 		warningImageView.setVisible(warningImageView.isVisible() && !encounteredBlockage);
 		stopImageView.setVisible(encounteredBlockage);
 	}
 	
-	private void checkTileProperty(Shape block){
-		tileSlowFactor = 0.0;
-		
-		for (Shape tileShape : tileShapes) {
-			Shape intersect = Shape.intersect(block, tileShape);
-			if (intersect.getBoundsInLocal().getWidth() != -1) {
-				tileSlowFactor = (double) Math.max(tileShape.getUserData() != null ?
-						Integer.valueOf(String.valueOf(tileShape.getUserData())) : 0, tileSlowFactor);
-			}
-		}
-		
-		tileSlowLabel.setText(String.format("%.2f", tileSlowFactor));
+	private void centerNode(Node node){
+		node.setLayoutX(player.getLayoutX());
+		node.setLayoutY(player.getLayoutY());
 	}
 	
 	private void checkWarning(Shape block){
@@ -328,6 +380,20 @@ public class GameCoreController extends PropertiesViewController {
 		
 		warningImageView.setVisible(hasCollision);
 		obstacleSlowLabel.setText(String.format("%.2f", obstacleSlowFactor));
+	}
+	
+	private void checkTileProperty(Shape block){
+		tileSlowFactor = 0.0;
+		
+		for (Shape tileShape : tileShapes) {
+			Shape intersect = Shape.intersect(block, tileShape);
+			if (intersect.getBoundsInLocal().getWidth() != -1) {
+				tileSlowFactor = (double) Math.max(tileShape.getUserData() != null ?
+						Integer.valueOf(String.valueOf(tileShape.getUserData())) : 0, tileSlowFactor);
+			}
+		}
+		
+		tileSlowLabel.setText(String.format("%.2f", tileSlowFactor));
 	}
 	
 	private void checkGameStatus(Shape block){
@@ -388,13 +454,13 @@ public class GameCoreController extends PropertiesViewController {
 		createObstacleEdge(tile);
 	}
 	
-	public void createObstacleEdge(Tile tile){
+	private void createObstacleEdge(Tile tile){
 		Circle obstacleEdge = new Circle();
-		obstacleEdge.setRadius(Constant.TILE_WIDTH * tile.getObstacle().getRadius());
+		obstacleEdge.setRadius(getMainScreenTileWidth() * tile.getObstacle().getRadius());
 		obstacleEdge.setUserData(tile.getObstacle().getDifficulty());
 		
-		obstacleEdge.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH + (Constant.TILE_WIDTH / 2));
-		obstacleEdge.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT + (Constant.TILE_WIDTH / 2));
+		obstacleEdge.setLayoutX(tile.getColIndex() * getMainScreenTileWidth() + (getMainScreenTileWidth() / 2));
+		obstacleEdge.setLayoutY(tile.getRowIndex() * getMainScreenTileHeight() + (getMainScreenTileWidth() / 2));
 
 		obstacleEdge.setFill(Color.TRANSPARENT);
 		obstacleEdge.setOpacity(0.20);
@@ -403,34 +469,57 @@ public class GameCoreController extends PropertiesViewController {
 		obstacleEdges.add(obstacleEdge);
 	}
 	
-	public void createEndRectangle(Tile tile){
+	private void createEndRectangle(Tile tile){
 		endTile = createDefaultRectangle(tile);
 		pane.getChildren().add(endTile);
 	}
 	
-	public Rectangle createDefaultRectangle(Tile tile){
+	private Rectangle createDefaultRectangle(Tile tile){
 		Rectangle rect = new Rectangle();
-		rect.setWidth(Constant.TILE_WIDTH);
-		rect.setHeight(Constant.TILE_HEIGHT);
+		rect.setWidth(getMainScreenTileWidth());
+		rect.setHeight(getMainScreenTileHeight());
 		rect.setFill(Color.TRANSPARENT);
-		rect.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
-		rect.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT);
+		rect.setLayoutX(tile.getColIndex() * getMainScreenTileWidth());
+		rect.setLayoutY(tile.getRowIndex() * getMainScreenTileHeight());
 		return rect;
 	}
 	
 	private void loadPlayer(){
-		playerCircle = new Circle((Constant.TILE_WIDTH/2), Color.BLACK);
+		double playerResizeFactor = 0.8;
+		
+		playerCircle = new Circle((getMainScreenTileWidth() / 2) * playerResizeFactor, Color.BLACK);
 		playerCircle.setOpacity(0.2);
 		
 		ImageView playerImageView = new ImageView();
-		playerImageView.setFitWidth(Constant.TILE_WIDTH * 0.8);
-		playerImageView.setFitHeight(Constant.TILE_HEIGHT * 0.8);
+		playerImageView.setFitWidth(getMainScreenTileWidth() * playerResizeFactor);
+		playerImageView.setFitHeight(getMainScreenTileHeight() * playerResizeFactor);
 		playerImageView.setImage(new Image("/images/cyclist.png"));
 		
 		player = new StackPane();
-		player.setPrefWidth(Constant.TILE_WIDTH);
-		player.setPrefHeight(Constant.TILE_HEIGHT);
+		player.setPrefWidth(getMainScreenTileWidth());
+		player.setPrefHeight(getMainScreenTileHeight());
 		player.getChildren().addAll(playerCircle, playerImageView);
+		
+		miniPlayerCircle = new Circle((Constant.TILE_WIDTH / 2) * playerResizeFactor, Color.BLACK);
+		miniPlayerCircle.setOpacity(0.2);
+		
+		ImageView miniplayerImageView = new ImageView();
+		miniplayerImageView.setFitWidth(Constant.TILE_WIDTH * playerResizeFactor);
+		miniplayerImageView.setFitHeight(Constant.TILE_HEIGHT * playerResizeFactor);
+		miniplayerImageView.setImage(new Image("/images/cyclist.png"));
+		
+		miniPlayer = new StackPane();
+		miniPlayer.setPrefWidth(Constant.TILE_WIDTH);
+		miniPlayer.setPrefHeight(Constant.TILE_HEIGHT);
+		miniPlayer.getChildren().addAll(miniPlayerCircle, miniplayerImageView);
+	}
+	
+	private double getMainScreenTileWidth(){
+		return Constant.TILE_WIDTH * SCALE_FACTOR;
+	}
+	
+	private double getMainScreenTileHeight(){
+		return Constant.TILE_HEIGHT * SCALE_FACTOR;
 	}
 	
 }
