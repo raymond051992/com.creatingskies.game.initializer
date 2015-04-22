@@ -95,7 +95,7 @@ public class IconEditorController extends TableViewController{
 	private void resetTableView(){
 		imageColumn.setCellFactory(generateImageCellFactory());
 		tileImagesTable.setItems(FXCollections
-				.observableArrayList(mapDao.findAllTileImagesWithOwner()));
+				.observableArrayList(mapDao.findAllTileImages(true)));
 	}
 	
 	@Override
@@ -111,7 +111,18 @@ public class IconEditorController extends TableViewController{
 	@Override
 	protected void editRecord(IRecord record) {
 		super.editRecord(record);
-		//TODO
+
+		if(record instanceof TileImage){
+			showDetailDialog((TileImage) record);
+		}
+	}
+	
+	private void showDetailDialog(TileImage tileImage){
+		boolean saveClicked = new TileImageDialogController().show(tileImage);
+	    if (saveClicked) {
+	        mapDao.saveOrUpdate(tileImage);
+	        resetTableView();
+	    }
 	}
 	
 }

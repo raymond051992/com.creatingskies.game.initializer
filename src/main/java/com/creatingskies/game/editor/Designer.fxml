@@ -14,7 +14,7 @@
    <children>
       <SplitPane fx:id="mapDesignerContainer" dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
         <items>
-          <AnchorPane minWidth="200.0" prefWidth="180.0">
+          <AnchorPane minWidth="200.0" prefWidth="200.0">
                <children>
                   <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
                      <buttons>
@@ -27,12 +27,12 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <ImageView fx:id="selectedTileImageView" fitHeight="45.0" fitWidth="45.0" layoutX="165.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <VBox layoutX="46.0" layoutY="89.0" prefHeight="350.0" prefWidth="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="65.0">
+                  <ImageView fx:id="selectedTileImageView" fitHeight="100.0" fitWidth="100.0" layoutX="165.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                  <VBox layoutX="46.0" layoutY="89.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="200.0">
                      <children>
                         <HBox alignment="BOTTOM_LEFT" prefHeight="27.0" prefWidth="209.0">
                            <children>
-                              <Label text="Design" textFill="#8d8d8d" />
+                              <Label text="Tile" textFill="#8d8d8d" />
                            </children>
                         </HBox>
                         <FlowPane fx:id="tileImageSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
@@ -58,6 +58,7 @@
                         </VBox>
                      </children>
                   </VBox>
+                  <Label fx:id="selectedTileDescription" layoutX="119.0" layoutY="117.0" text="Description" textFill="#8d8d8d" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0" />
                </children>
             </AnchorPane>
           <AnchorPane fx:id="mapContainer">

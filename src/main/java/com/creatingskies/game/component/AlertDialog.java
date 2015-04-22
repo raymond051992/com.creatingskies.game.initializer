@@ -13,16 +13,17 @@ public class AlertDialog extends Alert{
         setTitle(title);
         setHeaderText(headerText);
         setContentText(content);
-        getDialogPane().getStylesheets()
-        	.add("/css/dialog.css");
+//      getDialogPane().getStylesheets()
+//    		.add("/css/dialog.css");
 	}
+	
 	public AlertDialog(AlertType alertType,String title,String headerText,String content,Stage stage){
 		super(alertType);
         initOwner(stage);
         setTitle(title);
         setHeaderText(headerText);
         setContentText(content);
-        getDialogPane().getStylesheets()
-        	.add("/css/dialog.css");
+//      getDialogPane().getStylesheets()
+//        	.add("/css/dialog.css");
 	}
 }

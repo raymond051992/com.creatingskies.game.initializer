@@ -33,6 +33,7 @@ import com.creatingskies.game.classes.PropertiesViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.config.event.GameEventTableViewController;
+import com.creatingskies.game.core.Game.Type;
 import com.creatingskies.game.core.resources.GameResourcesManager;
 import com.creatingskies.game.model.Constant;
 import com.creatingskies.game.model.event.GameEvent;
@@ -114,13 +115,13 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	public void init() {
-		inputReader = new K8055AnalogInputReader();
+		inputReader = new KeyboardInputReader();
 		
 		super.init();
 		MapDao mapDao = new MapDao();
 		Map map = mapDao.findMapWithDetails(getGameEvent().getGame().getMap().getIdNo());
 		
-		loadPlayer();
+		initPlayer(getGameEvent().getGame().getType());
 		initGameLoop();
 		initCountdownTimer();
 		
@@ -145,8 +146,8 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	private void initWarningImages(Integer width, Integer height){
-		double centerX = ((width / 2) * Constant.TILE_WIDTH) - (warningImageView.getFitWidth() / 2);
-		double centerY = ((height / 2) * Constant.TILE_HEIGHT) - (warningImageView.getFitHeight() / 2);
+		double centerX = ((width / 2) * getMiniScreenTileWidth()) - (warningImageView.getFitWidth() / 2);
+		double centerY = ((height / 2) * getMiniScreenTileHeight()) - (warningImageView.getFitHeight() / 2);
 		
 		warningImageView.setOpacity(0.5);
 		stopImageView.setOpacity(0.5);
@@ -211,8 +212,8 @@ public class GameCoreController extends PropertiesViewController {
 					tile.getBackImage().getImage() : map.getDefaultTileImage().getImage()));
 			
 			
-			minibackImage.setFitHeight(Constant.TILE_HEIGHT);
-			minibackImage.setFitWidth(Constant.TILE_WIDTH);
+			minibackImage.setFitHeight(getMiniScreenTileHeight());
+			minibackImage.setFitWidth(getMiniScreenTileWidth());
 			minibackImage.setImage(Util.byteArrayToImage(tile.getBackImage() != null ?
 					tile.getBackImage().getImage() : map.getDefaultTileImage().getImage()));
 			
@@ -227,8 +228,8 @@ public class GameCoreController extends PropertiesViewController {
 				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
 				
-				minifrontImage.setFitHeight(Constant.TILE_HEIGHT);
-				minifrontImage.setFitWidth(Constant.TILE_WIDTH);
+				minifrontImage.setFitHeight(getMiniScreenTileHeight());
+				minifrontImage.setFitWidth(getMiniScreenTileWidth());
 				minifrontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
 				
@@ -242,8 +243,8 @@ public class GameCoreController extends PropertiesViewController {
 					player.setLayoutY(tile.getRowIndex() * getMainScreenTileHeight());
 					pane.getChildren().add(player);
 					
-					miniPlayer.setLayoutX(tile.getColIndex() * Constant.TILE_WIDTH);
-					miniPlayer.setLayoutY(tile.getRowIndex() * Constant.TILE_HEIGHT);
+					miniPlayer.setLayoutX(tile.getColIndex() * getMiniScreenTileWidth());
+					miniPlayer.setLayoutY(tile.getRowIndex() * getMiniScreenTileHeight());
 					miniMapPane.getChildren().add(miniPlayer);
 				} else if(tile.getEndPoint()){
 					createEndRectangle(tile);
@@ -484,8 +485,13 @@ public class GameCoreController extends PropertiesViewController {
 		return rect;
 	}
 	
-	private void loadPlayer(){
+	private void initPlayer(Type type){
 		double playerResizeFactor = 0.8;
+		
+		String owner = type.equals(Type.ROWING) ? Constant.IMAGE_ROWING_PLAYER_OWNER : Constant.IMAGE_CYCLING_PLAYER_OWNER;
+		TileImage playerTileImage = new MapDao().findTileImageByOwner(owner);
+		Image playerImage = playerTileImage != null && playerTileImage.getImage() != null ?
+				Util.byteArrayToImage(playerTileImage.getImage()) : null;
 		
 		playerCircle = new Circle((getMainScreenTileWidth() / 2) * playerResizeFactor, Color.BLACK);
 		playerCircle.setOpacity(0.2);
@@ -493,33 +499,41 @@ public class GameCoreController extends PropertiesViewController {
 		ImageView playerImageView = new ImageView();
 		playerImageView.setFitWidth(getMainScreenTileWidth() * playerResizeFactor);
 		playerImageView.setFitHeight(getMainScreenTileHeight() * playerResizeFactor);
-		playerImageView.setImage(new Image("/images/cyclist.png"));
+		playerImageView.setImage(playerImage);
 		
 		player = new StackPane();
 		player.setPrefWidth(getMainScreenTileWidth());
 		player.setPrefHeight(getMainScreenTileHeight());
 		player.getChildren().addAll(playerCircle, playerImageView);
 		
-		miniPlayerCircle = new Circle((Constant.TILE_WIDTH / 2) * playerResizeFactor, Color.BLACK);
+		miniPlayerCircle = new Circle((getMiniScreenTileWidth() / 2) * playerResizeFactor, Color.BLACK);
 		miniPlayerCircle.setOpacity(0.2);
 		
 		ImageView miniplayerImageView = new ImageView();
-		miniplayerImageView.setFitWidth(Constant.TILE_WIDTH * playerResizeFactor);
-		miniplayerImageView.setFitHeight(Constant.TILE_HEIGHT * playerResizeFactor);
-		miniplayerImageView.setImage(new Image("/images/cyclist.png"));
+		miniplayerImageView.setFitWidth(getMiniScreenTileWidth() * playerResizeFactor);
+		miniplayerImageView.setFitHeight(getMiniScreenTileHeight() * playerResizeFactor);
+		miniplayerImageView.setImage(playerImage);
 		
 		miniPlayer = new StackPane();
-		miniPlayer.setPrefWidth(Constant.TILE_WIDTH);
-		miniPlayer.setPrefHeight(Constant.TILE_HEIGHT);
+		miniPlayer.setPrefWidth(getMiniScreenTileWidth());
+		miniPlayer.setPrefHeight(getMiniScreenTileHeight());
 		miniPlayer.getChildren().addAll(miniPlayerCircle, miniplayerImageView);
 	}
 	
 	private double getMainScreenTileWidth(){
-		return Constant.TILE_WIDTH * SCALE_FACTOR;
+		return getMiniScreenTileWidth() * SCALE_FACTOR;
 	}
 	
 	private double getMainScreenTileHeight(){
-		return Constant.TILE_HEIGHT * SCALE_FACTOR;
+		return getMiniScreenTileHeight() * SCALE_FACTOR;
+	}
+	
+	private double getMiniScreenTileWidth(){
+		return 16.0;
+	}
+	
+	private double getMiniScreenTileHeight(){
+		return 16.0;
 	}
 	
 }

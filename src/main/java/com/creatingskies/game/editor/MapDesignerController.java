@@ -1,6 +1,5 @@
 package com.creatingskies.game.editor;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,7 +19,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -28,6 +26,7 @@ import javafx.stage.StageStyle;
 import com.creatingskies.game.classes.ViewController.Action;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.config.icon.TileImageDialogController;
 import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.Map;
 import com.creatingskies.game.core.MapDao;
@@ -45,6 +44,7 @@ public class MapDesignerController {
 	
 	@FXML private GridPane mapTiles;
 	@FXML private Label viewTitle;
+	@FXML private Label selectedTileDescription;
 	
 	@FXML private FlowPane tileImageSelections;
 	@FXML private FlowPane obstacleImageSelections;
@@ -75,6 +75,7 @@ public class MapDesignerController {
 		isViewAction = getCurrentAction() == Action.VIEW;
 		saveButton.setVisible(!isViewAction);
 		cancelButton.setText(isViewAction ? "OK" : "Cancel");
+		selectedTileDescription.setText("");
 		
 		initMapTiles();
 		initTileImageSelections();
@@ -191,6 +192,8 @@ public class MapDesignerController {
 		tileImageSelections.getChildren().clear();
 		MapDao mapDao = new MapDao();
 		List<TileImage> tileImages = mapDao.findAllTileImages(false);
+		tileImages.add(getMap().getDefaultTileImage());
+		
 		if(tileImages != null && !tileImages.isEmpty()){
 			for(TileImage tileImage : tileImages){
 				addTileImageSelection(tileImage);
@@ -254,6 +257,8 @@ public class MapDesignerController {
 					
 					startTileSelected = true;
 					endTileSelected = false;
+					
+					selectedTileDescription.setText("Type: Start Point");
 				}
 			});
 		}
@@ -279,6 +284,8 @@ public class MapDesignerController {
 					
 					startTileSelected = false;
 					endTileSelected = true;
+					
+					selectedTileDescription.setText("Type: End Point");
 				}
 			});
 		}
@@ -301,6 +308,12 @@ public class MapDesignerController {
 					
 					startTileSelected = false;
 					endTileSelected = false;
+					
+					selectedTileDescription
+						.setText("Type: Obstacle \n"
+							+ "Name: " + obstacle.getName() + "\n"
+							+ "Difficulty: " + obstacle.getDifficulty() + "\n"
+							+ "Radius: " + obstacle.getRadius());
 				}
 			});
 		}
@@ -323,6 +336,12 @@ public class MapDesignerController {
 					
 					startTileSelected = false;
 					endTileSelected = false;
+					
+					selectedTileDescription
+						.setText("Type: Tile \n"
+							+ "File Name: " + tileImage.getFileName() + "\n"
+							+ "Difficulty: " + tileImage.getDifficulty() + "\n"
+							+ "Radius: 0");
 				}
 			});
 		}
@@ -359,24 +378,12 @@ public class MapDesignerController {
 	
 	@FXML
 	private void uploadTileImage(){
-		FileChooser fileChooser = new FileChooser();
-
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                "Image files", "*.jpeg", "*.jpg", "*.png", "*.bmp", "*.gif");
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        File file = fileChooser.showOpenDialog(MainLayout.getPrimaryStage());
-        
-        if(file != null){
-        	TileImage tileImage = new TileImage();
-            tileImage.setFileName(file.getName());
-            tileImage.setFileType(Util.getFileExtension(file.getName()));
-            tileImage.setFileSize(file.length());
-            tileImage.setImage(Util.fileToByteArray(file));
-            
-            new MapDao().save(tileImage);
-            addTileImageSelection(tileImage);
-        }
+		TileImage tileImage = new TileImage();
+		boolean saveClicked = new TileImageDialogController().show(tileImage);
+	    if (saveClicked) {
+	        new MapDao().saveOrUpdate(tileImage);
+	        initTileImageSelections();
+	    }
 	}
 	
 	@FXML
