@@ -21,6 +21,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label text="Title" />
@@ -72,6 +73,8 @@
                   <Button fx:id="browseButton" mnemonicParsing="false" onAction="#handleAudioBrowseDialog" prefWidth="90.0" text="Browse" />
                </children>
             </HBox>
+            <Label text="Weather" GridPane.rowIndex="5" />
+            <ComboBox fx:id="weatherComboBox" prefHeight="25.0" prefWidth="378.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
          </children>
       </GridPane>
       <ButtonBar fx:id="actionButtonBar" layoutX="237.0" layoutY="361.0" prefHeight="25.0" prefWidth="353.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">

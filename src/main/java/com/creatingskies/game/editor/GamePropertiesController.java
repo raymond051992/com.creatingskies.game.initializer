@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -18,6 +20,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import javafx.util.StringConverter;
 
 import com.creatingskies.game.classes.PropertiesViewController;
 import com.creatingskies.game.common.MainLayout;
@@ -29,6 +32,8 @@ import com.creatingskies.game.core.Map;
 import com.creatingskies.game.core.MapDao;
 import com.creatingskies.game.core.Tile;
 import com.creatingskies.game.model.Constant;
+import com.creatingskies.game.model.weather.Weather;
+import com.creatingskies.game.model.weather.WeatherDAO;
 import com.creatingskies.game.util.Util;
 
 public class GamePropertiesController extends PropertiesViewController{
@@ -38,6 +43,8 @@ public class GamePropertiesController extends PropertiesViewController{
 	@FXML private RadioButton gameTypeCyclingButton;
 	@FXML private RadioButton gameTypeRowingButton;
 	@FXML private TextField audioFileNameField;
+	@FXML private ComboBox<Weather> weatherComboBox;
+	
 	@FXML private Button browseButton;
 	@FXML private ButtonBar actionButtonBar;
 	
@@ -75,6 +82,23 @@ public class GamePropertiesController extends PropertiesViewController{
 		
 		widthTextField.addEventFilter(KeyEvent.KEY_TYPED, Util.createIntegerOnlyKeyEvent());
 		heightTextField.addEventFilter(KeyEvent.KEY_TYPED, Util.createIntegerOnlyKeyEvent());
+		
+		weatherComboBox.setItems(FXCollections.observableArrayList(new WeatherDAO().findAll()));
+		weatherComboBox.setConverter(new StringConverter<Weather>() {
+			
+			@Override
+			public String toString(Weather object) {
+				return object.getName();
+			}
+			
+			@Override
+			public Weather fromString(String string) {
+				return null;
+			}
+		});
+		weatherComboBox.setOnAction((event) -> {
+			getGame().setWeather(weatherComboBox.getSelectionModel().getSelectedItem());
+		});
 	}
 	
 	@FXML
@@ -169,6 +193,10 @@ public class GamePropertiesController extends PropertiesViewController{
 		gameTypeRowingButton.setSelected(game.getType() == Type.ROWING);
 		
 		audioFileNameField.setText(game.getAudioFileName());
+		
+		if(game.getWeather() != null){
+			weatherComboBox.getSelectionModel().select(game.getWeather());
+		}
 	}
 	
 	public void show(Action action, Game game){
@@ -200,6 +228,7 @@ public class GamePropertiesController extends PropertiesViewController{
 		widthTextField.setDisable(disable);
 		heightTextField.setDisable(disable);
 		browseButton.setDisable(disable);
+		weatherComboBox.setDisable(disable);
 	}
 	
 	@FXML
