@@ -54,6 +54,16 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML private Label obstacleSlowLabel;
 	@FXML private Label tileSlowLabel;
 	
+	@FXML private Label mapWidthLabel;
+	@FXML private Label mapHeightLabel;
+	@FXML private Label screenWidthLabel;
+	@FXML private Label screenHeightLabel;
+	@FXML private Label scrollHvalLabel;
+	@FXML private Label scrollVvalLabel;
+	@FXML private Label playerXLabel;
+	@FXML private Label playerYLabel;
+	
+	
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
 	@FXML private ImageView weatherImageView;
@@ -133,18 +143,18 @@ public class GameCoreController extends PropertiesViewController {
 		inputReader.init();
 		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame());
 		
-		mapScroller.setHmax(mapScroller.getContent().getBoundsInLocal().getWidth());
-		mapScroller.setVmax(mapScroller.getContent().getBoundsInLocal().getHeight());
 		
 		//TODO Replace workaround
 //		mapScroller.setHvalue(player.getLayoutX() - 200);
 //		mapScroller.setVvalue(player.getLayoutY() + 400);
 		
-		centerNode(stopImageView);
-		centerNode(warningImageView);
 		centerNode(countDownValue);
 		
 		countDownTimer.play();
+	}
+	
+	private String convertToString(Object s){
+		return String.valueOf(s);
 	}
 	
 	private void initWeathers(){
@@ -184,10 +194,27 @@ public class GameCoreController extends PropertiesViewController {
 					countDownValue.setText(String.valueOf(countDown));
 					countDown--;
 					
+					centerNode(countDownValue);
+					centerNode(stopImageView);
+					centerNode(warningImageView);
+					
+					mapScroller.setHvalue(player.getLayoutX());
+					mapScroller.setVvalue(player.getLayoutY() - (mapScroller.getBoundsInLocal().getHeight() / 2));
+					
+					mapScroller.setHmax(mapTiles.getWidth());
+					mapScroller.setVmax(mapTiles.getHeight());
+					
+					mapWidthLabel.setText(convertToString(mapTiles.getWidth()));
+					mapHeightLabel.setText(convertToString(mapTiles.getHeight()));
+					
+					screenWidthLabel.setText(convertToString(mapScroller.getBoundsInLocal().getWidth()));
+					screenHeightLabel.setText(convertToString(mapScroller.getBoundsInLocal().getHeight()));
+					
 					if(countDown < 0){
 						renderCountdown(false);
 						countDownTimer.stop();
 						handleReset();
+						
 					}
 				}
 			}
@@ -298,6 +325,12 @@ public class GameCoreController extends PropertiesViewController {
 		    	inputForce = inputReader.readInput();
 		    	computeRotation();
 				computeMovement();
+				
+				scrollHvalLabel.setText(convertToString(mapScroller.getHvalue()));
+				scrollVvalLabel.setText(convertToString(mapScroller.getVvalue()));
+				
+				playerXLabel.setText(convertToString(player.getLayoutX()));
+				playerYLabel.setText(convertToString(player.getLayoutY()));
 		    }
 		}));
 		gameLoop.setCycleCount(Timeline.INDEFINITE);
@@ -343,9 +376,10 @@ public class GameCoreController extends PropertiesViewController {
 			miniPlayer.setLayoutY(miniPlayer.getLayoutY() + (sinValue / SCALE_FACTOR));
 			
 			//TODO Replace workaround
-			double multiplier = 1.4;
-			mapScroller.setHvalue(mapScroller.getHvalue() + (cosValue * multiplier));
-			mapScroller.setVvalue(mapScroller.getVvalue() + (sinValue * multiplier));
+//			double multiplier = 1.4;
+			
+			mapScroller.setHvalue(player.getLayoutX());
+			mapScroller.setVvalue(player.getLayoutY() - (mapScroller.getBoundsInLocal().getHeight() / 2));
 			
 			if(checkCollision(playerCircle)){
 				encounteredBlockage = true;
@@ -354,13 +388,11 @@ public class GameCoreController extends PropertiesViewController {
 				miniPlayer.setLayoutX(miniPlayer.getLayoutX() - (cosValue / SCALE_FACTOR));
 				miniPlayer.setLayoutY(miniPlayer.getLayoutY() - (sinValue / SCALE_FACTOR));
 				
-				mapScroller.setHvalue(mapScroller.getHvalue() - (cosValue * multiplier));
-				mapScroller.setVvalue(mapScroller.getVvalue() - (sinValue * multiplier));
+//				mapScroller.setHvalue(mapScroller.getHvalue() - (cosValue * multiplier));
+//				mapScroller.setVvalue(mapScroller.getVvalue() - (sinValue * multiplier));
 			}
+			
 		}
-		
-		centerNode(stopImageView);
-		centerNode(warningImageView);
 		
 		inputReader.display(speed, totalSlowFactor, player.getRotate());
 		warningImageView.setVisible(warningImageView.isVisible() && !encounteredBlockage);
@@ -369,8 +401,8 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	private void centerNode(Node node){
-		node.setLayoutX(player.getLayoutX());
-		node.setLayoutY(player.getLayoutY());
+		node.setLayoutX(mapScroller.getBoundsInLocal().getWidth() / 2);
+		node.setLayoutY(mapScroller.getBoundsInLocal().getHeight() / 2);
 	}
 	
 	private void checkWarning(Shape block){
