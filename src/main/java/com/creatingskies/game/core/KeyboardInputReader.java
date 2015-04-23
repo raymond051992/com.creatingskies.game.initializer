@@ -55,7 +55,7 @@ public class KeyboardInputReader extends AbstractInputReader {
 	}
 	
 	public void initKeyboardListeners() {
-		MainLayout.getRootLayout().setOnKeyPressed(new EventHandler<KeyEvent>() {
+		MainLayout.getModalLayout().setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
 				if(leftCodes.containsKey(event.getCode())){
@@ -68,7 +68,7 @@ public class KeyboardInputReader extends AbstractInputReader {
 			}
 		});
 		
-		MainLayout.getRootLayout().setOnKeyReleased(new EventHandler<KeyEvent>() {
+		MainLayout.getModalLayout().setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
 				inputForce.left = 0;

@@ -12,12 +12,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -25,6 +25,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import com.creatingskies.game.classes.AbstractInputReader;
@@ -32,7 +35,6 @@ import com.creatingskies.game.classes.AbstractInputReader.InputForce;
 import com.creatingskies.game.classes.PropertiesViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
-import com.creatingskies.game.config.event.GameEventTableViewController;
 import com.creatingskies.game.core.Game.Type;
 import com.creatingskies.game.core.resources.GameResourcesManager;
 import com.creatingskies.game.model.Constant;
@@ -98,6 +100,7 @@ public class GameCoreController extends PropertiesViewController {
 	private InputForce inputForce;
 	
 	private GameResourcesManager gameResourceManager;
+	private Stage stage;
 	
 	@Override
 	protected String getViewTitle() {
@@ -108,14 +111,24 @@ public class GameCoreController extends PropertiesViewController {
 		try {
 			FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("GameCore.fxml"));
-            AnchorPane event = (AnchorPane) loader.load();
+            MainLayout.setModalLayout(loader.load());
             
+            stage = new Stage();
+	        stage.initModality(Modality.WINDOW_MODAL);
+	        stage.initOwner(MainLayout.getPrimaryStage());
+	        stage.initStyle(StageStyle.UNDECORATED);
+	        Scene scene = new Scene(MainLayout.getModalLayout());
+	        stage.setMaximized(true);
+	        stage.setScene(scene);
+	        
             GameCoreController controller = (GameCoreController) loader.getController();
             controller.setCurrentAction(Action.VIEW);
             controller.setCurrentRecord(gameEvent);
-            controller.init();
-            
-            MainLayout.getRootLayout().setCenter(event);
+	        controller.setStage(stage);
+	        controller.init();
+	        stage.show();
+	        
+	        MainLayout.getModalLayout().requestFocus();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -137,18 +150,11 @@ public class GameCoreController extends PropertiesViewController {
 		initCountdownTimer();
 		
 		initMap(map);
-		initWarningImages(map.getWidth(), map.getHeight());
+		initWarningImages();
 		initWeathers();
 		
 		inputReader.init();
 		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame());
-		
-		
-		//TODO Replace workaround
-//		mapScroller.setHvalue(player.getLayoutX() - 200);
-//		mapScroller.setVvalue(player.getLayoutY() + 400);
-		
-		centerNode(countDownValue);
 		
 		countDownTimer.play();
 	}
@@ -163,22 +169,14 @@ public class GameCoreController extends PropertiesViewController {
 		}
 	}
 	
-	private void initWarningImages(Integer width, Integer height){
-		double centerX = ((width / 2) * getMiniScreenTileWidth()) - (warningImageView.getFitWidth() / 2);
-		double centerY = ((height / 2) * getMiniScreenTileHeight()) - (warningImageView.getFitHeight() / 2);
-		
+	private void initWarningImages(){
 		warningImageView.setOpacity(0.5);
 		stopImageView.setOpacity(0.5);
 		
 		warningImageView.setImage(new Image("/images/warning.png"));
 		stopImageView.setImage(new Image("/images/stop.png"));
 		
-		warningImageView.setLayoutX(centerX);
-		warningImageView.setLayoutY(centerY);
 		warningImageView.toFront();
-		
-		stopImageView.setLayoutX(centerX);
-		stopImageView.setLayoutY(centerY);
 		stopImageView.toFront();
 	}
 	
@@ -186,6 +184,7 @@ public class GameCoreController extends PropertiesViewController {
 		renderCountdown(false);
 		countDownTimer = new Timeline();
 		countDownTimer.setCycleCount(Timeline.INDEFINITE);
+		
 		countDownTimer.getKeyFrames().add(new KeyFrame(Duration.millis(800),
 			new EventHandler<ActionEvent>() {
 				@Override
@@ -194,9 +193,9 @@ public class GameCoreController extends PropertiesViewController {
 					countDownValue.setText(String.valueOf(countDown));
 					countDown--;
 					
-					centerNode(countDownValue);
-					centerNode(stopImageView);
-					centerNode(warningImageView);
+					centerNode(countDownValue, countDownValue.getWidth(), countDownValue.getHeight());
+		            centerNode(stopImageView, stopImageView.getFitWidth(), stopImageView.getFitHeight());
+		    		centerNode(warningImageView, warningImageView.getFitWidth(), warningImageView.getFitHeight());
 					
 					mapScroller.setHvalue(player.getLayoutX());
 					mapScroller.setVvalue(player.getLayoutY() - (mapScroller.getBoundsInLocal().getHeight() / 2));
@@ -246,7 +245,6 @@ public class GameCoreController extends PropertiesViewController {
 			backImage.setFitWidth(getMainScreenTileWidth());
 			backImage.setImage(Util.byteArrayToImage(tile.getBackImage() != null ?
 					tile.getBackImage().getImage() : map.getDefaultTileImage().getImage()));
-			
 			
 			minibackImage.setFitHeight(getMiniScreenTileHeight());
 			minibackImage.setFitWidth(getMiniScreenTileWidth());
@@ -375,9 +373,6 @@ public class GameCoreController extends PropertiesViewController {
 			miniPlayer.setLayoutX(miniPlayer.getLayoutX() + (cosValue / SCALE_FACTOR));
 			miniPlayer.setLayoutY(miniPlayer.getLayoutY() + (sinValue / SCALE_FACTOR));
 			
-			//TODO Replace workaround
-//			double multiplier = 1.4;
-			
 			mapScroller.setHvalue(player.getLayoutX());
 			mapScroller.setVvalue(player.getLayoutY() - (mapScroller.getBoundsInLocal().getHeight() / 2));
 			
@@ -387,11 +382,7 @@ public class GameCoreController extends PropertiesViewController {
 				player.setLayoutY(player.getLayoutY() - sinValue);
 				miniPlayer.setLayoutX(miniPlayer.getLayoutX() - (cosValue / SCALE_FACTOR));
 				miniPlayer.setLayoutY(miniPlayer.getLayoutY() - (sinValue / SCALE_FACTOR));
-				
-//				mapScroller.setHvalue(mapScroller.getHvalue() - (cosValue * multiplier));
-//				mapScroller.setVvalue(mapScroller.getVvalue() - (sinValue * multiplier));
 			}
-			
 		}
 		
 		inputReader.display(speed, totalSlowFactor, player.getRotate());
@@ -400,9 +391,9 @@ public class GameCoreController extends PropertiesViewController {
 		
 	}
 	
-	private void centerNode(Node node){
-		node.setLayoutX(mapScroller.getBoundsInLocal().getWidth() / 2);
-		node.setLayoutY(mapScroller.getBoundsInLocal().getHeight() / 2);
+	private void centerNode(Node node, double width, double height){
+		node.setLayoutX((mapScroller.getBoundsInLocal().getWidth() - width) / 2);
+		node.setLayoutY((mapScroller.getBoundsInLocal().getHeight() - height) / 2);
 	}
 	
 	private void checkWarning(Shape block){
@@ -448,7 +439,7 @@ public class GameCoreController extends PropertiesViewController {
 			new AlertDialog(AlertType.INFORMATION, "Finish!",  null,
 					"Duration: " + String.format("%.1f", result)).showAndWait();
 			close();
-			new GameEventTableViewController().show();
+			stage.close();
 		}
 	}
 	
@@ -576,6 +567,10 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private double getMiniScreenTileHeight(){
 		return 16.0;
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 	
 }
