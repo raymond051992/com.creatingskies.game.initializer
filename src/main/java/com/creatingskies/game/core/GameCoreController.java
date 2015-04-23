@@ -56,6 +56,7 @@ public class GameCoreController extends PropertiesViewController {
 	
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
+	@FXML private ImageView weatherImageView;
 	
 	private List<Shape> obstacles;
 	private List<Shape> obstacleEdges;
@@ -127,6 +128,7 @@ public class GameCoreController extends PropertiesViewController {
 		
 		initMap(map);
 		initWarningImages(map.getWidth(), map.getHeight());
+		initWeathers();
 		
 		inputReader.init();
 		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame());
@@ -135,14 +137,20 @@ public class GameCoreController extends PropertiesViewController {
 		mapScroller.setVmax(mapScroller.getContent().getBoundsInLocal().getHeight());
 		
 		//TODO Replace workaround
-		mapScroller.setHvalue(player.getLayoutX() - 200);
-		mapScroller.setVvalue(player.getLayoutY() + 400);
+//		mapScroller.setHvalue(player.getLayoutX() - 200);
+//		mapScroller.setVvalue(player.getLayoutY() + 400);
 		
 		centerNode(stopImageView);
 		centerNode(warningImageView);
 		centerNode(countDownValue);
 		
 		countDownTimer.play();
+	}
+	
+	private void initWeathers(){
+		if(getGameEvent().getGame().getWeather() != null){
+			weatherImageView.setImage(Util.byteArrayToImage(getGameEvent().getGame().getWeather().getImage()));
+		}
 	}
 	
 	private void initWarningImages(Integer width, Integer height){
@@ -205,6 +213,7 @@ public class GameCoreController extends PropertiesViewController {
 		for(Tile tile : map.getTiles()){
 			ImageView backImage = new ImageView();
 			ImageView minibackImage = new ImageView();
+			minibackImage.setOpacity(0.5);
 			
 			backImage.setFitHeight(getMainScreenTileHeight());
 			backImage.setFitWidth(getMainScreenTileWidth());
@@ -356,6 +365,7 @@ public class GameCoreController extends PropertiesViewController {
 		inputReader.display(speed, totalSlowFactor, player.getRotate());
 		warningImageView.setVisible(warningImageView.isVisible() && !encounteredBlockage);
 		stopImageView.setVisible(encounteredBlockage);
+		
 	}
 	
 	private void centerNode(Node node){
