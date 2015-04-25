@@ -17,8 +17,7 @@ import javafx.stage.Stage;
 
 public class GameEventGroupSelectionController {
 
-	Stage stage;
-	
+	private Stage stage;
 	private FlowPane groupSelectionContainer = new FlowPane();
 	
 	
@@ -49,5 +48,9 @@ public class GameEventGroupSelectionController {
 	
 	private List<Group> getAllGroups(final Company company){
 		return new CompanyDAO().findAllGroupsForCompany(company);
+	}
+
+	public Stage getStage() {
+		return stage;
 	}
 }

@@ -34,7 +34,8 @@ public class GroupSelection extends AnchorPane{
 	private AnchorPane infoBoxContainer = new AnchorPane();
 	private VBox infoBox = new VBox(VBOX_SPACING);
 	
-	public GroupSelection(final Group group,final GameEvent gameEvent,GameEventGroupSelectionController controller) {
+	public GroupSelection(final Group group, final GameEvent gameEvent,
+			GameEventGroupSelectionController controller) {
 		initStyle();
 		
 		Label groupNameLabel = new Label(group.getName());
@@ -58,16 +59,16 @@ public class GroupSelection extends AnchorPane{
 		
 		HBox buttonContainer = new HBox();
 		buttonContainer.setAlignment(Pos.CENTER);
-		Button startGameButton = new Button("START GAME");
+		Button startGameButton = new Button("Start Game");
 		startGameButton.setMinHeight(50);
 		startGameButton.setStyle("-fx-font-size:20px;-fx-font-weight:bold;");
 		
 		startGameButton.setOnAction((event) -> {
-			controller.stage.close();
+			controller.getStage().close();
 			Alert waitDialog = new AlertDialog(AlertType.INFORMATION, "Loading map", null, "Please wait.");
 	    	waitDialog.initModality(Modality.WINDOW_MODAL);
 			waitDialog.show();
-			new GameCoreController().show(gameEvent);
+			new GameCoreController().show(gameEvent, group);
 			waitDialog.hide();
 		});
 		
@@ -76,7 +77,6 @@ public class GroupSelection extends AnchorPane{
 		AnchorPane.setBottomAnchor(buttonContainer, 10D);
 		AnchorPane.setLeftAnchor(buttonContainer, 10D);
 		AnchorPane.setRightAnchor(buttonContainer, 10D);
-		
 		
 		getChildren().add(buttonContainer);
 	}

@@ -10,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
@@ -38,15 +37,14 @@ import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game.Type;
 import com.creatingskies.game.core.resources.GameResourcesManager;
 import com.creatingskies.game.model.Constant;
+import com.creatingskies.game.model.company.Group;
 import com.creatingskies.game.model.event.GameEvent;
 import com.creatingskies.game.util.Util;
 
 public class GameCoreController extends PropertiesViewController {
 	
 	private static final Integer SCALE_FACTOR = 15;
-	private static final Double AVERAGE_INPUT = 4.0;
-	private static final Double AVERAGE_BIKING_SPEED = 4.30556;
-	
+
 	@FXML private Pane pane;
 	@FXML private GridPane mapTiles;
 	@FXML private ScrollPane mapScroller;
@@ -107,6 +105,7 @@ public class GameCoreController extends PropertiesViewController {
 	private InputForce inputForce;
 	
 	private GameResourcesManager gameResourceManager;
+	private Group group;
 	private Stage stage;
 	
 	@Override
@@ -114,7 +113,7 @@ public class GameCoreController extends PropertiesViewController {
 		return "Game";
 	}
 
-	public void show(GameEvent gameEvent) {
+	public void show(GameEvent gameEvent, Group group) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("GameCore.fxml"));
@@ -132,6 +131,7 @@ public class GameCoreController extends PropertiesViewController {
             controller.setCurrentAction(Action.VIEW);
             controller.setCurrentRecord(gameEvent);
 	        controller.setStage(stage);
+	        controller.setGroup(group);
 	        controller.init();
 	        stage.show();
 	        
@@ -247,37 +247,34 @@ public class GameCoreController extends PropertiesViewController {
 		
 		for(Tile tile : map.getTiles()){
 			ImageView backImage = new ImageView();
-			ImageView minibackImage = new ImageView();
-			minibackImage.setOpacity(0.5);
+			ImageView miniBackImage = new ImageView();
+			miniBackImage.setOpacity(0.5);
 			
 			backImage.setFitHeight(getMainScreenTileHeight());
 			backImage.setFitWidth(getMainScreenTileWidth());
 			backImage.setImage(Util.byteArrayToImage(tile.getBackImage() != null ?
 					tile.getBackImage().getImage() : map.getDefaultTileImage().getImage()));
 			
-			minibackImage.setFitHeight(getMiniScreenTileHeight());
-			minibackImage.setFitWidth(getMiniScreenTileWidth());
-			minibackImage.setImage(Util.byteArrayToImage(tile.getBackImage() != null ?
+			miniBackImage.setFitHeight(getMiniScreenTileHeight());
+			miniBackImage.setFitWidth(getMiniScreenTileWidth());
+			miniBackImage.setImage(Util.byteArrayToImage(tile.getBackImage() != null ?
 					tile.getBackImage().getImage() : map.getDefaultTileImage().getImage()));
 			
-			Group group = new Group(backImage);
-			Group minigroup = new Group(minibackImage);
+			ImageView frontImage = null;
+			ImageView miniFrontImage = null;
 			
 			if(tile.getObstacle() != null || tile.getStartPoint() || tile.getEndPoint()){
-				ImageView frontImage = new ImageView();
-				ImageView minifrontImage = new ImageView();
+				frontImage = new ImageView();
+				miniFrontImage = new ImageView();
 				frontImage.setFitHeight(getMainScreenTileHeight());
 				frontImage.setFitWidth(getMainScreenTileWidth());
 				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
 				
-				minifrontImage.setFitHeight(getMiniScreenTileHeight());
-				minifrontImage.setFitWidth(getMiniScreenTileWidth());
-				minifrontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
+				miniFrontImage.setFitHeight(getMiniScreenTileHeight());
+				miniFrontImage.setFitWidth(getMiniScreenTileWidth());
+				miniFrontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
-				
-				group.getChildren().add(frontImage);
-				minigroup.getChildren().add(minifrontImage);
 				
 				if(tile.getObstacle() != null){
 					createObstacle(tile);
@@ -295,8 +292,9 @@ public class GameCoreController extends PropertiesViewController {
 				
 				createTileShapes(tile, map.getDefaultTileImage().getDifficulty());
 			}
-			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
-			miniMapTiles.add(minigroup, tile.getColIndex(), tile.getRowIndex());
+			
+			mapTiles.add(Util.bundle(backImage, frontImage), tile.getColIndex(), tile.getRowIndex());
+			miniMapTiles.add(Util.bundle(miniBackImage, miniFrontImage), tile.getColIndex(), tile.getRowIndex());
 		}
 		
 		initPlayingArea(map);
@@ -320,16 +318,14 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	private void initGameLoop() {
-		final float frameDuration = 50;
-		gameLoop = new Timeline(new KeyFrame(Duration.millis(frameDuration),
+		gameLoop = new Timeline(new KeyFrame(Duration.millis(Constant.FRAME_DURATION),
 				new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent event) {
-		    	millisGameDuration += frameDuration;
-		    	float duration = millisGameDuration / 1000.0f;
-		    	durationLabel.setText(String.format("%.2f", duration));
+		    	millisGameDuration += Constant.FRAME_DURATION;
+		    	durationLabel.setText(String.format("%.2f", getDuration()));
 		    	distanceLabel.setText(String.format("%.2f", totalDistance));
-		    	speedLabel.setText(String.format("%.2f", ((distance / AVERAGE_INPUT) * AVERAGE_BIKING_SPEED)) + " m/s");
+		    	speedLabel.setText(String.format("%.2f", Util.computeSpeed(distance)) + " m/s");
 		    	
 		    	inputForce = inputReader.readInput();
 		    	computeRotation();
@@ -448,12 +444,31 @@ public class GameCoreController extends PropertiesViewController {
 		if (intersect.getBoundsInLocal().getWidth() != -1) {
 			gameLoop.stop();
 			gameResourceManager.stop();
-			float result = millisGameDuration / 1000.0f;
-			new AlertDialog(AlertType.INFORMATION, "Finish!",  null,
-					"Duration: " + String.format("%.1f", result)).showAndWait();
+			
+			saveGameResult();
+			new AlertDialog(AlertType.INFORMATION, "Finish!",  "Congratulations!",
+					" Company: " + group.getCompany().getName()
+					+ "\n Group: " + group.getName()
+					+ "\n Duration: " + String.format("%.2f", getDuration())
+					+ "\n Average Speed: " + String.format("%.2f", Util.computeSpeed(totalDistance, getDuration())))
+					.showAndWait();
+
 			close();
 			stage.close();
 		}
+	}
+	
+	private float getDuration(){
+		return millisGameDuration / 1000.0f;
+	}
+	
+	private void saveGameResult(){
+		GameResult result = new GameResult();
+		result.setGame(getGameEvent().getGame());
+		result.setDuration((double) getDuration());
+		result.setDistance((double) totalDistance);
+		result.setGroup(group);
+		new GameDao().saveOrUpdate(result);
 	}
 	
 	private boolean checkCollision(Shape block) {
@@ -584,6 +599,10 @@ public class GameCoreController extends PropertiesViewController {
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+
+	public void setGroup(Group group) {
+		this.group = group;
 	}
 	
 }
