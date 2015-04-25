@@ -34,7 +34,11 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -50,7 +54,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label style="-fx-font-weight: bold;" text="Obstacle Slow Factor" textFill="WHITE" GridPane.rowIndex="1">
+            <Label style="-fx-font-weight: bold;" text="Obstacle Slow Factor" textFill="WHITE" GridPane.rowIndex="4">
                <font>
                   <Font size="14.0" />
                </font>
@@ -65,97 +69,127 @@
 										<Font size="24.0" />
 									</font>
 								</Label>
-            <Label fx:id="obstacleSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label fx:id="obstacleSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="tileSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Label fx:id="tileSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Tile Slow Factor" textFill="WHITE" GridPane.rowIndex="2">
+            <Label style="-fx-font-weight: bold;" text="Tile Slow Factor" textFill="WHITE" GridPane.rowIndex="5">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Screen Width" textFill="WHITE" GridPane.rowIndex="7">
+            <Label style="-fx-font-weight: bold;" text="Screen Width" textFill="WHITE" GridPane.rowIndex="11">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="screenWidthLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="7">
+            <Label fx:id="screenWidthLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="11">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Screen Height" textFill="WHITE" GridPane.rowIndex="8">
+            <Label style="-fx-font-weight: bold;" text="Screen Height" textFill="WHITE" GridPane.rowIndex="12">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="screenHeightLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="8">
+            <Label fx:id="screenHeightLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="12">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Scroll Hval" textFill="WHITE" GridPane.rowIndex="10">
+            <Label style="-fx-font-weight: bold;" text="Scroll Hval" textFill="WHITE" GridPane.rowIndex="14">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Scroll Vval" textFill="WHITE" GridPane.rowIndex="11">
+            <Label style="-fx-font-weight: bold;" text="Scroll Vval" textFill="WHITE" GridPane.rowIndex="15">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Player X" textFill="WHITE" GridPane.rowIndex="13">
+            <Label style="-fx-font-weight: bold;" text="Player X" textFill="WHITE" GridPane.rowIndex="17">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Player Y" textFill="WHITE" GridPane.rowIndex="14">
+            <Label style="-fx-font-weight: bold;" text="Player Y" textFill="WHITE" GridPane.rowIndex="18">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="scrollHvalLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="10">
+            <Label fx:id="scrollHvalLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="14">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="scrollVvalLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="11">
+            <Label fx:id="scrollVvalLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="15">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="playerXLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="13">
+            <Label fx:id="playerXLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="17">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="playerYLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="14">
+            <Label fx:id="playerYLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="18">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Map Width" textFill="WHITE" GridPane.rowIndex="4">
+            <Label style="-fx-font-weight: bold;" text="Map Width" textFill="WHITE" GridPane.rowIndex="8">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Map Height" textFill="WHITE" GridPane.rowIndex="5">
+            <Label style="-fx-font-weight: bold;" text="Map Height" textFill="WHITE" GridPane.rowIndex="9">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="mapWidthLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <Label fx:id="mapWidthLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="8">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="mapHeightLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <Label fx:id="mapHeightLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="9">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label style="-fx-font-weight: bold;" text="Weather Slow Factor" textFill="WHITE" GridPane.rowIndex="6">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="weatherSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label style="-fx-font-weight: bold;" text="Distance" textFill="WHITE" GridPane.rowIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="distanceLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label style="-fx-font-weight: bold;" text="Speed" textFill="WHITE" GridPane.rowIndex="2">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="speedLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <font>
                   <Font size="24.0" />
                </font>

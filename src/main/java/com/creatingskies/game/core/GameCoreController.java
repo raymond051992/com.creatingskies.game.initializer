@@ -44,6 +44,8 @@ import com.creatingskies.game.util.Util;
 public class GameCoreController extends PropertiesViewController {
 	
 	private static final Integer SCALE_FACTOR = 15;
+	private static final Double AVERAGE_INPUT = 4.0;
+	private static final Double AVERAGE_BIKING_SPEED = 4.30556;
 	
 	@FXML private Pane pane;
 	@FXML private GridPane mapTiles;
@@ -53,8 +55,12 @@ public class GameCoreController extends PropertiesViewController {
 	
 	@FXML private Label countDownValue;
 	@FXML private Label durationLabel;
+	@FXML private Label distanceLabel;
+	@FXML private Label speedLabel;
+	
 	@FXML private Label obstacleSlowLabel;
 	@FXML private Label tileSlowLabel;
+	@FXML private Label weatherSlowLabel;
 	
 	@FXML private Label mapWidthLabel;
 	@FXML private Label mapHeightLabel;
@@ -64,7 +70,6 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML private Label scrollVvalLabel;
 	@FXML private Label playerXLabel;
 	@FXML private Label playerYLabel;
-	
 	
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
@@ -92,8 +97,10 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private Timeline gameLoop;
 	private Timeline countDownTimer;
-	
-	private long millisGameDuration;
+
+	private float millisGameDuration;
+	private float totalDistance = 0;
+	private double distance;
 	private int countDown = 3;
 	
 	private AbstractInputReader inputReader;
@@ -166,6 +173,8 @@ public class GameCoreController extends PropertiesViewController {
 	private void initWeathers(){
 		if(getGameEvent().getGame().getWeather() != null){
 			weatherImageView.setImage(Util.byteArrayToImage(getGameEvent().getGame().getWeather().getImage()));
+			weatherSlowFactor = (double) getGameEvent().getGame().getWeather().getDifficulty();
+			weatherSlowLabel.setText(String.format("%.2f", weatherSlowFactor));
 		}
 	}
 	
@@ -317,8 +326,10 @@ public class GameCoreController extends PropertiesViewController {
 		    @Override
 		    public void handle(ActionEvent event) {
 		    	millisGameDuration += frameDuration;
-		    	float result = millisGameDuration / 1000.0f;
-		    	durationLabel.setText(String.format("%.1f", result));
+		    	float duration = millisGameDuration / 1000.0f;
+		    	durationLabel.setText(String.format("%.2f", duration));
+		    	distanceLabel.setText(String.format("%.2f", totalDistance));
+		    	speedLabel.setText(String.format("%.2f", ((distance / AVERAGE_INPUT) * AVERAGE_BIKING_SPEED)) + " m/s");
 		    	
 		    	inputForce = inputReader.readInput();
 		    	computeRotation();
@@ -358,15 +369,17 @@ public class GameCoreController extends PropertiesViewController {
 		
 		boolean encounteredBlockage = false;
 		double totalSlowFactor = 0;
-		double speed = 0;
+		distance = 0;
 		
 		if(inputForce.left != 0 && inputForce.right != 0){
 			totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
-			speed = Math.max((((inputForce.left + inputForce.right)
+			distance = Math.max((((inputForce.left + inputForce.right)
 					/ (maxMovementSpeed * 2)) * maxMovementSpeed) - totalSlowFactor, 0.1);
 			
-			double cosValue = (speed * Math.cos(Math.toRadians(player.getRotate())));
-			double sinValue = (speed * Math.sin(Math.toRadians(player.getRotate())));
+			totalDistance += distance;
+			
+			double cosValue = (distance * Math.cos(Math.toRadians(player.getRotate())));
+			double sinValue = (distance * Math.sin(Math.toRadians(player.getRotate())));
 			
 			player.setLayoutX(player.getLayoutX() + cosValue);
 			player.setLayoutY(player.getLayoutY() + sinValue);
@@ -385,7 +398,7 @@ public class GameCoreController extends PropertiesViewController {
 			}
 		}
 		
-		inputReader.display(speed, totalSlowFactor, player.getRotate());
+		inputReader.display(distance, totalSlowFactor, player.getRotate());
 		warningImageView.setVisible(warningImageView.isVisible() && !encounteredBlockage);
 		stopImageView.setVisible(encounteredBlockage);
 		
