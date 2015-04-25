@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
@@ -124,6 +125,7 @@ public class GameCoreController extends PropertiesViewController {
 	        stage.initOwner(MainLayout.getPrimaryStage());
 	        stage.initStyle(StageStyle.UNDECORATED);
 	        Scene scene = new Scene(MainLayout.getModalLayout());
+	        scene.setCursor(Cursor.NONE);
 	        stage.setMaximized(true);
 	        stage.setScene(scene);
 	        
