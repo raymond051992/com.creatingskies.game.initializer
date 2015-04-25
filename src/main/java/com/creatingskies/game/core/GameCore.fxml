@@ -8,19 +8,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="772.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.core.GameCoreController">
+<AnchorPane fx:id="mainContainer" prefHeight="600.0" prefWidth="772.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.core.GameCoreController">
 	<children>
-      <ImageView fx:id="stopImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" visible="false" />
-      <ImageView fx:id="warningImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" visible="false" />
-      <ScrollPane fx:id="mapScroller" hbarPolicy="NEVER" layoutY="-10.0" pannable="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #000000;" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <content>
-            <Pane fx:id="pane" style="-fx-background-color: #000000;">
-               <children>
-                  <GridPane fx:id="mapTiles" />
-               </children>
-            </Pane>
-         </content>
-      </ScrollPane>
+      <Pane fx:id="pane" prefWidth="0.0" style="-fx-background-color: #000000;">
+         <children>
+            <GridPane fx:id="mapTiles" />
+         </children>
+      </Pane>
 				<Label fx:id="countDownValue" style="-fx-font-weight: bold;" text="3">
 					<font>
 						<Font size="96.0" />
@@ -201,5 +195,7 @@
             <GridPane fx:id="miniMapTiles" minHeight="200.0" minWidth="200.0" />
          </children>
       </Pane>
+      <ImageView fx:id="stopImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" visible="false" />
+      <ImageView fx:id="warningImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" visible="false" />
 	</children>
 </AnchorPane>

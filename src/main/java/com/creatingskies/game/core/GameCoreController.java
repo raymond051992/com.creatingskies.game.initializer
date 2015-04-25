@@ -14,9 +14,9 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -46,8 +46,8 @@ public class GameCoreController extends PropertiesViewController {
 	private static final Integer SCALE_FACTOR = 15;
 
 	@FXML private Pane pane;
+	@FXML private AnchorPane mainContainer;
 	@FXML private GridPane mapTiles;
-	@FXML private ScrollPane mapScroller;
 	@FXML private GridPane miniMapTiles;
 	@FXML private Pane miniMapPane;
 	
@@ -206,17 +206,15 @@ public class GameCoreController extends PropertiesViewController {
 		            centerNode(stopImageView, stopImageView.getFitWidth(), stopImageView.getFitHeight());
 		    		centerNode(warningImageView, warningImageView.getFitWidth(), warningImageView.getFitHeight());
 					
-					mapScroller.setHvalue(player.getLayoutX());
-					mapScroller.setVvalue(player.getLayoutY() - (mapScroller.getBoundsInLocal().getHeight() / 2));
+		    		pane.setLayoutX(0-player.getLayoutX());
+	    			pane.setLayoutY(0-player.getLayoutY());
 					
-					mapScroller.setHmax(mapTiles.getWidth());
-					mapScroller.setVmax(mapTiles.getHeight());
-					
+	    			mainContainer.setMaxSize(pane.getWidth(), pane.getHeight());
 					mapWidthLabel.setText(convertToString(mapTiles.getWidth()));
 					mapHeightLabel.setText(convertToString(mapTiles.getHeight()));
 					
-					screenWidthLabel.setText(convertToString(mapScroller.getBoundsInLocal().getWidth()));
-					screenHeightLabel.setText(convertToString(mapScroller.getBoundsInLocal().getHeight()));
+					screenWidthLabel.setText(convertToString(stage.getWidth()));
+					screenHeightLabel.setText(convertToString(stage.getHeight()));
 					
 					if(countDown < 0){
 						renderCountdown(false);
@@ -331,8 +329,8 @@ public class GameCoreController extends PropertiesViewController {
 		    	computeRotation();
 				computeMovement();
 				
-				scrollHvalLabel.setText(convertToString(mapScroller.getHvalue()));
-				scrollVvalLabel.setText(convertToString(mapScroller.getVvalue()));
+				scrollHvalLabel.setText(convertToString(pane.getLayoutX()));
+				scrollVvalLabel.setText(convertToString(pane.getLayoutY()));
 				
 				playerXLabel.setText(convertToString(player.getLayoutX()));
 				playerYLabel.setText(convertToString(player.getLayoutY()));
@@ -382,8 +380,13 @@ public class GameCoreController extends PropertiesViewController {
 			miniPlayer.setLayoutX(miniPlayer.getLayoutX() + (cosValue / SCALE_FACTOR));
 			miniPlayer.setLayoutY(miniPlayer.getLayoutY() + (sinValue / SCALE_FACTOR));
 			
-			mapScroller.setHvalue(player.getLayoutX());
-			mapScroller.setVvalue(player.getLayoutY() - (mapScroller.getBoundsInLocal().getHeight() / 2));
+			if(player.getLayoutX() > 0 && (player.getLayoutX() + stage.getWidth()) < pane.getBoundsInLocal().getWidth()){
+				pane.setLayoutX(0-(player.getLayoutX()));
+			}
+			
+			if(player.getLayoutY() > 0 && (player.getLayoutY() + stage.getHeight()) < pane.getBoundsInLocal().getHeight()){
+				pane.setLayoutY(0-player.getLayoutY());
+			}
 			
 			if(checkCollision(playerCircle)){
 				encounteredBlockage = true;
@@ -401,8 +404,8 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	private void centerNode(Node node, double width, double height){
-		node.setLayoutX((mapScroller.getBoundsInLocal().getWidth() - width) / 2);
-		node.setLayoutY((mapScroller.getBoundsInLocal().getHeight() - height) / 2);
+		node.setLayoutX((stage.getWidth() - width) / 2);
+		node.setLayoutY((stage.getHeight() - height) / 2);
 	}
 	
 	private void checkWarning(Shape block){
