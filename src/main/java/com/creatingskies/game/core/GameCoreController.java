@@ -206,8 +206,7 @@ public class GameCoreController extends PropertiesViewController {
 		            centerNode(stopImageView, stopImageView.getFitWidth(), stopImageView.getFitHeight());
 		    		centerNode(warningImageView, warningImageView.getFitWidth(), warningImageView.getFitHeight());
 					
-		    		pane.setLayoutX(0-player.getLayoutX());
-	    			pane.setLayoutY(0-player.getLayoutY());
+		    		scrollMap();
 					
 	    			mainContainer.setMaxSize(pane.getWidth(), pane.getHeight());
 					mapWidthLabel.setText(convertToString(mapTiles.getWidth()));
@@ -380,13 +379,7 @@ public class GameCoreController extends PropertiesViewController {
 			miniPlayer.setLayoutX(miniPlayer.getLayoutX() + (cosValue / SCALE_FACTOR));
 			miniPlayer.setLayoutY(miniPlayer.getLayoutY() + (sinValue / SCALE_FACTOR));
 			
-			if(player.getLayoutX() > 0 && (player.getLayoutX() + stage.getWidth()) < pane.getBoundsInLocal().getWidth()){
-				pane.setLayoutX(0-(player.getLayoutX()));
-			}
-			
-			if(player.getLayoutY() > 0 && (player.getLayoutY() + stage.getHeight()) < pane.getBoundsInLocal().getHeight()){
-				pane.setLayoutY(0-player.getLayoutY());
-			}
+			scrollMap();
 			
 			if(checkCollision(playerCircle)){
 				encounteredBlockage = true;
@@ -401,6 +394,24 @@ public class GameCoreController extends PropertiesViewController {
 		warningImageView.setVisible(warningImageView.isVisible() && !encounteredBlockage);
 		stopImageView.setVisible(encounteredBlockage);
 		
+	}
+	
+	private void scrollMap(){
+		if(player.getLayoutX() > 0 && (player.getLayoutX() + ((stage.getWidth() + player.getWidth()) / 2)) < pane.getBoundsInLocal().getWidth()){
+			if((0-(player.getLayoutX() - ((stage.getWidth() - player.getWidth()) / 2))) < 0){
+				pane.setLayoutX(0-(player.getLayoutX() - ((stage.getWidth() - player.getWidth()) / 2)));
+			}else{
+				pane.setLayoutX(0-(player.getLayoutX()));
+			}
+		}
+		
+		if(player.getLayoutY() > 0 && (player.getLayoutY() + ((stage.getHeight() + player.getHeight()) / 2)) < pane.getBoundsInLocal().getHeight()){
+			if((0-(player.getLayoutY() - ((stage.getHeight() - player.getHeight()) / 2))) < 0){
+				pane.setLayoutY(0-(player.getLayoutY() - ((stage.getHeight() - player.getHeight()) / 2)));
+			}else{
+				pane.setLayoutY(0-(player.getLayoutY()));
+			}
+		}
 	}
 	
 	private void centerNode(Node node, double width, double height){
