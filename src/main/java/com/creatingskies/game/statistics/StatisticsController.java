@@ -14,10 +14,13 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.creatingskies.game.classes.PropertiesViewController;
@@ -39,6 +42,14 @@ public class StatisticsController extends PropertiesViewController {
     
     @FXML private ChoiceBox<Game> gameChoices;
     @FXML private ChoiceBox<Company> companyChoices;
+    
+    @FXML private RadioButton dateAscending;
+    @FXML private RadioButton dateDescending;
+    @FXML private RadioButton speedAscending;
+    @FXML private RadioButton speedDescending;
+    
+    private ToggleGroup dateGroup;
+    private ToggleGroup speedGroup;
     
     private GameDao gameDao;
     
@@ -92,6 +103,16 @@ public class StatisticsController extends PropertiesViewController {
 		
 		gameChoices.getSelectionModel().selectFirst();
 		companyChoices.getSelectionModel().selectFirst();
+		
+		dateGroup = new ToggleGroup();
+		dateAscending.setToggleGroup(dateGroup);
+		dateDescending.setToggleGroup(dateGroup);
+		dateAscending.setSelected(true);
+		
+		speedGroup = new ToggleGroup();
+		speedAscending.setToggleGroup(speedGroup);
+		speedDescending.setToggleGroup(speedGroup);
+		speedAscending.setSelected(true);
     }
 
     @FXML
@@ -117,8 +138,11 @@ public class StatisticsController extends PropertiesViewController {
 		if(companyChoices.getValue() != null){
 			criterions[3] = Restrictions.eq("company.name", companyChoices.getValue().getName());
 		}
-    	
-    	List<GameResult> results = gameDao.findAllGameResults(criterions);
+		
+		Order dateOrder = dateAscending.isSelected() ? Order.asc("entryDate") : Order.desc("entryDate");
+		Order speedOrder = speedAscending.isSelected() ? Order.asc("duration") : Order.desc("duration");
+				
+    	List<GameResult> results = gameDao.findAllGameResults(dateOrder, speedOrder, criterions);
     	
     	XYChart.Series<String, Double> series = null;
         GameResult previousResult = null;
@@ -127,6 +151,7 @@ public class StatisticsController extends PropertiesViewController {
         for (GameResult result : results) {
         	if(previousResult == null || !previousResult.equals(result)){
         		series = new XYChart.Series<>();
+        		series.setName(result.getGroup().getName());
         		newGroup = true;
         	} else {
         		newGroup = false;

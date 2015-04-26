@@ -6,22 +6,28 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.statistics.StatisticsController">
+<AnchorPane prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.statistics.StatisticsController">
    <children>
-      <AnchorPane maxWidth="225.0" prefHeight="450.0" prefWidth="225.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <AnchorPane maxWidth="225.0" prefHeight="450.0" prefWidth="250.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
-            <Label layoutX="25.0" layoutY="7.0" text="Game" />
-            <Label layoutX="25.0" layoutY="64.0" text="Company" />
-            <Label layoutX="25.0" layoutY="123.0" text="Start Date" />
-            <DatePicker fx:id="startDatePicker" layoutX="25.0" layoutY="143.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" />
-            <Label layoutX="26.0" layoutY="182.0" text="End Date" />
-            <DatePicker fx:id="endDatePicker" layoutX="26.0" layoutY="202.0" />
-            <Button layoutX="125.0" layoutY="255.0" mnemonicParsing="false" onAction="#filterResults" prefHeight="25.0" prefWidth="75.0" text="Filter" />
-            <ChoiceBox fx:id="companyChoices" layoutX="25.0" layoutY="84.0" prefHeight="25.0" prefWidth="175.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" />
-            <ChoiceBox fx:id="gameChoices" layoutX="25.0" layoutY="26.0" prefHeight="25.0" prefWidth="175.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" />
+            <Label layoutX="25.0" layoutY="7.0" text="Game" AnchorPane.leftAnchor="25.0" />
+            <Label layoutX="25.0" layoutY="64.0" text="Company" AnchorPane.leftAnchor="25.0" />
+            <Label layoutX="25.0" layoutY="123.0" text="Start Date" AnchorPane.leftAnchor="25.0" />
+            <DatePicker fx:id="startDatePicker" layoutX="25.0" layoutY="143.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="30.0" />
+            <Label layoutX="26.0" layoutY="182.0" text="End Date" AnchorPane.leftAnchor="25.0" />
+            <DatePicker fx:id="endDatePicker" layoutX="26.0" layoutY="202.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="30.0" />
+            <Button layoutX="93.0" layoutY="421.0" mnemonicParsing="false" onAction="#filterResults" prefHeight="25.0" prefWidth="75.0" text="Filter" AnchorPane.rightAnchor="30.0" />
+            <ChoiceBox fx:id="companyChoices" layoutX="25.0" layoutY="84.0" prefHeight="25.0" prefWidth="175.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="30.0" />
+            <ChoiceBox fx:id="gameChoices" layoutX="25.0" layoutY="26.0" prefHeight="25.0" prefWidth="175.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="30.0" />
+            <RadioButton fx:id="dateAscending" layoutX="25.0" layoutY="271.0" mnemonicParsing="false" text="Oldest to Latest" AnchorPane.leftAnchor="25.0" />
+            <RadioButton fx:id="dateDescending" layoutX="25.0" layoutY="299.0" mnemonicParsing="false" text="Latest to Oldest" AnchorPane.leftAnchor="25.0" />
+            <Label layoutX="25.0" layoutY="248.0" text="Date" AnchorPane.leftAnchor="25.0" />
+            <RadioButton fx:id="speedAscending" layoutX="25.0" layoutY="353.0" mnemonicParsing="false" text="Lowest to Highest" AnchorPane.leftAnchor="25.0" />
+            <RadioButton fx:id="speedDescending" layoutX="25.0" layoutY="381.0" mnemonicParsing="false" text="Highest to Lowest" AnchorPane.leftAnchor="25.0" />
+            <Label layoutX="25.0" layoutY="330.0" text="Speed" AnchorPane.leftAnchor="25.0" />
          </children>
       </AnchorPane>
-      <AnchorPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="225.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <AnchorPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
             <BarChart fx:id="barChart" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <xAxis>
