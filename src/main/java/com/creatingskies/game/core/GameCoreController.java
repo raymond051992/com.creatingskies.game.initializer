@@ -126,7 +126,8 @@ public class GameCoreController extends PropertiesViewController {
 	        stage.initStyle(StageStyle.UNDECORATED);
 	        Scene scene = new Scene(MainLayout.getModalLayout());
 	        scene.setCursor(Cursor.NONE);
-	        
+	        scene.getStylesheets()
+        	.add("/css/dialog.css");
 	        stage.setMaximized(true);
 	        stage.setScene(scene);
 	        

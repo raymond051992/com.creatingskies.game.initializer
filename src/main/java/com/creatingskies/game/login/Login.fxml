@@ -25,11 +25,7 @@
             <PasswordField fx:id="passwordField" GridPane.rowIndex="3" />
          </children>
       </GridPane>
-      <ButtonBar layoutX="186.0" layoutY="146.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
-        <buttons>
-            <Button defaultButton="true" mnemonicParsing="false" onAction="#login" styleClass="button-primary" text="Login" />
-        </buttons>
-      </ButtonBar>
-      <Label layoutX="21.0" layoutY="178.0" onMouseClicked="#handleForgotPassword" text="Forgot Password" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
+      <Button defaultButton="true" layoutX="444.0" layoutY="139.0" minWidth="100.0" mnemonicParsing="false" onAction="#login" styleClass="button-primary" text="Login" AnchorPane.rightAnchor="10.0" />
+      <Label layoutX="10.0" layoutY="130.0" onMouseClicked="#handleForgotPassword" style="-fx-cursor: hand;" text="Forgot Password" />
    </children>
 </AnchorPane>

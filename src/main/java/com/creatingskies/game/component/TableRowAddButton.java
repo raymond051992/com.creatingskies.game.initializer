@@ -10,7 +10,7 @@ import com.creatingskies.game.common.MainLayout;
 public class TableRowAddButton extends Button{
 	
 	private static final Image image = 
-			new Image(MainLayout.class.getResourceAsStream("/images/plus_000000_32.png"),16,16,true,true);
+			new Image(MainLayout.class.getResourceAsStream("/images/plus_ffffff_32.png"),16,16,true,true);
 	
 	public TableRowAddButton() {
 		super("a",new ImageView(image));

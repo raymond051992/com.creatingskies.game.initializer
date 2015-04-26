@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 public class TableRowActivateButton extends Button{
 	
 	private static final Image image = 
-			new Image(MainLayout.class.getResourceAsStream("/images/power-off_000000_32.png"),16,16,true,true);
+			new Image(MainLayout.class.getResourceAsStream("/images/power-off_ffffff_32.png"),16,16,true,true);
 	
 	public TableRowActivateButton() {
 		super("",new ImageView(image));

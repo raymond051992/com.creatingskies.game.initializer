@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 public class TableRowEditButton extends Button{
 	
 	private static final Image image = 
-			new Image(MainLayout.class.getResourceAsStream("/images/pencil_000000_32.png"),16,16,true,true);
+			new Image(MainLayout.class.getResourceAsStream("/images/pencil_ffffff_32.png"),16,16,true,true);
 	
 	public TableRowEditButton() {
 		super("",new ImageView(image));

@@ -25,11 +25,16 @@ public class GameEventGroupSelectionController {
 		Scene scene = new Scene(new AnchorPane(),800,600);
 		AnchorPane sceneRoot = (AnchorPane) scene.getRoot();
 		
+		sceneRoot.getStylesheets().add("/css/dialog.css");
+		sceneRoot.getStylesheets().add("/css/style.css");
+		sceneRoot.getStyleClass().add("background");
+		
 		stage = new Stage();
         stage.setTitle("Select a Group");
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(MainLayout.getPrimaryStage());
         stage.setScene(scene);
+        
         
         AnchorPane.setBottomAnchor(groupSelectionContainer, 10D);
 		AnchorPane.setLeftAnchor(groupSelectionContainer, 10D);
