@@ -10,7 +10,7 @@
 
 <AnchorPane fx:id="mainContainer" prefHeight="600.0" prefWidth="772.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.core.GameCoreController">
 	<children>
-      <Pane fx:id="pane" prefWidth="0.0" style="-fx-background-color: #000000;">
+      <Pane fx:id="pane" onMousePressed="#showMouseCursor" prefWidth="0.0" style="-fx-background-color: #000000;">
          <children>
             <GridPane fx:id="mapTiles" />
          </children>
@@ -197,5 +197,9 @@
       </Pane>
       <ImageView fx:id="stopImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" visible="false" />
       <ImageView fx:id="warningImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" visible="false" />
+      <ImageView fitHeight="32.0" fitWidth="32.0" onMouseClicked="#closeGame" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <image>
+            <Image url="images/times-circle_ffffff_32.png" />
+         </image></ImageView>
 	</children>
 </AnchorPane>

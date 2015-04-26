@@ -126,6 +126,7 @@ public class GameCoreController extends PropertiesViewController {
 	        stage.initStyle(StageStyle.UNDECORATED);
 	        Scene scene = new Scene(MainLayout.getModalLayout());
 	        scene.setCursor(Cursor.NONE);
+	        
 	        stage.setMaximized(true);
 	        stage.setScene(scene);
 	        
@@ -141,6 +142,21 @@ public class GameCoreController extends PropertiesViewController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@FXML
+	private void showMouseCursor(){
+		if(stage.getScene().getCursor() == Cursor.DEFAULT){
+			stage.getScene().setCursor(Cursor.NONE);
+		}else{
+			stage.getScene().setCursor(Cursor.DEFAULT);
+		}
+	}
+	
+	@FXML 
+	private void closeGame(){
+		close();
+		stage.close();
 	}
 	
 	private GameEvent getGameEvent(){
@@ -507,6 +523,7 @@ public class GameCoreController extends PropertiesViewController {
 		return hasCollision;
 	}
 	
+	@FXML
 	@Override
 	protected void close() {
 		gameLoop = null;
