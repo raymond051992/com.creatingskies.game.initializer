@@ -1,3 +1,18 @@
+.app-title{
+	-fx-font-size: 30px;
+	-fx-font-weight: bold;
+}
+#viewTitle {
+	-fx-font-size: 24px;
+	-fx-text-fill: #ffffff;
+}
+
+.root {
+	-fx-font-size: 16px;
+	-fx-text-fill: #ffffff;
+	-fx-font-family: "Arial";
+}
+
 .background {
     -fx-background-color: #222222;
 }
@@ -24,10 +39,15 @@
 	-fx-cursor: hand;
 }
 
-Button {
-	-fx-font-size: 15px;
+.button {
+	-fx-background-color: #375a7f;
 	-fx-background-radius: 4px;
+	-fx-text-fill: #ffffff;
 	-fx-cursor: hand;
+}
+
+.button:hover {
+	-fx-background-color: #28415b;
 }
 
 .button-default {
