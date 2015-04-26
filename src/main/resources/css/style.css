@@ -29,16 +29,6 @@
 	-fx-opacity: 1;
 }
 
-#logoutButton {
-	-fx-background-color: transparent;
-	-fx-cursor: hand;
-}
-
-#backToMainButton {
-	-fx-background-color: transparent;
-	-fx-cursor: hand;
-}
-
 .button {
 	-fx-background-color: #375a7f;
 	-fx-background-radius: 4px;
