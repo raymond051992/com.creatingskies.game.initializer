@@ -31,7 +31,10 @@
 .radio-button {
 	-fx-text-fill: #ffffff;
 	
-	}
+}
+.check-box {
+	-fx-text-fill: #ffffff;
+}
 .button {
 	-fx-background-color: #375a7f;
 	-fx-background-radius: 4px;
