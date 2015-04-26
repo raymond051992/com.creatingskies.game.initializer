@@ -12,9 +12,9 @@
 
 <AnchorPane minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.editor.MapDesignerController">
    <children>
-      <SplitPane fx:id="mapDesignerContainer" dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-        <items>
-          <AnchorPane minWidth="200.0" prefWidth="200.0">
+      <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+          <AnchorPane minWidth="250.0">
                <children>
                   <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
                      <buttons>
@@ -61,7 +61,7 @@
                   <Label fx:id="selectedTileDescription" layoutX="119.0" layoutY="117.0" text="Description" textFill="#8d8d8d" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0" />
                </children>
             </AnchorPane>
-          <AnchorPane fx:id="mapContainer">
+          <AnchorPane fx:id="mapContainer" HBox.hgrow="ALWAYS">
                <children>
                   <ScrollPane layoutX="7.0" styleClass="background-white" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <content>
@@ -69,8 +69,8 @@
                      </content>
                   </ScrollPane>
                </children></AnchorPane>
-        </items>
-      </SplitPane>
+         </children>
+      </HBox>
    </children>
    <styleClass>
       <String fx:value="background" />

@@ -10,8 +10,8 @@
 	<children>
 				<ButtonBar layoutX="86.0" layoutY="74.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
 					<buttons>
-						<Button mnemonicParsing="false" onAction="#handleSave" styleClass="button-success" text="Save" />
-						<Button mnemonicParsing="false" onAction="#handleCancel" styleClass="button-default" text="Cancel" />
+						<Button mnemonicParsing="false" onAction="#handleSave" text="Save" />
+						<Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
 					</buttons>
 				</ButtonBar>
       <GridPane layoutX="27.0" layoutY="-26.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">

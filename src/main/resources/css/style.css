@@ -28,7 +28,10 @@
 	-fx-font-size: 20pt;
 	-fx-opacity: 1;
 }
-
+.radio-button {
+	-fx-text-fill: #ffffff;
+	
+	}
 .button {
 	-fx-background-color: #375a7f;
 	-fx-background-radius: 4px;

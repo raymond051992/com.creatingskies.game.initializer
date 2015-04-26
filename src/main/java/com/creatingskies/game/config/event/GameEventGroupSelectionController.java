@@ -14,6 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class GameEventGroupSelectionController {
 
@@ -33,6 +34,8 @@ public class GameEventGroupSelectionController {
         stage.setTitle("Select a Group");
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(MainLayout.getPrimaryStage());
+        stage.initStyle(StageStyle.UTILITY);
+        stage.setResizable(false);
         stage.setScene(scene);
         
         

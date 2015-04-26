@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
@@ -44,10 +45,16 @@ public class GroupDialogController  {
 	        loader.setLocation(getClass().getResource("GroupDialog.fxml"));
 	        AnchorPane page = (AnchorPane) loader.load();
 
+	        page.getStylesheets().add("/css/dialog.css");
+	        page.getStylesheets().add("/css/style.css");
+	        page.getStyleClass().add("background");
+	        
 	        stage = new Stage();
 	        stage.setTitle("Group");
 	        stage.initModality(Modality.WINDOW_MODAL);
 	        stage.initOwner(MainLayout.getPrimaryStage());
+	        stage.initStyle(StageStyle.UTILITY);
+	        stage.setResizable(false);
 	        Scene scene = new Scene(page);
 	        stage.setScene(scene);
 

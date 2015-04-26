@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -39,7 +38,6 @@ import com.creatingskies.game.util.Util;
 
 public class MapDesignerController {
 	
-	@FXML private SplitPane mapDesignerContainer;
 	@FXML private AnchorPane mapContainer;
 	
 	@FXML private GridPane mapTiles;

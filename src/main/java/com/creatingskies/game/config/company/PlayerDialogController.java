@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 
 import com.creatingskies.game.common.MainLayout;
@@ -38,10 +39,16 @@ public class PlayerDialogController  {
 	        loader.setLocation(getClass().getResource("PlayerDialog.fxml"));
 	        AnchorPane page = (AnchorPane) loader.load();
 
+	        page.getStylesheets().add("/css/dialog.css");
+	        page.getStylesheets().add("/css/style.css");
+	        page.getStyleClass().add("background");
+	        
 	        stage = new Stage();
 	        stage.setTitle("Player");
 	        stage.initModality(Modality.WINDOW_MODAL);
 	        stage.initOwner(MainLayout.getPrimaryStage());
+	        stage.initStyle(StageStyle.UTILITY);
+	        stage.setResizable(false);
 	        Scene scene = new Scene(page);
 	        stage.setScene(scene);
 
