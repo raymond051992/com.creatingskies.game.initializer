@@ -15,6 +15,7 @@ import com.creatingskies.game.classes.ViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.model.user.User;
+import com.creatingskies.game.model.user.User.Type;
 import com.creatingskies.game.model.user.UserDao;
 import com.creatingskies.game.util.Util;
 
@@ -31,6 +32,7 @@ public class ChangePasswordController extends ViewController {
 	@FXML private VBox usernameBox;
 	@FXML private VBox securityQuestionBox;
 	@FXML private VBox passwordBox;
+	@FXML private VBox staffInfoBox;
 	
 	private User user;
 	
@@ -76,7 +78,13 @@ public class ChangePasswordController extends ViewController {
 		}
 		
 		questionLabel.setText(user.getSecurityQuestion().getQuestion());
-		showBox(securityQuestionBox);
+		
+		if(user.getType() == Type.STAFF){
+			showBox(staffInfoBox);
+		}else{
+			showBox(securityQuestionBox);
+		}
+		
 	}
 	
 	@FXML
@@ -134,6 +142,9 @@ public class ChangePasswordController extends ViewController {
 	private void showBox(VBox box){
 		usernameBox.setVisible(usernameBox.equals(box));
 		usernameBox.setManaged(usernameBox.equals(box));
+		
+		staffInfoBox.setVisible(staffInfoBox.equals(box));
+		staffInfoBox.setManaged(staffInfoBox.equals(box));
 		
 		securityQuestionBox.setVisible(securityQuestionBox.equals(box));
 		securityQuestionBox.setManaged(securityQuestionBox.equals(box));
