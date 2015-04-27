@@ -11,7 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
@@ -46,11 +45,13 @@ public class GamePropertiesController extends PropertiesViewController{
 	@FXML private ComboBox<Weather> weatherComboBox;
 	
 	@FXML private Button browseButton;
-	@FXML private ButtonBar actionButtonBar;
+	@FXML private Button backButton;
 	
 	@FXML private TextField widthTextField;
 	@FXML private TextField heightTextField;
 	@FXML private Button openDesignerButton;
+	@FXML private Button saveButton;
+	@FXML private Button cancelButton;
 	
 	@Override
 	public void init() {
@@ -73,10 +74,14 @@ public class GamePropertiesController extends PropertiesViewController{
 		});
 		
 		if(getCurrentAction() == Action.VIEW){
-			actionButtonBar.setVisible(false);
+			saveButton.setVisible(false);
+			cancelButton.setVisible(false);
+			backButton.setVisible(true);
 			disableFields(true);
 		}else{
-			actionButtonBar.setVisible(true);
+			saveButton.setVisible(true);
+			cancelButton.setVisible(true);
+			backButton.setVisible(false);
 			disableFields(false);
 		}
 		
@@ -222,13 +227,22 @@ public class GamePropertiesController extends PropertiesViewController{
 	private void disableFields(boolean disable){
 		titleField.setDisable(disable);
 		descriptionField.setDisable(disable);
-		gameTypeCyclingButton.setDisable(disable);
-		gameTypeRowingButton.setDisable(disable);
-		audioFileNameField.setDisable(disable);
-		widthTextField.setDisable(disable);
-		heightTextField.setDisable(disable);
 		browseButton.setDisable(disable);
-		weatherComboBox.setDisable(disable);
+		if(getCurrentAction().equals(Action.EDIT)){
+			widthTextField.setDisable(true);
+			heightTextField.setDisable(true);
+			gameTypeCyclingButton.setDisable(true);
+			gameTypeRowingButton.setDisable(true);
+			weatherComboBox.setDisable(true);
+			audioFileNameField.setDisable(true);
+		}else{
+			widthTextField.setDisable(disable);
+			heightTextField.setDisable(disable);
+			gameTypeCyclingButton.setDisable(disable);
+			gameTypeRowingButton.setDisable(disable);
+			weatherComboBox.setDisable(disable);
+			audioFileNameField.setDisable(disable);
+		}
 	}
 	
 	@FXML
@@ -242,11 +256,10 @@ public class GamePropertiesController extends PropertiesViewController{
 				Map map = new MapDao().findMapWithDetails(getGame().getMap().getIdNo());
 				getGame().setMap(map);
 			}
-			
-			loadMapDetails();
-			new MapDesignerController().show(getCurrentAction(), getGame());
-			close();
-			waitDialog.hide();
+			if(getCurrentAction() == Action.ADD){
+				loadMapDetails();
+			}
+			new MapDesignerController().show(getCurrentAction(), getGame(),waitDialog);
 		}
 	}
 	
@@ -297,9 +310,11 @@ public class GamePropertiesController extends PropertiesViewController{
 	}
 	
 	private Boolean isValidMap(){
-		if(getMap().getTiles() == null || getMap().getStartPoint() == null || getMap().getEndPoint() == null){
-			new AlertDialog(AlertType.ERROR, "Oops", "", "Please design your map.").showAndWait();
-			return false;
+		if(getCurrentAction() == Action.ADD){
+			if(getMap().getTiles() == null || getMap().getStartPoint() == null || getMap().getEndPoint() == null){
+				new AlertDialog(AlertType.ERROR, "Oops", "", "Please design your map.").showAndWait();
+				return false;
+			}
 		}
 
 		return true;
@@ -309,4 +324,9 @@ public class GamePropertiesController extends PropertiesViewController{
 		return getGame().getMap();
 	}
 	
+	@FXML
+	private void backToList(){
+		close();
+		new GameController().show();
+	}
 }

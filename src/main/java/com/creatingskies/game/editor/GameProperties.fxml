@@ -22,6 +22,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label text="Title" />
@@ -70,19 +71,20 @@
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <children>
                   <TextField fx:id="audioFileNameField" editable="false" prefHeight="25.0" prefWidth="380.0" />
-                  <Button fx:id="browseButton" mnemonicParsing="false" onAction="#handleAudioBrowseDialog" prefWidth="90.0" text="Browse" />
+                  <Button fx:id="browseButton" mnemonicParsing="false" onAction="#handleAudioBrowseDialog" text="Browse" />
                </children>
             </HBox>
             <Label text="Weather" GridPane.rowIndex="5" />
             <ComboBox fx:id="weatherComboBox" prefHeight="25.0" prefWidth="378.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Button fx:id="openDesignerButton" maxWidth="150.0" minHeight="-Infinity" minWidth="150.0" mnemonicParsing="false" onAction="#showMapDesigner" prefWidth="150.0" styleClass="button-primary" text="Map Designer" GridPane.columnIndex="1" GridPane.rowIndex="6" />
          </children>
       </GridPane>
-      <ButtonBar fx:id="actionButtonBar" layoutX="237.0" layoutY="361.0" prefHeight="25.0" prefWidth="353.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
-        <buttons>
-          <Button mnemonicParsing="false" onAction="#handleSave" text="Save" />
-            <Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
-        </buttons>
-      </ButtonBar>
-      <Button fx:id="openDesignerButton" layoutX="14.0" layoutY="361.0" maxWidth="150.0" minHeight="-Infinity" minWidth="150.0" mnemonicParsing="false" onAction="#showMapDesigner" prefWidth="150.0" styleClass="button-primary" text="Map Designer" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
+      <HBox layoutX="380.0" layoutY="365.0" spacing="10.0">
+         <children>
+          <Button fx:id="saveButton" minWidth="100.0" mnemonicParsing="false" onAction="#handleSave" text="Save" />
+            <Button fx:id="cancelButton" minWidth="100.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+         </children>
+      </HBox>
+      <Button fx:id="backButton" layoutX="10.0" layoutY="365.0" minWidth="100.0" mnemonicParsing="false" onAction="#backToList" text="Back" />
    </children>
 </AnchorPane>

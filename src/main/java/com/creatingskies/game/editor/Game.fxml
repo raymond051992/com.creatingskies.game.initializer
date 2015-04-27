@@ -12,7 +12,6 @@
           <TableColumn fx:id="titleColumn" prefWidth="75.0" text="Title" />
           <TableColumn fx:id="descriptionColumn" prefWidth="75.0" text="Description" />
             <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Type" />
-            <TableColumn fx:id="mapColumn" prefWidth="75.0" text="Map" />
             <TableColumn fx:id="actionColumn" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" />
         </columns>
          <columnResizePolicy>

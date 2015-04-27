@@ -104,8 +104,5 @@ public abstract class ViewController extends Controller{
 		}
 	}
 	
-	protected void close(){
-//		stage.close();
-//		stage.getScene().getWindow().hide();
-	}
+	protected void close(){}
 }

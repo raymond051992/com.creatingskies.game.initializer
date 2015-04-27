@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -62,7 +63,7 @@ public class MapDesignerController {
 	
 	private boolean startTileSelected;
 	private boolean endTileSelected;
-	private boolean isViewAction;
+	private boolean isEditable;
 	
 	private Game game;
 	private Stage stage;
@@ -70,9 +71,9 @@ public class MapDesignerController {
 	private Action currentAction;
 	
 	public void init(){
-		isViewAction = getCurrentAction() == Action.VIEW;
-		saveButton.setVisible(!isViewAction);
-		cancelButton.setText(isViewAction ? "OK" : "Cancel");
+		isEditable = (getCurrentAction() == Action.VIEW || getCurrentAction() == Action.EDIT);
+		saveButton.setVisible(!isEditable);
+		cancelButton.setText(isEditable ? "OK" : "Cancel");
 		selectedTileDescription.setText("");
 		
 		initMapTiles();
@@ -104,7 +105,7 @@ public class MapDesignerController {
 			Group group = new Group(backImage, frontImage);
 			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
 			
-			if(!isViewAction){
+			if(!isEditable){
 				addHandler(tile, backImage, frontImage);
 			}
 		}
@@ -207,7 +208,7 @@ public class MapDesignerController {
 		
 		Pane pane = new Pane(imageView);
 		
-		if(!isViewAction){
+		if(!isEditable){
 			pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
@@ -245,7 +246,7 @@ public class MapDesignerController {
 		startTileImageView.setFitHeight(Constant.TILE_HEIGHT);
 		startTileImageView.setFitWidth(Constant.TILE_WIDTH);
 		
-		if(!isViewAction){
+		if(!isEditable){
 			startTileImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
@@ -272,7 +273,7 @@ public class MapDesignerController {
 		endTileImageView.setFitHeight(Constant.TILE_HEIGHT);
 		endTileImageView.setFitWidth(Constant.TILE_WIDTH);
 		
-		if(!isViewAction){
+		if(!isEditable){
 			endTileImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
@@ -296,7 +297,7 @@ public class MapDesignerController {
 		imageView.setFitHeight(Constant.TILE_HEIGHT);
 		imageView.setFitWidth(Constant.TILE_WIDTH);
 		
-		if(!isViewAction){
+		if(!isEditable){
 			imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
@@ -324,7 +325,7 @@ public class MapDesignerController {
 		imageView.setFitHeight(Constant.TILE_HEIGHT);
 		imageView.setFitWidth(Constant.TILE_WIDTH);
 		
-		if(!isViewAction){
+		if(!isEditable){
 			imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
@@ -347,7 +348,7 @@ public class MapDesignerController {
 		tileImageSelections.getChildren().add(imageView);
 	}
 	
-	public void show(Action action, Game game){
+	public void show(Action action, Game game,Alert loadingDialog){
 		try{
 			FXMLLoader loader = new FXMLLoader();
 	        loader.setLocation(getClass().getResource("Designer.fxml"));
@@ -368,6 +369,7 @@ public class MapDesignerController {
 	        
 	        controller.setCurrentAction(action);
 	        controller.init();
+	        loadingDialog.close();
 	        stage.showAndWait();
 		}catch(IOException e){
 			e.printStackTrace();
