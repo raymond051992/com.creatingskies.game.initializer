@@ -118,7 +118,7 @@ public class IconEditorController extends TableViewController{
 	}
 	
 	private void showDetailDialog(TileImage tileImage){
-		boolean saveClicked = new TileImageDialogController().show(tileImage);
+		boolean saveClicked = new TileImageDialogController().show(tileImage,MainLayout.getPrimaryStage());
 	    if (saveClicked) {
 	        mapDao.saveOrUpdate(tileImage);
 	        resetTableView();

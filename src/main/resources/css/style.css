@@ -41,7 +41,9 @@
 	-fx-text-fill: #ffffff;
 	-fx-cursor: hand;
 }
-
+.slider .axis{
+	-fx-tick-label-fill: #ffffff;
+}
 .button:hover {
 	-fx-background-color: #28415b;
 }

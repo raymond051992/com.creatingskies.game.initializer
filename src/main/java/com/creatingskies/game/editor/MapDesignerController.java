@@ -379,7 +379,7 @@ public class MapDesignerController {
 	@FXML
 	private void uploadTileImage(){
 		TileImage tileImage = new TileImage();
-		boolean saveClicked = new TileImageDialogController().show(tileImage);
+		boolean saveClicked = new TileImageDialogController().show(tileImage,stage);
 	    if (saveClicked) {
 	        new MapDao().saveOrUpdate(tileImage);
 	        initTileImageSelections();

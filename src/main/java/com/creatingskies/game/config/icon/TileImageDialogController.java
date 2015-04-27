@@ -15,9 +15,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import com.creatingskies.game.classes.ViewController;
-import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.TileImage;
 import com.creatingskies.game.model.Constant;
@@ -36,16 +36,22 @@ public class TileImageDialogController extends ViewController {
 	private boolean saveClicked = false;
 	private final String NO_FILE_MESSAGE = "Please choose a file.";
 	
-	public boolean show(TileImage tileImage) {
+	public boolean show(TileImage tileImage,Stage owner) {
 	    try {
 	        FXMLLoader loader = new FXMLLoader();
 	        loader.setLocation(getClass().getResource("TileImageDialog.fxml"));
 	        AnchorPane page = (AnchorPane) loader.load();
 
+	        page.getStylesheets().add("/css/dialog.css");
+	        page.getStylesheets().add("/css/style.css");
+	        page.getStyleClass().add("background");
+	        
 	        Stage dialogStage = new Stage();
 	        dialogStage.setTitle("TileImage");
 	        dialogStage.initModality(Modality.WINDOW_MODAL);
-	        dialogStage.initOwner(MainLayout.getPrimaryStage());
+	        dialogStage.initStyle(StageStyle.UTILITY);
+	        dialogStage.setResizable(false);
+	        dialogStage.initOwner(owner);
 	        Scene scene = new Scene(page);
 	        dialogStage.setScene(scene);
 
@@ -103,7 +109,7 @@ public class TileImageDialogController extends ViewController {
                 "Image files", "*.jpeg", "*.jpg", "*.png", "*.bmp", "*.gif");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        File file = fileChooser.showOpenDialog(MainLayout.getPrimaryStage());
+        File file = fileChooser.showOpenDialog(dialogStage);
         
         if(file != null){
         	tileImage.setImage(Util.fileToByteArray(file));
