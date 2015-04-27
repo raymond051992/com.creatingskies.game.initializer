@@ -209,3 +209,7 @@ PasswordField:focused {
 	-fx-border-width: 0.5;
 	-fx-border-color: #375a7f;
 }
+
+.chart-legend-item{
+    -fx-text-fill: #333333;
+}

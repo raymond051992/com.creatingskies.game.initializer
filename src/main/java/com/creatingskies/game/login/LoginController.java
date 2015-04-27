@@ -67,6 +67,11 @@ public class LoginController extends ViewController{
 	}
 	
 	@FXML
+	private void exit(){
+		MainLayout.getPrimaryStage().close();
+	}
+	
+	@FXML
 	private void handleForgotPassword(){
 		super.close();
 		new ChangePasswordController().show();

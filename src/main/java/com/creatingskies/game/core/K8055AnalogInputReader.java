@@ -9,6 +9,10 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 	private InputForce inputForce;
 	private K8055JavaCall k8055;
 	
+	private long interval = 50; 
+	private long duration = 0;
+	private int previousValue = 0;
+	
 	@Override
 	public void init() {
 		inputForce = new InputForce();
@@ -23,14 +27,23 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 
 	@Override
 	public InputForce readInput() {
-		inputForce.right = (int) (k8055.ReadAnalogChannel(1) * 7) / 255;
-		inputForce.left = (int) (k8055.ReadAnalogChannel(2) * 7) / 255;
+		inputForce.right = (int) ((k8055.ReadAnalogChannel(1) * 7) / 255) * 2;
+		inputForce.left = (int) ((k8055.ReadAnalogChannel(2) * 7) / 255) * 2;
 		return inputForce;
 	}
 
 	@Override
 	public void display(Double speed, Double slowFactor, Double degree) {
-		display(slowFactor.intValue());
+		duration += interval;
+		if(duration >= 500){
+			duration = 0;
+			
+			if(previousValue < slowFactor.intValue()){
+				display(++previousValue);
+			} else if(previousValue > slowFactor.intValue()){
+				display(--previousValue);
+			}
+		}
 	}
 	
 	private void display(int data){

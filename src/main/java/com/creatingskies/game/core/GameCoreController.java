@@ -382,9 +382,10 @@ public class GameCoreController extends PropertiesViewController {
 		boolean encounteredBlockage = false;
 		double totalSlowFactor = 0;
 		distance = 0;
+
+		totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
 		
 		if(inputForce.left != 0 && inputForce.right != 0){
-			totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
 			distance = Math.max((((inputForce.left + inputForce.right)
 					/ (maxMovementSpeed * 2)) * maxMovementSpeed) - totalSlowFactor, 0.1);
 			
