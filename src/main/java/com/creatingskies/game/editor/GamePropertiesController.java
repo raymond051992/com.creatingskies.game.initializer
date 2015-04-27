@@ -224,6 +224,10 @@ public class GamePropertiesController extends PropertiesViewController{
         }
 	}
 	
+	public void createNewFromExistingGame(Game game){
+		//TODO
+	}
+	
 	private void disableFields(boolean disable){
 		titleField.setDisable(disable);
 		descriptionField.setDisable(disable);

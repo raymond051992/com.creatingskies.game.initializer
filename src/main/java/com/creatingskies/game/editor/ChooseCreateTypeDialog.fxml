@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.editor.ChooseCreateTypeDialogController">
+   <children>
+      <VBox spacing="20.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <RadioButton fx:id="createNewRadioButton" mnemonicParsing="false" selected="true" text="Create New">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="createType" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="copyFromExistingRadioButton" mnemonicParsing="false" text="Copy From Existing" toggleGroup="$createType" />
+               </children>
+            </HBox>
+            <HBox fx:id="gameSelectionHBox" alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <Label text="Game" />
+                  <ComboBox fx:id="gameComboBox" minWidth="300.0" prefWidth="300.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" spacing="10.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#next" text="Next" />
+                  <Button mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

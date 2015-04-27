@@ -84,7 +84,7 @@ public class GameController extends TableViewController{
 	}
 	
 	public void addNewGame(){
-		new GamePropertiesController().show(Action.ADD, new Game());
+		new ChooseCreateTypeDialogController().show();
 	}
 	
 	@Override
