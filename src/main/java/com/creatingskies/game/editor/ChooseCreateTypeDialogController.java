@@ -1,6 +1,9 @@
 package com.creatingskies.game.editor;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -15,10 +18,16 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 
+import org.apache.commons.beanutils.PropertyUtils;
+
 import com.creatingskies.game.classes.ViewController.Action;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.GameDao;
+import com.creatingskies.game.core.Map;
+import com.creatingskies.game.core.Tile;
+import com.creatingskies.game.util.Logger;
+import com.creatingskies.game.util.Logger.Level;
 
 public class ChooseCreateTypeDialogController {
 
@@ -101,10 +110,43 @@ public class ChooseCreateTypeDialogController {
 	private void next(){
 		stage.close();
 		if(createNewRadioButton.isSelected()){
-			new GamePropertiesController().show(Action.ADD, new Game());
+			new GamePropertiesController().show(Action.ADD, new Game(),false);
 		}else{
 			if(gameComboBox.getSelectionModel().getSelectedItem() != null){
-				new GamePropertiesController().createNewFromExistingGame(gameComboBox.getSelectionModel().getSelectedItem());
+				try {
+					Game newGame = new Game();
+					Game gameToCopy = new GameDao().findGameWithDetails(gameComboBox.getSelectionModel().getSelectedItem().getIdNo());
+					PropertyUtils.copyProperties(newGame, gameToCopy);
+					Map mapToCopy = gameToCopy.getMap();
+					
+					newGame.setIdNo(null);
+					newGame.setEditBy(null);
+					newGame.setEditDate(null);
+					newGame.setEntryBy(null);
+					newGame.setEntryDate(null);
+					newGame.getMap().setIdNo(null);
+					
+					Map map = new Map();
+					map.setDefaultTileImage(mapToCopy.getDefaultTileImage());
+					map.setHeight(mapToCopy.getHeight());
+					map.setWidth(mapToCopy.getWidth());
+					map.setTiles(new ArrayList<Tile>());
+					map.setWeathers(null);
+					
+					
+					List<Tile> tiles = new ArrayList<Tile>(newGame.getMap().getTiles());
+					for(Tile tile : tiles){
+						tile.setIdNo(null);
+						tile.setMap(map);
+					}
+					map.setTiles(tiles);
+					newGame.setMap(map);
+					
+					new GamePropertiesController().show(Action.ADD, newGame,true);
+				} catch (IllegalAccessException | InvocationTargetException
+						| NoSuchMethodException e) {
+					Logger.log(getClass(), Level.ERROR, e.getMessage(),e);
+				}
 			}
 		}
 	}

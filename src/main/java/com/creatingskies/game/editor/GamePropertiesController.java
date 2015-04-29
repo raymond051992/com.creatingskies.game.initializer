@@ -53,6 +53,8 @@ public class GamePropertiesController extends PropertiesViewController{
 	@FXML private Button saveButton;
 	@FXML private Button cancelButton;
 	
+	private boolean copyFromOtherGame;
+	
 	@Override
 	public void init() {
 		super.init();
@@ -204,7 +206,7 @@ public class GamePropertiesController extends PropertiesViewController{
 		}
 	}
 	
-	public void show(Action action, Game game){
+	public void show(Action action, Game game,boolean copyFromOtherGame){
 		try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("GameProperties.fxml"));
@@ -217,15 +219,12 @@ public class GamePropertiesController extends PropertiesViewController{
 					.getController();
             controller.setCurrentAction(action);
             controller.setGame(game);
+            controller.setCopyFromOtherGame(copyFromOtherGame);
             controller.init();
             MainLayout.getRootLayout().setCenter(pane);
         } catch (IOException e) {
             e.printStackTrace();
         }
-	}
-	
-	public void createNewFromExistingGame(Game game){
-		//TODO
 	}
 	
 	private void disableFields(boolean disable){
@@ -263,7 +262,7 @@ public class GamePropertiesController extends PropertiesViewController{
 			if(getCurrentAction() == Action.ADD){
 				loadMapDetails();
 			}
-			new MapDesignerController().show(getCurrentAction(), getGame(),waitDialog);
+			new MapDesignerController().show(getCurrentAction(), getGame(),waitDialog,copyFromOtherGame);
 		}
 	}
 	
@@ -332,5 +331,9 @@ public class GamePropertiesController extends PropertiesViewController{
 	private void backToList(){
 		close();
 		new GameController().show();
+	}
+	
+	public void setCopyFromOtherGame(boolean copyFromOtherGame) {
+		this.copyFromOtherGame = copyFromOtherGame;
 	}
 }

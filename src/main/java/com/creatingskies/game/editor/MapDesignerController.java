@@ -69,6 +69,7 @@ public class MapDesignerController {
 	private Stage stage;
 	
 	private Action currentAction;
+	private boolean copyFromOtherMap;
 	
 	public void init(){
 		isEditable = (getCurrentAction() == Action.VIEW || getCurrentAction() == Action.EDIT);
@@ -348,7 +349,7 @@ public class MapDesignerController {
 		tileImageSelections.getChildren().add(imageView);
 	}
 	
-	public void show(Action action, Game game,Alert loadingDialog){
+	public void show(Action action, Game game,Alert loadingDialog,boolean copyFromOtherMap){
 		try{
 			FXMLLoader loader = new FXMLLoader();
 	        loader.setLocation(getClass().getResource("Designer.fxml"));
@@ -366,7 +367,7 @@ public class MapDesignerController {
 	        MapDesignerController controller = (MapDesignerController) loader.getController();
 	        controller.setGame(game);
 	        controller.setStage(stage);
-	        
+	        controller.setCopyFromOtherMap(copyFromOtherMap);
 	        controller.setCurrentAction(action);
 	        controller.init();
 	        loadingDialog.close();
@@ -391,14 +392,16 @@ public class MapDesignerController {
 		if(getMap().getStartPoint() == null || getMap().getEndPoint() == null){
 			new AlertDialog(AlertType.ERROR, "Invalid Map", null, "Map should have 1 start point and 1 end point.",stage).showAndWait();
 		} else {
-			new GamePropertiesController().show(currentAction, getGame());
+			new GamePropertiesController().show(currentAction, getGame(),copyFromOtherMap);
 			stage.close();
 		}
 	}
 	
 	@FXML
 	private void cancelButtonClicked(){
-		getMap().setTiles(null);
+		if(!copyFromOtherMap){
+			getMap().setTiles(null);
+		}
 		stage.close();
 	}
 	
@@ -428,5 +431,9 @@ public class MapDesignerController {
 	
 	public void setCurrentAction(Action currentAction) {
 		this.currentAction = currentAction;
+	}
+	
+	public void setCopyFromOtherMap(boolean copyFromOtherMap) {
+		this.copyFromOtherMap = copyFromOtherMap;
 	}
 }

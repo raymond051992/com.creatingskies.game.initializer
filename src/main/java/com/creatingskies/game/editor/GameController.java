@@ -55,12 +55,12 @@ public class GameController extends TableViewController{
 	
 	@Override
 	protected void viewRecord(IRecord record) {
-		new GamePropertiesController().show(Action.VIEW, (Game) record);
+		new GamePropertiesController().show(Action.VIEW, (Game) record,false);
 	}
 	
 	@Override
 	protected void editRecord(IRecord record) {
-		new GamePropertiesController().show(Action.EDIT, (Game) record);
+		new GamePropertiesController().show(Action.EDIT, (Game) record,false);
 	}
 	
 	@Override
