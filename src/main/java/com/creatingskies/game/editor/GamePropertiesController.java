@@ -55,6 +55,8 @@ public class GamePropertiesController extends PropertiesViewController{
 	
 	private boolean copyFromOtherGame;
 	
+	private boolean dimensionChanged = false;
+	
 	@Override
 	public void init() {
 		super.init();
@@ -267,7 +269,60 @@ public class GamePropertiesController extends PropertiesViewController{
 	}
 	
 	private void loadMapDetails(){
-		if(!getMap().isReady()){
+		int width = Integer.parseInt(widthTextField.getText());
+		int height = Integer.parseInt(heightTextField.getText());
+		
+		if(copyFromOtherGame && (getMap().getWidth() != width || getMap().getHeight() != height)){
+			if(getMap().getWidth() > width){
+				int diff = getMap().getWidth() - width;
+				List<Tile> tilesToRemove = new ArrayList<Tile>();
+				for(Tile tile : getMap().getTiles()){
+					if(tile.getColIndex() > ((getMap().getWidth() - 1) - diff)){
+						tilesToRemove.add(tile);
+					}
+				}
+				getMap().getTiles().removeAll(tilesToRemove);
+			}
+			if(getMap().getHeight() > height){
+				int diff = getMap().getHeight() - height;
+				List<Tile> tilesToRemove = new ArrayList<Tile>();
+				for(Tile tile : getMap().getTiles()){
+ 					if(tile.getRowIndex() > ((getMap().getHeight() - 1) - diff)){
+						tilesToRemove.add(tile);
+					}
+				}
+				getMap().getTiles().removeAll(tilesToRemove);
+			}
+			if(getMap().getWidth() < width){
+				int addtl = width - getMap().getWidth();
+				for(int r = 0; r < height; r++){
+					for(int c = getMap().getWidth();c < (getMap().getWidth() + addtl);c++){
+						Tile tile = new Tile();
+						tile.setMap(getMap());
+						tile.setColIndex(c);
+						tile.setRowIndex(r);
+						getMap().getTiles().add(tile);
+					}
+				}
+			}
+			if(getMap().getHeight() < height){
+				int addtl = height - getMap().getHeight();
+				for(int c = 0;c < width;c++){
+					for(int r = (getMap().getHeight());r < (getMap().getHeight() + addtl);r++){
+						Tile tile = new Tile();
+						tile.setMap(getMap());
+						tile.setColIndex(c);
+						tile.setRowIndex(r);
+						getMap().getTiles().add(tile);
+					}
+				}
+			}
+			getMap().setWidth(width);
+			getMap().setHeight(height);
+			dimensionChanged = true;
+		}
+		
+		if(!getMap().isReady() && !dimensionChanged){
 			getMap().setWidth(Integer.parseInt(widthTextField.getText()));
 			getMap().setHeight(Integer.parseInt(heightTextField.getText()));
 			
