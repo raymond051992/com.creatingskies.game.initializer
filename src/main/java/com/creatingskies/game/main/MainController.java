@@ -55,7 +55,7 @@ public class MainController extends ViewController{
 			if(UserManager.getCurrentUser().getType().equals(Type.ADMIN)){
 				createLauncher(0, "Users", "/images/rec_users.png", this::goToUsersPage);
 				createLauncher(1, "Obstacles", "/images/rec_obstacle.png", this::goToObstaclesPage);
-				createLauncher(2, "Weathers", "/images/rec_weather.png", this::goToWeathersPage);
+				createLauncher(2, "Weather", "/images/rec_weather.png", this::goToWeathersPage);
 				createLauncher(3, "Games", "/images/rec_game.png", this::goToGamesPage);
 				createLauncher(4, "Icon Editor", "/images/rec_editor.png", this::goToIconEditorPage);
 			}
