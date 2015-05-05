@@ -69,12 +69,15 @@ public class UserPropertiesController extends PropertiesViewController{
 		questionChoices.setItems(FXCollections.observableArrayList(new UserDao()
 				.findAllSecurityQuestions()));
 		
-		statusChoices.getSelectionModel().selectFirst();
-		typeChoices.getSelectionModel().selectFirst();
-		questionChoices.getSelectionModel().selectFirst();
 		
-		typeChoices.setValue(getUser().getType());
-        statusChoices.setValue(getUser().getStatus());
+		if(getCurrentAction() == Action.ADD){
+			statusChoices.getSelectionModel().selectFirst();
+			typeChoices.getSelectionModel().selectFirst();
+			questionChoices.getSelectionModel().selectFirst();
+		}else{
+			typeChoices.setValue(getUser().getType());
+	        statusChoices.setValue(getUser().getStatus());
+		}
 		
 		questionChoices.setConverter(new StringConverter<SecurityQuestion>() {
 			@Override
