@@ -10,7 +10,7 @@
 
 <AnchorPane prefHeight="550.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.config.obstacle.ObstaclePropertiesController">
    <children>
-      <VBox alignment="CENTER" layoutX="104.0" layoutY="56.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="CENTER" layoutX="104.0" layoutY="56.0" minWidth="600.0" prefHeight="550.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER_LEFT" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
@@ -41,7 +41,7 @@
                <children>
                   <Label minWidth="100.0" text="Image" />
                   <TextField fx:id="imageFileNameField" editable="false" prefHeight="25.0" prefWidth="375.0" />
-                  <Button minWidth="75.0" mnemonicParsing="false" onAction="#handleImageBrowseDialog" text="Browse" />
+                  <Button minWidth="100.0" mnemonicParsing="false" onAction="#handleImageBrowseDialog" text="Browse" />
                </children>
             </HBox>
             <HBox alignment="TOP_RIGHT" layoutX="35.0" layoutY="260.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0">
