@@ -124,6 +124,14 @@ public class ChangePasswordController extends ViewController {
 			return;
 		}
 		
+		if(passwordField.getText().length() < 8){
+			new AlertDialog(AlertType.ERROR, "Ooops", "Password is too short. (Minimum: 8 characters)\n", null).showAndWait();
+			return;
+        } else if(!passwordField.getText().matches(".*\\d+.*") || !passwordField.getText().matches(".*\\D+.*")){
+        	new AlertDialog(AlertType.ERROR, "Ooops", "Password must be a combination of both letters and numbers.\n", null).showAndWait();
+			return;
+        }
+		
 		UserDao userDao = new UserDao();
 		user.setPassword(passwordField.getText());
 		userDao.saveOrUpdate(user);

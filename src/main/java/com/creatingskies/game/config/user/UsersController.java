@@ -67,7 +67,6 @@ public class UsersController extends TableViewController {
 		statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
 				cellData.getValue().getStatus().toString()));
 		
-		
 		typeChoices.getItems().add(null);
 		typeChoices.getItems().addAll(FXCollections.observableArrayList(Type.values()));
 		
@@ -79,7 +78,9 @@ public class UsersController extends TableViewController {
 		
 		actionColumn.setCellFactory(generateCellFactory(Action.VIEW,
 				Action.EDIT, Action.ACTIVATE));
-		resetTableView();
+		
+		statusChoices.setValue(Status.ACTIVE);
+		handleFilter();
 	}
 	
 	private void resetTableView(){

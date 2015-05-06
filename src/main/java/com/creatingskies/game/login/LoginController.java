@@ -52,12 +52,12 @@ public class LoginController extends ViewController{
 			User user = userDao.findActiveUser(usernameField.getText());
 			
 			if(user == null){
-				new AlertDialog(AlertType.ERROR, "Ooops", "Inavlid username/password.", null).showAndWait();
+				new AlertDialog(AlertType.ERROR, "Ooops", "Invalid username or password. Please contact your administrator to reset your password.", null).showAndWait();
 				return;
 			}
 			
 			if(!user.getPassword().equals(passwordField.getText())){
-				new AlertDialog(AlertType.ERROR, "Ooops", "Inavlid username/password.", null).showAndWait();
+				new AlertDialog(AlertType.ERROR, "Ooops", "Invalid username or password. Please contact your administrator to reset your password.", null).showAndWait();
 				return;
 			}
 			

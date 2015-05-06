@@ -184,6 +184,10 @@ public class UserPropertiesController extends PropertiesViewController{
         
         if (userNameTextField.getText() == null || userNameTextField.getText().length() == 0) {
             errorMessage += "Username is required.\n";
+        } else if (userNameTextField.getText().length() < 10){
+        	errorMessage += "Username is too short. (Minimum: 10 characters)\n";
+        } else if(!userNameTextField.getText().matches(".*\\d+.*") || !userNameTextField.getText().matches(".*\\D+.*")){
+        	errorMessage += "Username must be a combination of both letters and numbers.\n";
         } else {
         	User user = new UserDao().findActiveUser(userNameTextField.getText());
 			if (user != null
@@ -199,6 +203,10 @@ public class UserPropertiesController extends PropertiesViewController{
             errorMessage += "Password confirmation is required.\n";
         } else if (!passwordField.getText().equals(confirmPasswordField.getText())) {
         	errorMessage += "Passwords doesn't match.\n";
+        } else if(passwordField.getText().length() < 8){
+        	errorMessage += "Password is too short. (Minimum: 8 characters)\n";
+        } else if(!passwordField.getText().matches(".*\\d+.*") || !passwordField.getText().matches(".*\\D+.*")){
+        	errorMessage += "Password must be a combination of both letters and numbers.\n";
         }
         
         if (securityAnswerField.getText() == null || securityAnswerField.getText().length() == 0) {
