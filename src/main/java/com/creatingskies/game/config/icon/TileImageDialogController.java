@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -25,9 +26,11 @@ import com.creatingskies.game.util.Util;
 
 public class TileImageDialogController extends ViewController {
 
-	@FXML private Slider difficultySlider;
 	@FXML private TextField fileNameField;
 	@FXML private ImageView previewImage;
+	
+	@FXML private Slider difficultySlider;
+	@FXML private Label notApplicableLabel;
 	
 	private Stage dialogStage;
 	private TileImage tileImage;
@@ -77,7 +80,8 @@ public class TileImageDialogController extends ViewController {
 	public void setTileImage(TileImage tileImage) {
         this.tileImage = tileImage;
         
-        difficultySlider.setDisable(tileImage.getDifficulty() == null);
+        notApplicableLabel.setVisible(tileImage.getDifficulty() == null);
+        difficultySlider.setVisible(tileImage.getDifficulty() != null);
         difficultySlider.setValue(tileImage.getDifficulty() != null ?
         		tileImage.getDifficulty() : 0.0);
         

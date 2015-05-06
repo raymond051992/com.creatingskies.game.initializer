@@ -439,22 +439,28 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	private void checkWarning(Shape block){
-		Boolean hasCollision = false;
+		Integer intersectionIndex = null;
 		obstacleSlowFactor = 0.0;
 		
 		for (Shape edge : obstacleEdges) {
 			Shape intersect = Shape.intersect(block, edge);
 			if (intersect.getBoundsInLocal().getWidth() != -1) {
-				hasCollision = true;
-				edge.setFill(Color.DODGERBLUE);
-				obstacleSlowFactor = (double) Math.max(edge.getUserData() != null ?
-						Integer.valueOf(String.valueOf(edge.getUserData())) : 0, obstacleSlowFactor);
-			} else {
-				edge.setFill(Color.TRANSPARENT);
+				int edgeSlowFactor = edge.getUserData() != null ?
+						Integer.valueOf(String.valueOf(edge.getUserData())) : 0;
+						
+				if(obstacleSlowFactor < edgeSlowFactor){
+					obstacleSlowFactor = (double) edgeSlowFactor;
+					intersectionIndex = obstacleEdges.indexOf(edge);
+				}
 			}
+			edge.setFill(Color.TRANSPARENT);
 		}
 		
-		warningImageView.setVisible(hasCollision);
+		if(intersectionIndex != null){
+			obstacleEdges.get(intersectionIndex).setFill(Util.getDifficultyColor(obstacleSlowFactor));
+		}
+		
+		warningImageView.setVisible(intersectionIndex != null);
 		obstacleSlowLabel.setText(String.format("%.2f", obstacleSlowFactor));
 	}
 	
@@ -559,7 +565,7 @@ public class GameCoreController extends PropertiesViewController {
 		obstacleEdge.setLayoutY(tile.getRowIndex() * getMainScreenTileHeight() + (getMainScreenTileWidth() / 2));
 
 		obstacleEdge.setFill(Color.TRANSPARENT);
-		obstacleEdge.setOpacity(0.20);
+		obstacleEdge.setOpacity(0.30);
 		
 		pane.getChildren().add(obstacleEdge);
 		obstacleEdges.add(obstacleEdge);

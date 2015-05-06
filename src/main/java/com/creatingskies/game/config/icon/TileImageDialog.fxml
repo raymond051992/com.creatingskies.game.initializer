@@ -39,7 +39,11 @@
 						<Button mnemonicParsing="false" onAction="#handleOpenBrowseDialog" text="Browse" />
 					</children>
 				</HBox>
-            <ImageView fx:id="previewImage" fitHeight="100.0" fitWidth="113.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowSpan="2" />
+            <ImageView fx:id="previewImage" fitHeight="100.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowSpan="2">
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </GridPane.margin></ImageView>
+            <Label fx:id="notApplicableLabel" text="N/A (Not applicable for this image)" GridPane.columnIndex="1" />
 			</children>
 			<padding>
 				<Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
