@@ -1,10 +1,20 @@
 package com.creatingskies.game.core.resources;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+
+import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 
 import org.apache.commons.io.FileUtils;
 
@@ -16,8 +26,10 @@ public class GameResourcesManager {
 	private Game game;
 	private CyclicBarrier cyclicBarrier;
 	
-	private Thread audioThread;
+	private Thread gameAudioThread;
+	private Thread gameWeatherAudioThread;
 	private GameAudioResource gameAudioResource;
+	private GameWeatherAudioResource gameWeatherAudioResource;
 	
 	public static void removeTmpFiles(){
 		try {
@@ -27,18 +39,49 @@ public class GameResourcesManager {
 		}
 	}
 	
-	public GameResourcesManager(final Game game) {
-		cyclicBarrier = new CyclicBarrier(2);
+	public GameResourcesManager(final Game game, AnchorPane weatherContainer) {
+		cyclicBarrier = new CyclicBarrier(3);
 		sessionId = UUID.randomUUID().toString();
 		this.game = game;
 		
 		initResources();
+		initWeatherImage(game, weatherContainer);
+	}
+	
+	private void initWeatherImage(final Game game, AnchorPane weatherContainer){
+		if(game.getWeather() != null){
+			File dir = new File("game/tmp/"+sessionId+"/weather/img/");
+			if(!dir.exists()){
+				dir.mkdirs();
+			}
+			try {
+				FileOutputStream outputStream = new FileOutputStream("game/tmp/"+sessionId+"/weather/img/weather.gif");
+				outputStream.write(game.getWeather().getImage());
+				outputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			
+			try {
+				BackgroundImage bgi = new BackgroundImage(new Image(new File("game/tmp/"+sessionId+"/weather/img/weather.gif").toURI().toURL().toString(), 0, 0, false, true)
+				, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(90, BackgroundSize.AUTO, true, true, true, false));
+				
+				weatherContainer.setBackground(new Background(bgi));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void initResources(){
 		gameAudioResource = new GameAudioResource(cyclicBarrier, game, sessionId);
-		audioThread = new Thread(gameAudioResource);
-		audioThread.start();
+		gameAudioThread = new Thread(gameAudioResource);
+		gameAudioThread.start();
+		
+		gameWeatherAudioResource = new GameWeatherAudioResource(cyclicBarrier, game, sessionId);
+		gameWeatherAudioThread = new Thread(gameWeatherAudioResource);
+		gameWeatherAudioThread.start();
 	}
 	
 	public void start(){
@@ -52,7 +95,7 @@ public class GameResourcesManager {
 	public void stop(){
 		try {
 			gameAudioResource.stop();
-			audioThread.interrupt();
+			gameAudioThread.interrupt();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -48,6 +48,7 @@ public class GameCoreController extends PropertiesViewController {
 
 	@FXML private Pane pane;
 	@FXML private AnchorPane mainContainer;
+	@FXML private AnchorPane weatherContainer;
 	@FXML private GridPane mapTiles;
 	@FXML private GridPane miniMapTiles;
 	@FXML private Pane miniMapPane;
@@ -72,7 +73,6 @@ public class GameCoreController extends PropertiesViewController {
 	
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
-	@FXML private ImageView weatherImageView;
 	
 	private List<Shape> obstacles;
 	private List<Shape> obstacleEdges;
@@ -180,7 +180,7 @@ public class GameCoreController extends PropertiesViewController {
 		initWeathers();
 		
 		inputReader.init();
-		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame());
+		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame(),weatherContainer);
 		
 		countDownTimer.play();
 	}
@@ -191,7 +191,6 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private void initWeathers(){
 		if(getGameEvent().getGame().getWeather() != null){
-			weatherImageView.setImage(Util.byteArrayToImage(getGameEvent().getGame().getWeather().getImage()));
 			weatherSlowFactor = (double) getGameEvent().getGame().getWeather().getDifficulty();
 			weatherSlowLabel.setText(String.format("%.2f", weatherSlowFactor));
 		}
