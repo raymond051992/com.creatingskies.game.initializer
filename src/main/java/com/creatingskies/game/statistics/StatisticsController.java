@@ -1,20 +1,22 @@
 package com.creatingskies.game.statistics;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
@@ -23,20 +25,25 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import com.creatingskies.game.classes.PropertiesViewController;
+import com.creatingskies.game.classes.TableViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.core.GameResult;
+import com.creatingskies.game.model.IRecord;
 import com.creatingskies.game.model.company.Company;
 import com.creatingskies.game.model.company.CompanyDAO;
 import com.creatingskies.game.util.Util;
 
-public class StatisticsController extends PropertiesViewController {
+public class StatisticsController extends TableViewController {
 
-	@FXML private BarChart<String, Double> barChart;
-    @FXML private CategoryAxis xAxis;
-
+	@FXML private TableView<GameResult> resultsTable;
+	@FXML private TableColumn<GameResult, String> dateColumn;
+	@FXML private TableColumn<GameResult, String> gameColumn;
+	@FXML private TableColumn<GameResult, String> companyColumn;
+	@FXML private TableColumn<GameResult, String> groupColumn;
+	@FXML private TableColumn<GameResult, String> speedColumn;
+	
     @FXML private DatePicker startDatePicker;
     @FXML private DatePicker endDatePicker;
     
@@ -52,6 +59,7 @@ public class StatisticsController extends PropertiesViewController {
     private ToggleGroup speedGroup;
     
     private GameDao gameDao;
+    private final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy HH:mm");
     
     public void show(){
 		try {
@@ -68,11 +76,9 @@ public class StatisticsController extends PropertiesViewController {
     private void initialize() {
     	super.init();
     	gameDao = new GameDao();
-    	
     	gameChoices.getItems().add(null);
-		gameChoices.getItems()
-				.addAll(FXCollections.observableArrayList(new GameDao()
-						.findAllGames()));
+		gameChoices.getItems().addAll(FXCollections
+				.observableArrayList(new GameDao().findAllGames()));
 		gameChoices.setConverter(new StringConverter<Game>() {
 			@Override
 			public String toString(Game game) {
@@ -86,9 +92,8 @@ public class StatisticsController extends PropertiesViewController {
 		});
 		
 		companyChoices.getItems().add(null);
-		companyChoices.getItems().addAll(
-				FXCollections.observableArrayList(new CompanyDAO()
-						.findAllCompanies()));
+		companyChoices.getItems().addAll(FXCollections
+				.observableArrayList(new CompanyDAO().findAllCompanies()));
 		companyChoices.setConverter(new StringConverter<Company>() {
 			@Override
 			public String toString(Company company) {
@@ -113,12 +118,30 @@ public class StatisticsController extends PropertiesViewController {
 		speedAscending.setToggleGroup(speedGroup);
 		speedDescending.setToggleGroup(speedGroup);
 		speedAscending.setSelected(true);
+		
+		dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+				dateFormat.format(cellData.getValue().getEntryDate())));
+		gameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+				cellData.getValue().getGame().getTitle()));
+		companyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+				cellData.getValue().getGroup().getCompany().getName()));
+		groupColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+				cellData.getValue().getGroup().getName()));
+		speedColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+				computeSpeed(cellData.getValue())));
+		
+    }
+    
+    private String computeSpeed(GameResult result){
+    	if(result != null){
+    		return String.format("%.2f m/s", Util.computeSpeed(result.getDistance(), result.getDuration()));
+    	}
+    	
+    	return null;
     }
 
     @FXML
     public void filterResults() {
-    	barChart.getData().clear();
-    	
     	Criterion[] criterions = new Criterion[4];
 		
 		if(startDatePicker.getValue() != null){
@@ -143,33 +166,17 @@ public class StatisticsController extends PropertiesViewController {
 		Order speedOrder = speedAscending.isSelected() ? Order.asc("duration") : Order.desc("duration");
 				
     	List<GameResult> results = gameDao.findAllGameResults(dateOrder, speedOrder, criterions);
-    	
-    	XYChart.Series<String, Double> series = null;
-        GameResult previousResult = null;
-        boolean newGroup = false;
-        
-        for (GameResult result : results) {
-        	if(previousResult == null || !previousResult.equals(result)){
-        		series = new XYChart.Series<>();
-        		series.setName(result.getGroup().getName());
-        		newGroup = true;
-        	} else {
-        		newGroup = false;
-        	}
-        	
-			series.getData().add(
-					new XYChart.Data<>(result.getGroup().getName(), result
-							.getDuration()));
-			
-			if(newGroup){
-				barChart.getData().add(series);
-			}
-        }
+    	resultsTable.setItems(FXCollections.observableArrayList(results));
     }
     
 	@Override
 	protected String getViewTitle() {
 		return "Statistics";
+	}
+
+	@Override
+	public TableView<? extends IRecord> getTableView() {
+		return resultsTable;
 	}
 
 }
