@@ -28,36 +28,36 @@
                      </font>
                   </Label>
                   <ImageView fx:id="selectedTileImageView" fitHeight="100.0" fitWidth="100.0" layoutX="165.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <VBox layoutX="46.0" layoutY="89.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="200.0">
-                     <children>
-                        <HBox alignment="BOTTOM_LEFT" prefHeight="27.0" prefWidth="209.0">
+                  <ScrollPane hbarPolicy="NEVER" layoutX="36.0" layoutY="67.0" maxWidth="200.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="210.0">
+                     <content>
+                        <FlowPane maxWidth="200.0">
                            <children>
-                              <Label text="Tile" textFill="#8d8d8d" />
-                           </children>
-                        </HBox>
-                        <FlowPane fx:id="tileImageSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
-                           <VBox.margin>
-                              <Insets bottom="5.0" top="5.0" />
-                           </VBox.margin>
-                        </FlowPane>
-                        <Label text="Obstacle" textFill="#8d8d8d" />
-                        <FlowPane fx:id="obstacleImageSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
-                           <VBox.margin>
-                              <Insets bottom="5.0" top="5.0" />
-                           </VBox.margin>
-                        </FlowPane>
-                        <VBox fx:id="requiredBox">
-                           <children>
-                              <Label text="Required" textFill="#8d8d8d" />
-                              <FlowPane fx:id="requiredTileSelections" hgap="5.0" minHeight="50.0" vgap="5.0">
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" top="5.0" />
-                                 </VBox.margin>
+                              <HBox alignment="BOTTOM_LEFT" prefHeight="27.0" prefWidth="209.0">
+                                 <children>
+                                    <Label text="Tile" textFill="#8d8d8d" />
+                                 </children>
+                              </HBox>
+                              <FlowPane fx:id="tileImageSelections" hgap="5.0" maxWidth="200.0" minHeight="50.0" vgap="5.0" />
+                              <HBox alignment="BOTTOM_LEFT" prefHeight="27.0" prefWidth="209.0">
+                                 <children>
+                                    <Label text="Obstacle" textFill="#8d8d8d" />
+                                 </children>
+                              </HBox>
+                              <FlowPane fx:id="obstacleImageSelections" hgap="5.0" maxWidth="200.0" minHeight="50.0" vgap="5.0" />
+                              <FlowPane fx:id="startAndFinishPane" maxWidth="180.0">
+                                 <children>
+                                    <HBox alignment="BOTTOM_LEFT" prefHeight="27.0" prefWidth="209.0">
+                                       <children>
+                                          <Label text="Start &amp; Finish" textFill="#8d8d8d" />
+                                       </children>
+                                    </HBox>
+                                    <FlowPane fx:id="requiredTileSelections" hgap="5.0" maxWidth="200.0" minHeight="50.0" vgap="5.0" />
+                                 </children>
                               </FlowPane>
                            </children>
-                        </VBox>
-                     </children>
-                  </VBox>
+                        </FlowPane>
+                     </content>
+                  </ScrollPane>
                   <Label fx:id="selectedTileDescription" layoutX="119.0" layoutY="117.0" text="Description" textFill="#8d8d8d" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0" />
                </children>
             </AnchorPane>

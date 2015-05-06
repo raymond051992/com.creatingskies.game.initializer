@@ -8,8 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -18,7 +18,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -48,7 +47,7 @@ public class MapDesignerController {
 	@FXML private FlowPane tileImageSelections;
 	@FXML private FlowPane obstacleImageSelections;
 	@FXML private FlowPane requiredTileSelections;
-	@FXML private VBox requiredBox;
+	@FXML private FlowPane startAndFinishPane;
 	
 	@FXML private ImageView selectedTileImageView;
 	
@@ -185,7 +184,7 @@ public class MapDesignerController {
 			requiredTileSelections.getChildren().add(endTileImageView);
 		}
 		
-		requiredBox.setVisible(!requiredTileSelections.getChildren().isEmpty());
+		startAndFinishPane.setVisible(!requiredTileSelections.getChildren().isEmpty());
 	}
 	
 	private void initTileImageSelections(){
