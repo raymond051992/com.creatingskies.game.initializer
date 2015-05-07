@@ -39,7 +39,7 @@
                   <Button minWidth="100.0" mnemonicParsing="false" onAction="#addPlayer" text="Add" GridPane.columnIndex="1" />
                </children>
             </GridPane>
-            <VBox fx:id="playersContainer" minHeight="300.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #ffffff;" />
+            <VBox fx:id="playersContainer" minHeight="300.0" prefHeight="200.0" prefWidth="100.0" />
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Button minWidth="100.0" mnemonicParsing="false" onAction="#handleSave" text="Ok" />

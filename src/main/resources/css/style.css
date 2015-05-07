@@ -17,6 +17,10 @@
     -fx-background-color: #222222;
 }
 
+.list-box {
+	-fx-background-color: #222222;
+}
+
 .label {
     -fx-font-size: 11pt;
     -fx-font-family: "Segoe UI Semibold";

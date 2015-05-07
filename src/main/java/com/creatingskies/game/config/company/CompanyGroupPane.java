@@ -1,6 +1,11 @@
 package com.creatingskies.game.config.company;
 
+import java.util.List;
+import java.util.Optional;
+
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
@@ -8,11 +13,16 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.component.TableRowDeleteButton;
 import com.creatingskies.game.component.TableRowEditButton;
+import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.model.company.CompanyDAO;
 import com.creatingskies.game.model.company.Group;
 import com.creatingskies.game.model.company.Player;
 import com.creatingskies.game.model.company.Team;
+import com.creatingskies.game.model.event.GameEvent;
+import com.creatingskies.game.model.event.GameEventDao;
 
 public class CompanyGroupPane extends AnchorPane{
 
@@ -25,14 +35,17 @@ public class CompanyGroupPane extends AnchorPane{
 		
 		Label groupName = new Label(group.getName());
 		TableRowEditButton editButton = new TableRowEditButton();
+		TableRowDeleteButton deleteButton = new TableRowDeleteButton();
 		
 		ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints();
-        container.getColumnConstraints().addAll(col1,col2);
+        ColumnConstraints col3 = new ColumnConstraints();
+        container.getColumnConstraints().addAll(col1,col2,col3);
         
         groupName.setPrefWidth(Integer.MAX_VALUE);
         groupName.setStyle("-fx-font-weight:bold;-fx-font-size:14px;");
         editButton.setTooltip(new Tooltip("Edit Group and Teams"));
+        deleteButton.setTooltip(new Tooltip("Delete Group and Teams"));
         
         editButton.setOnAction((event) -> {
         	if(new GroupDialogController().show(group)){
@@ -42,10 +55,32 @@ public class CompanyGroupPane extends AnchorPane{
         	};
         });
         
+        deleteButton.setOnAction((event) -> {
+        	List<GameEvent> events = new GameEventDao().findAllGameEventByCompany(group.getCompany()); 
+    		
+    		if(events == null || (events != null && events.isEmpty())){
+    			Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
+    					"Are you sure you want to delete this group?", null).showAndWait();
+    			
+    			if(result.get() == ButtonType.OK){
+    				try {
+    					new GameDao().delete(group);
+    					group = null;
+    				} catch (Exception e) {
+    					e.printStackTrace();
+    				}
+    			}
+    		}else{
+    			new AlertDialog(AlertType.ERROR, "Error", "", "You cannot delete this company. The record shows that we have an event for this group's company").showAndWait();
+    		}
+    		init();
+        });
+        
 		GridPane.setConstraints(groupName, 0, 0);
 		GridPane.setConstraints(editButton, 1, 0);
+		GridPane.setConstraints(deleteButton, 2, 0);
 		
-		container.getChildren().addAll(groupName,editButton);
+		container.getChildren().addAll(groupName,editButton,deleteButton);
 		return container;
 	}
 	

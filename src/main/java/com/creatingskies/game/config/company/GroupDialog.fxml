@@ -8,7 +8,7 @@
 
 <AnchorPane prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.config.company.GroupDialogController">
    <children>
-      <VBox layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <VBox layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="background" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
             <GridPane>
               <columnConstraints>
@@ -40,7 +40,7 @@
                   <Button fx:id="addTeamButton" minWidth="100.0" mnemonicParsing="false" onAction="#addTeam" text="Add" GridPane.columnIndex="1" />
                </children>
             </GridPane>
-            <VBox fx:id="teamsContainer" minHeight="300.0" prefHeight="300.0" prefWidth="100.0" style="-fx-background-color: #ffffff;" />
+            <VBox fx:id="teamsContainer" minHeight="300.0" prefHeight="300.0" prefWidth="100.0" styleClass="background" />
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Button minWidth="100.0" mnemonicParsing="false" onAction="#handleSave" text="Ok" />
