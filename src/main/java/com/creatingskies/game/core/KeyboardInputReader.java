@@ -65,6 +65,18 @@ public class KeyboardInputReader extends AbstractInputReader {
 				if(rightCodes.containsKey(event.getCode())){
 					inputForce.right = rightCodes.get(event.getCode());
 				}
+				
+				if(event.getCode() == KeyCode.BACK_SPACE){
+					setResetButtonPressed(true);
+				}else{
+					setResetButtonPressed(false);
+				}
+				
+				if(event.getCode() == KeyCode.ESCAPE){
+					setQuitButtonPressed(true);
+				}else{
+					setQuitButtonPressed(false);
+				}
 			}
 		});
 		
@@ -76,7 +88,7 @@ public class KeyboardInputReader extends AbstractInputReader {
 			}
 		});
 	}
-
+	
 	@Override
 	public void display(Double speed, Double slowFactor, Double degree) {}
 

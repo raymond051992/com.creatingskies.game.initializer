@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -109,6 +110,8 @@ public class GameCoreController extends PropertiesViewController {
 	private Group group;
 	private Stage stage;
 	
+	private Tile startTilePoint;
+	
 	@Override
 	protected String getViewTitle() {
 		return "Game";
@@ -182,8 +185,19 @@ public class GameCoreController extends PropertiesViewController {
 		initWeathers();
 		
 		inputReader.init();
-		
 		countDownTimer.play();
+	}
+	
+	
+	private void resetsPlayerPosition(){
+		player.setLayoutX(startTilePoint.getColIndex() * getMainScreenTileWidth());
+		player.setLayoutY(startTilePoint.getRowIndex() * getMainScreenTileHeight());
+		
+		miniPlayer.setLayoutX(startTilePoint.getColIndex() * getMiniScreenTileWidth());
+		miniPlayer.setLayoutY(startTilePoint.getRowIndex() * getMiniScreenTileHeight());
+		
+		pane.setLayoutX(0-(player.getLayoutX()));
+		pane.setLayoutY(0-(player.getLayoutY()));
 	}
 	
 	private String convertToString(Object s){
@@ -295,6 +309,7 @@ public class GameCoreController extends PropertiesViewController {
 				if(tile.getObstacle() != null){
 					createObstacle(tile);
 				} else if(tile.getStartPoint()){
+					startTilePoint = tile;
 					player.setLayoutX(tile.getColIndex() * getMainScreenTileWidth());
 					player.setLayoutY(tile.getRowIndex() * getMainScreenTileHeight());
 					pane.getChildren().add(player);
@@ -338,20 +353,33 @@ public class GameCoreController extends PropertiesViewController {
 				new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent event) {
-		    	millisGameDuration += Constant.FRAME_DURATION;
-		    	durationLabel.setText(String.format("%.2f", getDuration()));
-		    	distanceLabel.setText(String.format("%.2f", totalDistance));
-		    	speedLabel.setText(String.format("%.2f", Util.computeSpeed(distance)) + " m/s");
-		    	
-		    	inputForce = inputReader.readInput();
-		    	computeRotation();
-				computeMovement();
-				
-				scrollHvalLabel.setText(convertToString(pane.getLayoutX()));
-				scrollVvalLabel.setText(convertToString(pane.getLayoutY()));
-				
-				playerXLabel.setText(convertToString(player.getLayoutX()));
-				playerYLabel.setText(convertToString(player.getLayoutY()));
+		    	if(gameLoop.getStatus() != Status.PAUSED){
+		    		millisGameDuration += Constant.FRAME_DURATION;
+			    	durationLabel.setText(String.format("%.2f", getDuration()));
+			    	distanceLabel.setText(String.format("%.2f", totalDistance));
+			    	speedLabel.setText(String.format("%.2f", Util.computeSpeed(distance)) + " m/s");
+			    	
+			    	inputForce = inputReader.readInput();
+			    	
+			    	if(inputReader.isResetButtonPressed()){
+			    		resetsPlayerPosition();
+			    		inputReader.setResetButtonPressed(false);
+			    	}
+			    	
+			    	if(inputReader.isQuitButtonPressed()){
+			    		gameLoop.pause();
+			    		closeGame();
+			    	}
+			    	
+			    	computeRotation();
+					computeMovement();
+					
+					scrollHvalLabel.setText(convertToString(pane.getLayoutX()));
+					scrollVvalLabel.setText(convertToString(pane.getLayoutY()));
+					
+					playerXLabel.setText(convertToString(player.getLayoutX()));
+					playerYLabel.setText(convertToString(player.getLayoutY()));
+		    	}
 		    }
 		}));
 		gameLoop.setCycleCount(Timeline.INDEFINITE);
