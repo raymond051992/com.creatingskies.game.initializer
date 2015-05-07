@@ -263,7 +263,7 @@ public class GamePropertiesController extends PropertiesViewController{
 		int width = Integer.parseInt(widthTextField.getText());
 		int height = Integer.parseInt(heightTextField.getText());
 		
-		if((getMap().getWidth() != width || getMap().getHeight() != height)){
+		if(getMap().getWidth() != null && getMap().getHeight() != null && (getMap().getWidth() != width || getMap().getHeight() != height)){
 			if(getMap().getWidth() > width){
 				int diff = getMap().getWidth() - width;
 				List<Tile> tilesToRemove = new ArrayList<Tile>();
