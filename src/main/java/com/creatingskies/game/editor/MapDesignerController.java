@@ -149,7 +149,9 @@ public class MapDesignerController {
 	
 	private void handlePaintTile(Tile tile, ImageView frontImage, ImageView backImage) {
 		if(getCurrentAction() != null && (selectedTileImage != null || selectedObstacle != null)){
-			tile.setObstacle(selectedObstacle != null ? selectedObstacle : null);
+			if(tile.getObstacle() == null){
+				tile.setObstacle(selectedObstacle != null ? selectedObstacle : null);
+			}
 			
 			if(selectedObstacle != null){
 				frontImage.setImage(Util.byteArrayToImage(selectedObstacle.getImage()));
@@ -165,6 +167,7 @@ public class MapDesignerController {
 				tile.setEndPoint(endTileSelected);
 			} else {
 				backImage.setImage(Util.byteArrayToImage(selectedTileImage.getImage()));
+				tile.setBackImage(selectedTileImage);
 			}
 			
 			validateRequiredTiles();
