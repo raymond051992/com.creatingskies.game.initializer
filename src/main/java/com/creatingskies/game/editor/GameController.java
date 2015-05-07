@@ -1,6 +1,7 @@
 package com.creatingskies.game.editor;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -19,6 +20,8 @@ import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.model.IRecord;
+import com.creatingskies.game.model.event.GameEvent;
+import com.creatingskies.game.model.event.GameEventDao;
 import com.creatingskies.game.model.user.User;
 
 public class GameController extends TableViewController{
@@ -65,17 +68,23 @@ public class GameController extends TableViewController{
 	
 	@Override
 	protected void deleteRecord(IRecord record) {
-		Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
-				"Are you sure you want to delete this game?", null).showAndWait();
+		List<GameEvent> events = new GameEventDao().findAllGameEventByGame((Game) record); 
 		
-		if(result.get() == ButtonType.OK){
-			super.deleteRecord(record);
-			try {
-				new GameDao().delete(record);
-				resetTableView();
-			} catch (Exception e) {
-				e.printStackTrace();
+		if(events == null || (events != null && events.isEmpty())){
+			Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
+					"Are you sure you want to delete this game?", null).showAndWait();
+			
+			if(result.get() == ButtonType.OK){
+				super.deleteRecord(record);
+				try {
+					new GameDao().delete(record);
+					resetTableView();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+		}else{
+			new AlertDialog(AlertType.ERROR, "Error", "", "You cannot delete this game. The record shows that we have an event for this game").showAndWait();
 		}
 	}
 	
