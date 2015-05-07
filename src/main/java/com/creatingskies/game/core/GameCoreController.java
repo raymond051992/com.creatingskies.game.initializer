@@ -171,6 +171,8 @@ public class GameCoreController extends PropertiesViewController {
 		MapDao mapDao = new MapDao();
 		Map map = mapDao.findMapWithDetails(getGameEvent().getGame().getMap().getIdNo());
 		
+		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame(),weatherContainer);
+		
 		initPlayer(getGameEvent().getGame().getType());
 		initGameLoop();
 		initCountdownTimer();
@@ -180,7 +182,6 @@ public class GameCoreController extends PropertiesViewController {
 		initWeathers();
 		
 		inputReader.init();
-		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame(),weatherContainer);
 		
 		countDownTimer.play();
 	}
@@ -591,8 +592,9 @@ public class GameCoreController extends PropertiesViewController {
 		
 		String owner = type.equals(Type.ROWING) ? Constant.IMAGE_ROWING_PLAYER_OWNER : Constant.IMAGE_CYCLING_PLAYER_OWNER;
 		TileImage playerTileImage = new MapDao().findTileImageByOwner(owner);
+		
 		Image playerImage = playerTileImage != null && playerTileImage.getImage() != null ?
-				Util.byteArrayToImage(playerTileImage.getImage()) : null;
+				gameResourceManager.getPlayerImage(playerTileImage.getImage(), playerTileImage.getFileType()) : null;
 		
 		playerCircle = new Circle((getMainScreenTileWidth() / 2) * playerResizeFactor, Color.BLACK);
 		playerCircle.setOpacity(0.2);

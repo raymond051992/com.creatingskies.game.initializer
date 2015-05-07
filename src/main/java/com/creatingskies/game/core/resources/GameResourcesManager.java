@@ -48,6 +48,30 @@ public class GameResourcesManager {
 		initWeatherImage(game, weatherContainer);
 	}
 	
+	public Image getPlayerImage(byte[] bs,String fileExt){
+		if(bs != null){
+			File dir = new File("game/tmp/"+sessionId+"/player/img/");
+			if(!dir.exists()){
+				dir.mkdirs();
+			}
+			try {
+				FileOutputStream outputStream = new FileOutputStream("game/tmp/"+sessionId+"/player/img/player."+fileExt);
+				outputStream.write(bs);
+				outputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			
+			try {
+				return new Image(new File("game/tmp/"+sessionId+"/player/img/player."+fileExt).toURI().toURL().toString());
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	private void initWeatherImage(final Game game, AnchorPane weatherContainer){
 		if(game.getWeather() != null){
 			File dir = new File("game/tmp/"+sessionId+"/weather/img/");
@@ -96,6 +120,8 @@ public class GameResourcesManager {
 		try {
 			gameAudioResource.stop();
 			gameAudioThread.interrupt();
+			gameWeatherAudioResource.stop();
+			gameWeatherAudioThread.interrupt();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
