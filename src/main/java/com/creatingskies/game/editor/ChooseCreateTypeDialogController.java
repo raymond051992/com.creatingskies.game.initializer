@@ -110,7 +110,7 @@ public class ChooseCreateTypeDialogController {
 	private void next(){
 		stage.close();
 		if(createNewRadioButton.isSelected()){
-			new GamePropertiesController().show(Action.ADD, new Game(),false);
+			new GamePropertiesController().show(Action.ADD, new Game(),false,false);
 		}else{
 			if(gameComboBox.getSelectionModel().getSelectedItem() != null){
 				try {
@@ -142,7 +142,7 @@ public class ChooseCreateTypeDialogController {
 					map.setTiles(tiles);
 					newGame.setMap(map);
 					
-					new GamePropertiesController().show(Action.ADD, newGame,true);
+					new GamePropertiesController().show(Action.ADD, newGame,false,true);
 				} catch (IllegalAccessException | InvocationTargetException
 						| NoSuchMethodException e) {
 					Logger.log(getClass(), Level.ERROR, e.getMessage(),e);

@@ -71,7 +71,7 @@ public class MapDesignerController {
 	private boolean copyFromOtherMap;
 	
 	public void init(){
-		isEditable = (getCurrentAction() == Action.VIEW || getCurrentAction() == Action.EDIT);
+		isEditable = (getCurrentAction() == Action.VIEW);
 		saveButton.setVisible(!isEditable);
 		cancelButton.setText(isEditable ? "OK" : "Cancel");
 		selectedTileDescription.setText("");
@@ -391,7 +391,7 @@ public class MapDesignerController {
 		if(getMap().getStartPoint() == null || getMap().getEndPoint() == null){
 			new AlertDialog(AlertType.ERROR, "Invalid Map", null, "Map should have 1 start point and 1 end point.",stage).showAndWait();
 		} else {
-			new GamePropertiesController().show(currentAction, getGame(),copyFromOtherMap);
+			new GamePropertiesController().show(currentAction, getGame(),false,copyFromOtherMap);
 			stage.close();
 		}
 	}

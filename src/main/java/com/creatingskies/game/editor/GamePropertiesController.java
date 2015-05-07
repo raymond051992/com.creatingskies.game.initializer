@@ -208,13 +208,13 @@ public class GamePropertiesController extends PropertiesViewController{
 		}
 	}
 	
-	public void show(Action action, Game game,boolean copyFromOtherGame){
+	public void show(Action action, Game game,boolean fetchGameDetails,boolean copyFromOtherGame){
 		try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("GameProperties.fxml"));
             AnchorPane pane = (AnchorPane) loader.load();
             
-            if(action.equals(Action.EDIT)){
+            if(action.equals(Action.EDIT) && fetchGameDetails){
             	game = new GameDao().findGameWithDetails(game.getIdNo());
             }
             GamePropertiesController controller = (GamePropertiesController) loader
@@ -233,21 +233,12 @@ public class GamePropertiesController extends PropertiesViewController{
 		titleField.setDisable(disable);
 		descriptionField.setDisable(disable);
 		browseButton.setDisable(disable);
-		if(getCurrentAction().equals(Action.EDIT)){
-			widthTextField.setDisable(true);
-			heightTextField.setDisable(true);
-			gameTypeCyclingButton.setDisable(true);
-			gameTypeRowingButton.setDisable(true);
-			weatherComboBox.setDisable(true);
-			audioFileNameField.setDisable(true);
-		}else{
-			widthTextField.setDisable(disable);
-			heightTextField.setDisable(disable);
-			gameTypeCyclingButton.setDisable(disable);
-			gameTypeRowingButton.setDisable(disable);
-			weatherComboBox.setDisable(disable);
-			audioFileNameField.setDisable(disable);
-		}
+		widthTextField.setDisable(disable);
+		heightTextField.setDisable(disable);
+		gameTypeCyclingButton.setDisable(disable);
+		gameTypeRowingButton.setDisable(disable);
+		weatherComboBox.setDisable(disable);
+		audioFileNameField.setDisable(disable);
 	}
 	
 	@FXML
@@ -261,7 +252,7 @@ public class GamePropertiesController extends PropertiesViewController{
 				Map map = new MapDao().findMapWithDetails(getGame().getMap().getIdNo());
 				getGame().setMap(map);
 			}
-			if(getCurrentAction() == Action.ADD){
+			if(getCurrentAction() == Action.ADD || getCurrentAction() == Action.EDIT){
 				loadMapDetails();
 			}
 			new MapDesignerController().show(getCurrentAction(), getGame(),waitDialog,copyFromOtherGame);
@@ -272,7 +263,7 @@ public class GamePropertiesController extends PropertiesViewController{
 		int width = Integer.parseInt(widthTextField.getText());
 		int height = Integer.parseInt(heightTextField.getText());
 		
-		if(copyFromOtherGame && (getMap().getWidth() != width || getMap().getHeight() != height)){
+		if((getMap().getWidth() != width || getMap().getHeight() != height)){
 			if(getMap().getWidth() > width){
 				int diff = getMap().getWidth() - width;
 				List<Tile> tilesToRemove = new ArrayList<Tile>();

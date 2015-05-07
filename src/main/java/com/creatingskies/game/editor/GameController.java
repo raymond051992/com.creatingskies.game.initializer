@@ -58,12 +58,17 @@ public class GameController extends TableViewController{
 	
 	@Override
 	protected void viewRecord(IRecord record) {
-		new GamePropertiesController().show(Action.VIEW, (Game) record,false);
+		new GamePropertiesController().show(Action.VIEW, (Game) record,true,false);
 	}
 	
 	@Override
 	protected void editRecord(IRecord record) {
-		new GamePropertiesController().show(Action.EDIT, (Game) record,false);
+		List<GameEvent> events = new GameEventDao().findAllGameEventByGame((Game) record); 
+		if(events == null || (events != null && events.isEmpty())){
+			new GamePropertiesController().show(Action.EDIT, (Game) record,true,false);
+		}else{
+			new AlertDialog(AlertType.INFORMATION, "Game", "", "You cannot edit this game. The record shows that we have an event for this game").showAndWait();
+		}
 	}
 	
 	@Override
