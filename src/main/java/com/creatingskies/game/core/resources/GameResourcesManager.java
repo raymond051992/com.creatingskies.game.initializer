@@ -19,6 +19,8 @@ import javafx.scene.layout.BackgroundSize;
 import org.apache.commons.io.FileUtils;
 
 import com.creatingskies.game.core.Game;
+import com.creatingskies.game.core.TileImage;
+import com.creatingskies.game.model.obstacle.Obstacle;
 
 public class GameResourcesManager {
 	
@@ -40,6 +42,7 @@ public class GameResourcesManager {
 	}
 	
 	public GameResourcesManager(final Game game, AnchorPane weatherContainer) {
+		removeTmpFiles();
 		cyclicBarrier = new CyclicBarrier(3);
 		sessionId = UUID.randomUUID().toString();
 		this.game = game;
@@ -68,6 +71,56 @@ public class GameResourcesManager {
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
+		}
+		return null;
+	}
+	
+	public Image getObstacleImage(Obstacle obstacle){
+		if(obstacle == null){
+			return null;
+		}
+		
+		String basedir = "game/tmp/"+sessionId+"/map/obstacle/"+obstacle.getIdNo()+"/";
+		
+		try{
+			File dir = new File(basedir);
+			if(!dir.exists()){
+				dir.mkdirs();
+				
+				FileOutputStream outputStream = new FileOutputStream(basedir+obstacle.getImageFileName());
+				outputStream.write(obstacle.getImage());
+				outputStream.close();
+				obstacle.setImage(null);
+			}
+			
+			return new Image(new File(basedir+obstacle.getImageFileName()).toURI().toURL().toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Image getTileImage(TileImage tileImage){
+		if(tileImage == null){
+			return null;
+		}
+		String basedir = "game/tmp/"+sessionId+"/map/tile/"+tileImage.getIdNo()+"/";
+		
+		try{
+			File dir = new File(basedir);
+			if(!dir.exists()){
+				dir.mkdirs();
+				
+				FileOutputStream outputStream = new FileOutputStream(basedir+tileImage.getFileName());
+				outputStream.write(tileImage.getImage());
+				outputStream.close();
+				
+				tileImage.setImage(null);
+			}
+			
+			return new Image(new File(basedir+tileImage.getFileName()).toURI().toURL().toString());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
