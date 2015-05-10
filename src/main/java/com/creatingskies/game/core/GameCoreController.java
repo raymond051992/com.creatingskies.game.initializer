@@ -3,6 +3,7 @@ package com.creatingskies.game.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
@@ -15,6 +16,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -362,13 +364,23 @@ public class GameCoreController extends PropertiesViewController {
 			    	inputForce = inputReader.readInput();
 			    	
 			    	if(inputReader.isResetButtonPressed()){
-			    		resetsPlayerPosition();
 			    		inputReader.setResetButtonPressed(false);
+			    		resetsPlayerPosition();
 			    	}
 			    	
 			    	if(inputReader.isQuitButtonPressed()){
 			    		gameLoop.pause();
-			    		closeGame();
+			    		
+			    		Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
+			    				"Are you sure you want to quit this game?", null).showAndWait();
+			    		
+			    		if(result.get() == ButtonType.OK){
+			    			closeGame();
+			    			return;
+			    		} else {
+			    			inputReader.setQuitButtonPressed(false);
+			    		}
+			    		gameLoop.play();
 			    	}
 			    	
 			    	computeRotation();

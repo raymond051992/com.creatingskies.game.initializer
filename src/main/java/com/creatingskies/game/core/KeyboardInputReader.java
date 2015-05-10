@@ -66,16 +66,12 @@ public class KeyboardInputReader extends AbstractInputReader {
 					inputForce.right = rightCodes.get(event.getCode());
 				}
 				
-				if(event.getCode() == KeyCode.BACK_SPACE){
+				if(event.getCode() == KeyCode.F1){
 					setResetButtonPressed(true);
-				}else{
-					setResetButtonPressed(false);
 				}
 				
-				if(event.getCode() == KeyCode.ESCAPE){
+				if(event.getCode() == KeyCode.F2){
 					setQuitButtonPressed(true);
-				}else{
-					setQuitButtonPressed(false);
 				}
 			}
 		});
@@ -85,6 +81,8 @@ public class KeyboardInputReader extends AbstractInputReader {
 			public void handle(KeyEvent event) {
 				inputForce.left = 0;
 				inputForce.right = 0;
+				setQuitButtonPressed(false);
+				setResetButtonPressed(false);
 			}
 		});
 	}
