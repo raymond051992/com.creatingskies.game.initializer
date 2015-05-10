@@ -1,0 +1,19 @@
+<project name="auto-pay-rev" default="default" basedir="."
+         xmlns:fx="javafx:com.sun.javafx.tools.ant">
+    <target name="deploy-bundle">
+            <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+                    uri="javafx:com.sun.javafx.tools.ant"
+                    classpath="${java.home}\..\lib\ant-javafx.jar"/>
+ 
+ 
+            <fx:deploy width="600" height="400"
+                       verbose="true" nativeBundles="all"
+                       outdir="${dist.dir}/bundle" outfile="GameEdior">
+                <fx:application name="GameEdior" mainClass="${javafx.main.class}"/>
+                <fx:resources>
+                    <fx:fileset dir="${dist.dir}" includes="GameEdior.jar"/>
+                </fx:resources>
+                <fx:info title="samplejfxtest" vendor="Retheesh"/>
+            </fx:deploy>
+    </target>
+</project>
