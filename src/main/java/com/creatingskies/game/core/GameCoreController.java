@@ -28,6 +28,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.shape.StrokeType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -47,7 +48,10 @@ import com.creatingskies.game.util.Util;
 
 public class GameCoreController extends PropertiesViewController {
 	
-	private static final Integer SCALE_FACTOR = 15;
+	private static final Double DEFAULT_SCALE_FACTOR = 15.0;
+	private static final Double PREFERRED_MINIMAP_TILE_COUNT_X = 25.0;
+	private static final Double PREFERRED_MINIMAP_TILE_COUNT_Y = 25.0;
+	private static final Double MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER = 1.25;
 
 	@FXML private Pane pane;
 	@FXML private AnchorPane mainContainer;
@@ -99,7 +103,6 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private Timeline gameLoop;
 	private Timeline countDownTimer;
-
 	private float millisGameDuration;
 	private float totalDistance = 0;
 	private double distance;
@@ -113,6 +116,9 @@ public class GameCoreController extends PropertiesViewController {
 	private Stage stage;
 	
 	private Tile startTilePoint;
+	
+	private Double scaleFactorX = 15.0;
+	private Double scaleFactorY = 15.0;
 	
 	@Override
 	protected String getViewTitle() {
@@ -136,7 +142,7 @@ public class GameCoreController extends PropertiesViewController {
 	        stage.setMaximized(true);
 	        stage.setScene(scene);
 	        
-            GameCoreController controller = (GameCoreController) loader.getController();
+	        GameCoreController controller = (GameCoreController) loader.getController();
             controller.setCurrentAction(Action.VIEW);
             controller.setCurrentRecord(gameEvent);
 	        controller.setStage(stage);
@@ -178,6 +184,7 @@ public class GameCoreController extends PropertiesViewController {
 		
 		gameResourceManager = new GameResourcesManager(((GameEvent) getCurrentRecord()).getGame(),weatherContainer);
 		
+		initScaleFactors(map.getWidth(), map.getHeight());
 		initPlayer(getGameEvent().getGame().getType());
 		initGameLoop();
 		initCountdownTimer();
@@ -294,19 +301,32 @@ public class GameCoreController extends PropertiesViewController {
 			
 			ImageView frontImage = null;
 			ImageView miniFrontImage = null;
+			boolean startOrEndTile = false;
 			
 			if(tile.getObstacle() != null || tile.getStartPoint() || tile.getEndPoint()){
 				frontImage = new ImageView();
 				miniFrontImage = new ImageView();
-				frontImage.setFitHeight(getMainScreenTileHeight());
+				
 				frontImage.setFitWidth(getMainScreenTileWidth());
+				frontImage.setFitHeight(getMainScreenTileHeight());
 				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
 				
-				miniFrontImage.setFitHeight(getMiniScreenTileHeight());
-				miniFrontImage.setFitWidth(getMiniScreenTileWidth());
 				miniFrontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
+				
+				if(tile.getStartPoint() || tile.getEndPoint()){
+					startOrEndTile = true;
+					miniFrontImage.setFitWidth(getMiniScreenTileWidth() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
+					miniFrontImage.setFitHeight(getMiniScreenTileHeight() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
+					miniFrontImage.setLayoutX(tile.getColIndex() * getMiniScreenTileWidth());
+					miniFrontImage.setLayoutY(tile.getRowIndex() * getMiniScreenTileHeight());
+					miniMapPane.getChildren().add(miniFrontImage);
+				} else {
+					startOrEndTile = false;
+					miniFrontImage.setFitWidth(getMiniScreenTileWidth());
+					miniFrontImage.setFitHeight(getMiniScreenTileHeight());
+				}
 				
 				if(tile.getObstacle() != null){
 					createObstacle(tile);
@@ -327,7 +347,7 @@ public class GameCoreController extends PropertiesViewController {
 			}
 			
 			mapTiles.add(Util.bundle(backImage, frontImage), tile.getColIndex(), tile.getRowIndex());
-			miniMapTiles.add(Util.bundle(miniBackImage, miniFrontImage), tile.getColIndex(), tile.getRowIndex());
+			miniMapTiles.add(startOrEndTile ? miniBackImage : Util.bundle(miniBackImage, miniFrontImage), tile.getColIndex(), tile.getRowIndex());
 		}
 		
 		initPlayingArea(map);
@@ -436,8 +456,8 @@ public class GameCoreController extends PropertiesViewController {
 			
 			player.setLayoutX(player.getLayoutX() + cosValue);
 			player.setLayoutY(player.getLayoutY() + sinValue);
-			miniPlayer.setLayoutX(miniPlayer.getLayoutX() + (cosValue / SCALE_FACTOR));
-			miniPlayer.setLayoutY(miniPlayer.getLayoutY() + (sinValue / SCALE_FACTOR));
+			miniPlayer.setLayoutX(miniPlayer.getLayoutX() + (cosValue / scaleFactorX));
+			miniPlayer.setLayoutY(miniPlayer.getLayoutY() + (sinValue / scaleFactorY));
 			
 			scrollMap();
 			
@@ -445,8 +465,8 @@ public class GameCoreController extends PropertiesViewController {
 				encounteredBlockage = true;
 				player.setLayoutX(player.getLayoutX() - cosValue);
 				player.setLayoutY(player.getLayoutY() - sinValue);
-				miniPlayer.setLayoutX(miniPlayer.getLayoutX() - (cosValue / SCALE_FACTOR));
-				miniPlayer.setLayoutY(miniPlayer.getLayoutY() - (sinValue / SCALE_FACTOR));
+				miniPlayer.setLayoutX(miniPlayer.getLayoutX() - (cosValue / scaleFactorX));
+				miniPlayer.setLayoutY(miniPlayer.getLayoutY() - (sinValue / scaleFactorY));
 			}
 		}
 		
@@ -556,8 +576,12 @@ public class GameCoreController extends PropertiesViewController {
 		for (Shape o : obstacles) {
 			Shape intersect = Shape.intersect(block, o);
 			if (intersect.getBoundsInLocal().getWidth() != -1) {
-				hasCollision = true;		
-				break;
+				hasCollision = true;
+				o.getStrokeDashArray().clear();
+				o.getStrokeDashArray().addAll(10.0, 20.0);
+				o.setStroke(Color.DARKRED);
+			} else {
+				o.setStroke(null);
 			}
 		}
 		
@@ -592,6 +616,10 @@ public class GameCoreController extends PropertiesViewController {
 	
 	public void createObstacle(Tile tile){
 		Rectangle obstacle = createDefaultRectangle(tile);
+		obstacle.setStrokeWidth(2.0);
+		//TODO
+		obstacle.getStrokeDashArray().addAll(10.0, 10.0);
+		obstacle.setStrokeType(StrokeType.OUTSIDE);
 		pane.getChildren().add(obstacle);
 		obstacles.add(obstacle);
 		createObstacleEdge(tile);
@@ -649,34 +677,39 @@ public class GameCoreController extends PropertiesViewController {
 		player.setPrefHeight(getMainScreenTileHeight());
 		player.getChildren().addAll(playerCircle, playerImageView);
 		
-		miniPlayerCircle = new Circle((getMiniScreenTileWidth() / 2) * playerResizeFactor, Color.BLACK);
+		miniPlayerCircle = new Circle((getMiniScreenTileWidth() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER) / 2, Color.BLACK);
 		miniPlayerCircle.setOpacity(0.2);
 		
 		ImageView miniplayerImageView = new ImageView();
-		miniplayerImageView.setFitWidth(getMiniScreenTileWidth() * playerResizeFactor);
-		miniplayerImageView.setFitHeight(getMiniScreenTileHeight() * playerResizeFactor);
+		miniplayerImageView.setFitWidth(getMiniScreenTileWidth() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
+		miniplayerImageView.setFitHeight(getMiniScreenTileHeight() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
 		miniplayerImageView.setImage(playerImage);
 		
 		miniPlayer = new StackPane();
-		miniPlayer.setPrefWidth(getMiniScreenTileWidth());
-		miniPlayer.setPrefHeight(getMiniScreenTileHeight());
+		miniPlayer.setPrefWidth(getMiniScreenTileWidth() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
+		miniPlayer.setPrefHeight(getMiniScreenTileHeight() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
 		miniPlayer.getChildren().addAll(miniPlayerCircle, miniplayerImageView);
 	}
 	
 	private double getMainScreenTileWidth(){
-		return getMiniScreenTileWidth() * SCALE_FACTOR;
+		return 240.0;
 	}
 	
 	private double getMainScreenTileHeight(){
-		return getMiniScreenTileHeight() * SCALE_FACTOR;
+		return 240.0;
 	}
 	
 	private double getMiniScreenTileWidth(){
-		return 16.0;
+		return getMainScreenTileWidth() / scaleFactorX;
 	}
 	
 	private double getMiniScreenTileHeight(){
-		return 16.0;
+		return getMainScreenTileHeight() / scaleFactorY;
+	}
+	
+	private void initScaleFactors(Integer mapTileCountX, Integer mapTileCountY){
+		scaleFactorX = DEFAULT_SCALE_FACTOR * (mapTileCountX / PREFERRED_MINIMAP_TILE_COUNT_X);
+		scaleFactorY = DEFAULT_SCALE_FACTOR * (mapTileCountY / PREFERRED_MINIMAP_TILE_COUNT_Y);
 	}
 
 	public void setStage(Stage stage) {
