@@ -16,12 +16,13 @@
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="330.0" minWidth="10.0" prefWidth="113.0" />
 			</columnConstraints>
 			<rowConstraints>
+            <RowConstraints maxHeight="354.0" minHeight="10.0" prefHeight="327.0" vgrow="SOMETIMES" />
 				<RowConstraints maxHeight="354.0" minHeight="10.0" prefHeight="327.0" vgrow="SOMETIMES" />
 				<RowConstraints maxHeight="354.0" minHeight="10.0" prefHeight="327.0" vgrow="SOMETIMES" />
 				<RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-				<ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+				<ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
 					<buttons>
 						<Button mnemonicParsing="false" onAction="#handleSave" text="Save" />
 						<Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
@@ -30,20 +31,22 @@
 						<Insets />
 					</GridPane.margin>
 				</ButtonBar>
-				<Slider fx:id="difficultySlider" majorTickUnit="1.0" max="7.0" minorTickCount="0" prefHeight="14.0" prefWidth="200.0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" />
-				<Label text="Difficulty" />
-				<Label text="Image" GridPane.rowIndex="1" />
-				<HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="15.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+				<Slider fx:id="difficultySlider" majorTickUnit="1.0" max="7.0" minorTickCount="0" prefHeight="14.0" prefWidth="200.0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+				<Label text="Difficulty" GridPane.rowIndex="1" />
+				<Label text="Image" GridPane.rowIndex="2" />
+				<HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="15.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
 					<children>
 						<TextField fx:id="fileNameField" editable="false" HBox.hgrow="ALWAYS" />
 						<Button mnemonicParsing="false" onAction="#handleOpenBrowseDialog" text="Browse" />
 					</children>
 				</HBox>
-            <ImageView fx:id="previewImage" fitHeight="100.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowSpan="2">
+            <ImageView fx:id="previewImage" fitHeight="100.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowSpan="3">
                <GridPane.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </GridPane.margin></ImageView>
-            <Label fx:id="notApplicableLabel" text="N/A (Not applicable for this image)" GridPane.columnIndex="1" />
+            <Label fx:id="notApplicableLabel" text="N/A (Not applicable for this image)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Name" />
+            <TextField fx:id="nameField" GridPane.columnIndex="1" />
 			</children>
 			<padding>
 				<Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />

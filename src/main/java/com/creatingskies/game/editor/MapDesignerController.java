@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -332,23 +333,31 @@ public class MapDesignerController {
 			imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent event) {
-					selectedTileImageView.setImage(imageView.getImage());
-					selectedTileImage = tileImage;
-					selectedObstacle = null;
+					handleTimeImageSelection(tileImage, imageView.getImage());
 					
-					startTileSelected = false;
-					endTileSelected = false;
-					
-					selectedTileDescription
-						.setText("Type: Tile \n"
-							+ "File Name: " + tileImage.getFileName() + "\n"
-							+ "Difficulty: " + tileImage.getDifficulty() + "\n"
-							+ "Radius: 0");
+					if(event.getClickCount() == 2){
+						showTileImageDialog(tileImage);
+					}
 				}
 			});
 		}
 		
 		tileImageSelections.getChildren().add(imageView);
+	}
+	
+	private void handleTimeImageSelection(TileImage tileImage, Image image){
+		selectedTileImageView.setImage(image);
+		selectedTileImage = tileImage;
+		selectedObstacle = null;
+		
+		startTileSelected = false;
+		endTileSelected = false;
+		
+		selectedTileDescription
+			.setText("Type: Tile \n"
+				+ "File Name: " + tileImage.getFileName() + "\n"
+				+ "Difficulty: " + tileImage.getDifficulty() + "\n"
+				+ "Radius: 0");
 	}
 	
 	public void show(Action action, Game game,Alert loadingDialog,boolean copyFromOtherMap){
@@ -381,11 +390,15 @@ public class MapDesignerController {
 	
 	@FXML
 	private void uploadTileImage(){
-		TileImage tileImage = new TileImage();
-		boolean saveClicked = new TileImageDialogController().show(tileImage,stage);
+		showTileImageDialog(new TileImage());
+	}
+	
+	private void showTileImageDialog(TileImage tileImage){
+		boolean saveClicked = new TileImageDialogController().show(tileImage, stage);
 	    if (saveClicked) {
 	        new MapDao().saveOrUpdate(tileImage);
 	        initTileImageSelections();
+	        handleTimeImageSelection(tileImage, Util.byteArrayToImage(tileImage.getImage()));
 	    }
 	}
 	

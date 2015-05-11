@@ -617,8 +617,7 @@ public class GameCoreController extends PropertiesViewController {
 	public void createObstacle(Tile tile){
 		Rectangle obstacle = createDefaultRectangle(tile);
 		obstacle.setStrokeWidth(2.0);
-		//TODO
-		obstacle.getStrokeDashArray().addAll(10.0, 10.0);
+		obstacle.getStrokeDashArray().addAll(10.0, 20.0);
 		obstacle.setStrokeType(StrokeType.OUTSIDE);
 		pane.getChildren().add(obstacle);
 		obstacles.add(obstacle);

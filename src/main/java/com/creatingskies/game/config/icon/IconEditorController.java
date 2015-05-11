@@ -95,7 +95,7 @@ public class IconEditorController extends TableViewController{
 	private void resetTableView(){
 		imageColumn.setCellFactory(generateImageCellFactory());
 		tileImagesTable.setItems(FXCollections
-				.observableArrayList(mapDao.findAllTileImages(true)));
+				.observableArrayList(mapDao.findAllTileImages()));
 	}
 	
 	@Override

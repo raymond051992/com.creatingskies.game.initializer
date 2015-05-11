@@ -20,12 +20,14 @@ import javafx.stage.StageStyle;
 
 import com.creatingskies.game.classes.ViewController;
 import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.core.MapDao;
 import com.creatingskies.game.core.TileImage;
 import com.creatingskies.game.model.Constant;
 import com.creatingskies.game.util.Util;
 
 public class TileImageDialogController extends ViewController {
 
+	@FXML private TextField nameField;
 	@FXML private TextField fileNameField;
 	@FXML private ImageView previewImage;
 	
@@ -79,6 +81,9 @@ public class TileImageDialogController extends ViewController {
 	
 	public void setTileImage(TileImage tileImage) {
         this.tileImage = tileImage;
+        
+        nameField.setDisable(tileImage.getSystemDefined());
+        nameField.setText(tileImage.getOwner());
         
         notApplicableLabel.setVisible(tileImage.getDifficulty() == null);
         difficultySlider.setVisible(tileImage.getDifficulty() != null);
@@ -134,6 +139,7 @@ public class TileImageDialogController extends ViewController {
     private void handleSave() {
         if (isInputValid()) {
             tileImage.setDifficulty((int) difficultySlider.getValue());
+            tileImage.setOwner(nameField.getText());
             saveClicked = true;
             dialogStage.close();
         }
@@ -147,8 +153,19 @@ public class TileImageDialogController extends ViewController {
     private boolean isInputValid() {
         String errorMessage = "";
 
+        if(nameField.getText() == null || nameField.getText().isEmpty()){
+        	errorMessage += "Name is required.\n";
+        }
+        
         if(fileNameField.getText().equals(NO_FILE_MESSAGE)){
         	errorMessage += "Image is required.\n";
+        }
+        
+        if(tileImage.getIdNo() == null || !tileImage.getOwner().equals(nameField.getText())){
+        	TileImage existingTileImage = new MapDao().findTileImageByOwner(nameField.getText());
+            if(existingTileImage != null){
+            	errorMessage += "Name already exists.\n";
+            }
         }
 
         if (errorMessage.length() == 0) {
