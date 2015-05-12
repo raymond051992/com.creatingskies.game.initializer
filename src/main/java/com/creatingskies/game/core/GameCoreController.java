@@ -446,12 +446,11 @@ public class GameCoreController extends PropertiesViewController {
 			scrollMap();
 			
 			if(checkCollision(playerCircle)){
-				double reverseFactor = 1.5;
 				encounteredBlockage = true;
-				player.setLayoutX(player.getLayoutX() - (cosValue * reverseFactor));
-				player.setLayoutY(player.getLayoutY() - (sinValue * reverseFactor));
-				miniPlayer.setLayoutX(miniPlayer.getLayoutX() - ((cosValue * reverseFactor) / scaleFactorX));
-				miniPlayer.setLayoutY(miniPlayer.getLayoutY() - ((sinValue * reverseFactor) / scaleFactorY));
+				player.setLayoutX(player.getLayoutX() - cosValue);
+				player.setLayoutY(player.getLayoutY() - sinValue);
+				miniPlayer.setLayoutX(miniPlayer.getLayoutX() - (cosValue / scaleFactorX));
+				miniPlayer.setLayoutY(miniPlayer.getLayoutY() - (sinValue / scaleFactorY));
 			}
 		}
 		
@@ -602,8 +601,7 @@ public class GameCoreController extends PropertiesViewController {
 	public void createObstacle(Tile tile){
 		Rectangle obstacle = createDefaultRectangle(tile);
 		obstacle.setStrokeWidth(2.0);
-		obstacle.getStrokeDashArray().addAll(10.0, 20.0);
-		obstacle.setStrokeType(StrokeType.OUTSIDE);
+		obstacle.setStrokeType(StrokeType.INSIDE);
 		pane.getChildren().add(obstacle);
 		obstacles.add(obstacle);
 		createObstacleEdge(tile);
