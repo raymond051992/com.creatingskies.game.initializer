@@ -57,7 +57,6 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML private AnchorPane mainContainer;
 	@FXML private AnchorPane weatherContainer;
 	@FXML private GridPane mapTiles;
-	@FXML private GridPane miniMapTiles;
 	@FXML private Pane miniMapPane;
 	
 	@FXML private Label countDownValue;
@@ -263,7 +262,6 @@ public class GameCoreController extends PropertiesViewController {
 		obstacles = new ArrayList<Shape>();
 		tileShapes = new ArrayList<Shape>();
 		mapTiles.getChildren().clear();
-		miniMapTiles.getChildren().clear();
 		
 		for(Tile tile : map.getTiles()){
 			ImageView backImage = new ImageView();
@@ -282,7 +280,6 @@ public class GameCoreController extends PropertiesViewController {
 			
 			ImageView frontImage = null;
 			ImageView miniFrontImage = null;
-			boolean startOrEndTile = false;
 			
 			if(tile.getObstacle() != null || tile.getStartPoint() || tile.getEndPoint()){
 				frontImage = new ImageView();
@@ -290,27 +287,20 @@ public class GameCoreController extends PropertiesViewController {
 				
 				frontImage.setFitWidth(getMainScreenTileWidth());
 				frontImage.setFitHeight(getMainScreenTileHeight());
+				
 				if(tile.getObstacle() != null){
 					frontImage.setImage(gameResourceManager.getObstacleImage(tile.getObstacle()));
-				}else{
+				} else {
 					frontImage.setImage(Util.byteArrayToImage(tile.getFrontImage().getImage()));
 				}
-				
-//				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
-//						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
 				
 				miniFrontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
 				
 				if(tile.getStartPoint() || tile.getEndPoint()){
-					startOrEndTile = true;
 					miniFrontImage.setFitWidth(getMiniScreenTileWidth() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
 					miniFrontImage.setFitHeight(getMiniScreenTileHeight() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
-					miniFrontImage.setLayoutX(tile.getColIndex() * getMiniScreenTileWidth());
-					miniFrontImage.setLayoutY(tile.getRowIndex() * getMiniScreenTileHeight());
-					miniMapPane.getChildren().add(miniFrontImage);
 				} else {
-					startOrEndTile = false;
 					miniFrontImage.setFitWidth(getMiniScreenTileWidth());
 					miniFrontImage.setFitHeight(getMiniScreenTileHeight());
 				}
@@ -334,9 +324,11 @@ public class GameCoreController extends PropertiesViewController {
 			}
 			
 			mapTiles.add(Util.bundle(backImage, frontImage), tile.getColIndex(), tile.getRowIndex());
-			miniMapTiles.add(startOrEndTile ? miniBackImage : Util.bundle(miniBackImage, miniFrontImage), tile.getColIndex(), tile.getRowIndex());
+			miniMapPane.getChildren().add(Util.bundle(tile.getColIndex() * getMiniScreenTileWidth(),
+					tile.getRowIndex() * getMiniScreenTileHeight(), miniBackImage, miniFrontImage));
 		}
 		
+		miniPlayer.toFront();
 		initPlayingArea(map);
 	}
 	

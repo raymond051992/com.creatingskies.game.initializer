@@ -21,8 +21,6 @@ import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.core.GameResult;
 import com.creatingskies.game.model.IRecord;
-import com.creatingskies.game.model.event.GameEvent;
-import com.creatingskies.game.model.event.GameEventDao;
 import com.creatingskies.game.model.user.User;
 
 public class GameController extends TableViewController{
@@ -64,29 +62,20 @@ public class GameController extends TableViewController{
 	
 	@Override
 	protected void editRecord(IRecord record) {
-		List<GameEvent> events = new GameEventDao().findAllGameEventByGame((Game) record);
 		List<GameResult> results = new GameDao().findAllGameResultsByGame((Game) record);
-		if((events == null || (events != null && events.isEmpty())) &&
-		   (results == null || (results != null && results.isEmpty()))){
+		if(results == null || results.isEmpty()){
 			new GamePropertiesController().show(Action.EDIT, (Game) record,true,false);
-		}else{
-			String errorMessage;
-			if(events != null && !events.isEmpty()){
-				errorMessage = "You cannot edit this game. The record shows that we have an event for this game";
-			}else{
-				errorMessage = "You cannot edit this game. The record shows that we have statistics report for this game";
-			}
+		} else {
+			String errorMessage = "You cannot delete this game. The record shows that we have statistics report for this game.";
 			new AlertDialog(AlertType.ERROR, "Error", "", errorMessage).showAndWait();
 		}
 	}
 	
 	@Override
 	protected void deleteRecord(IRecord record) {
-		List<GameEvent> events = new GameEventDao().findAllGameEventByGame((Game) record); 
 		List<GameResult> results = new GameDao().findAllGameResultsByGame((Game) record);
 		
-		if((events == null || (events != null && events.isEmpty())) &&
-		   (results == null || (results != null && results.isEmpty()))){
+		if(results == null || results.isEmpty()){
 			Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
 					"Are you sure you want to delete this game?", null).showAndWait();
 			
@@ -99,13 +88,8 @@ public class GameController extends TableViewController{
 					e.printStackTrace();
 				}
 			}
-		}else{
-			String errorMessage;
-			if(events != null && !events.isEmpty()){
-				errorMessage = "You cannot delete this game. The record shows that we have an event for this game";
-			}else{
-				errorMessage = "You cannot delete this game. The record shows that we have statistics report for this game";
-			}
+		} else {
+			String errorMessage = "You cannot delete this game. The record shows that we have statistics report for this game.";
 			new AlertDialog(AlertType.ERROR, "Error", "", errorMessage).showAndWait();
 		}
 	}

@@ -166,6 +166,7 @@ public class MapDesignerController {
 				selectedTileImage = null;
 				tile.setStartPoint(startTileSelected);
 				tile.setEndPoint(endTileSelected);
+				selectedTileDescription.setText("");
 			} else {
 				backImage.setImage(Util.byteArrayToImage(selectedTileImage.getImage()));
 				tile.setBackImage(selectedTileImage);
