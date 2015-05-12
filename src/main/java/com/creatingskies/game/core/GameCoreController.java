@@ -464,11 +464,12 @@ public class GameCoreController extends PropertiesViewController {
 			scrollMap();
 			
 			if(checkCollision(playerCircle)){
+				double reverseFactor = 1.5;
 				encounteredBlockage = true;
-				player.setLayoutX(player.getLayoutX() - cosValue);
-				player.setLayoutY(player.getLayoutY() - sinValue);
-				miniPlayer.setLayoutX(miniPlayer.getLayoutX() - (cosValue / scaleFactorX));
-				miniPlayer.setLayoutY(miniPlayer.getLayoutY() - (sinValue / scaleFactorY));
+				player.setLayoutX(player.getLayoutX() - (cosValue * reverseFactor));
+				player.setLayoutY(player.getLayoutY() - (sinValue * reverseFactor));
+				miniPlayer.setLayoutX(miniPlayer.getLayoutX() - ((cosValue * reverseFactor) / scaleFactorX));
+				miniPlayer.setLayoutY(miniPlayer.getLayoutY() - ((sinValue * reverseFactor) / scaleFactorY));
 			}
 		}
 		
@@ -479,7 +480,7 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	private void scrollMap(){
-		if(player.getLayoutX() > 0 && (player.getLayoutX() + ((stage.getWidth() + player.getWidth()) / 2)) < pane.getBoundsInLocal().getWidth()){
+		if((player.getLayoutX() + ((stage.getWidth() + player.getWidth()) / 2)) < pane.getBoundsInLocal().getWidth()){
 			if((0-(player.getLayoutX() - ((stage.getWidth() - player.getWidth()) / 2))) < 0){
 				pane.setLayoutX(0-(player.getLayoutX() - ((stage.getWidth() - player.getWidth()) / 2)));
 			} else {
@@ -487,7 +488,7 @@ public class GameCoreController extends PropertiesViewController {
 			}
 		}
 		
-		if(player.getLayoutY() > 0 && (player.getLayoutY() + ((stage.getHeight() + player.getHeight()) / 2)) < pane.getBoundsInLocal().getHeight()){
+		if((player.getLayoutY() + ((stage.getHeight() + player.getHeight()) / 2)) < pane.getBoundsInLocal().getHeight()){
 			if((0-(player.getLayoutY() - ((stage.getHeight() - player.getHeight()) / 2))) < 0){
 				pane.setLayoutY(0-(player.getLayoutY() - ((stage.getHeight() - player.getHeight()) / 2)));
 			} else {

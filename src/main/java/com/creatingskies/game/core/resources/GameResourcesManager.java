@@ -142,7 +142,7 @@ public class GameResourcesManager {
 			
 			try {
 				BackgroundImage bgi = new BackgroundImage(new Image(new File("game/tmp/"+sessionId+"/weather/img/weather.gif").toURI().toURL().toString(), 0, 0, false, true)
-				, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(90, BackgroundSize.AUTO, true, true, true, false));
+				, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, new BackgroundSize(90, BackgroundSize.AUTO, true, true, true, false));
 				
 				weatherContainer.setBackground(new Background(bgi));
 			} catch (MalformedURLException e) {

@@ -20,7 +20,7 @@
 						<Font size="96.0" />
 					</font>
 				</Label>
-      <AnchorPane fx:id="weatherContainer" maxHeight="400.0" opacity="0.5" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" />
+      <AnchorPane fx:id="weatherContainer" opacity="0.5" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" AnchorPane.bottomAnchor="5.0" />
       <GridPane prefWidth="253.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="130.0" />
