@@ -69,15 +69,6 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML private Label tileSlowLabel;
 	@FXML private Label weatherSlowLabel;
 	
-	@FXML private Label mapWidthLabel;
-	@FXML private Label mapHeightLabel;
-	@FXML private Label screenWidthLabel;
-	@FXML private Label screenHeightLabel;
-	@FXML private Label scrollHvalLabel;
-	@FXML private Label scrollVvalLabel;
-	@FXML private Label playerXLabel;
-	@FXML private Label playerYLabel;
-	
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
 	
@@ -208,10 +199,6 @@ public class GameCoreController extends PropertiesViewController {
 		scrollMap();
 	}
 	
-	private String convertToString(Object s){
-		return String.valueOf(s);
-	}
-	
 	private void initWeathers(){
 		if(getGameEvent().getGame().getWeather() != null){
 			weatherSlowFactor = (double) getGameEvent().getGame().getWeather().getDifficulty();
@@ -250,11 +237,6 @@ public class GameCoreController extends PropertiesViewController {
 		    		scrollMap();
 					
 	    			mainContainer.setMaxSize(pane.getWidth(), pane.getHeight());
-					mapWidthLabel.setText(convertToString(mapTiles.getWidth()));
-					mapHeightLabel.setText(convertToString(mapTiles.getHeight()));
-					
-					screenWidthLabel.setText(convertToString(stage.getWidth()));
-					screenHeightLabel.setText(convertToString(stage.getHeight()));
 					
 					if(countDown < 0){
 						renderCountdown(false);
@@ -400,12 +382,6 @@ public class GameCoreController extends PropertiesViewController {
 			    	
 			    	computeRotation();
 					computeMovement();
-					
-					scrollHvalLabel.setText(convertToString(pane.getLayoutX()));
-					scrollVvalLabel.setText(convertToString(pane.getLayoutY()));
-					
-					playerXLabel.setText(convertToString(player.getLayoutX()));
-					playerYLabel.setText(convertToString(player.getLayoutY()));
 		    	}
 		    }
 		}));
