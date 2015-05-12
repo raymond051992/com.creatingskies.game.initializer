@@ -90,7 +90,6 @@ public class GameResourcesManager {
 				FileOutputStream outputStream = new FileOutputStream(basedir+obstacle.getImageFileName());
 				outputStream.write(obstacle.getImage());
 				outputStream.close();
-				obstacle.setImage(null);
 			}
 			
 			return new Image(new File(basedir+obstacle.getImageFileName()).toURI().toURL().toString());

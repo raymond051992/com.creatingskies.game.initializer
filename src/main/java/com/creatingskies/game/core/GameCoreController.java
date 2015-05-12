@@ -308,8 +308,14 @@ public class GameCoreController extends PropertiesViewController {
 				
 				frontImage.setFitWidth(getMainScreenTileWidth());
 				frontImage.setFitHeight(getMainScreenTileHeight());
-				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
-						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
+				if(tile.getObstacle() != null){
+					frontImage.setImage(gameResourceManager.getObstacleImage(tile.getObstacle()));
+				}else{
+					frontImage.setImage(Util.byteArrayToImage(tile.getFrontImage().getImage()));
+				}
+				
+//				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
+//						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
 				
 				miniFrontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
