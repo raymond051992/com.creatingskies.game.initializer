@@ -205,8 +205,7 @@ public class GameCoreController extends PropertiesViewController {
 		miniPlayer.setLayoutX(startTilePoint.getColIndex() * getMiniScreenTileWidth());
 		miniPlayer.setLayoutY(startTilePoint.getRowIndex() * getMiniScreenTileHeight());
 		
-		pane.setLayoutX(0-(player.getLayoutX()));
-		pane.setLayoutY(0-(player.getLayoutY()));
+		scrollMap();
 	}
 	
 	private String convertToString(Object s){
@@ -390,17 +389,7 @@ public class GameCoreController extends PropertiesViewController {
 			    	
 			    	if(inputReader.isQuitButtonPressed()){
 			    		gameLoop.pause();
-			    		
-			    		Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
-			    				"Are you sure you want to quit this game?", null).showAndWait();
-			    		
-			    		if(result.get() == ButtonType.OK){
-			    			closeGame();
-			    			return;
-			    		} else {
-			    			inputReader.setQuitButtonPressed(false);
-			    		}
-			    		gameLoop.play();
+			    		confirmQuit();
 			    	}
 			    	
 			    	computeRotation();
@@ -415,6 +404,19 @@ public class GameCoreController extends PropertiesViewController {
 		    }
 		}));
 		gameLoop.setCycleCount(Timeline.INDEFINITE);
+	}
+	
+	private void confirmQuit() {
+		Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
+				"Are you sure you want to quit this game?", null).showAndWait();
+		
+		if(result.get() == ButtonType.OK){
+			closeGame();
+			return;
+		} else {
+			inputReader.setQuitButtonPressed(false);
+		}
+		gameLoop.play();
 	}
 	
 	private void computeRotation(){
@@ -480,16 +482,16 @@ public class GameCoreController extends PropertiesViewController {
 		if(player.getLayoutX() > 0 && (player.getLayoutX() + ((stage.getWidth() + player.getWidth()) / 2)) < pane.getBoundsInLocal().getWidth()){
 			if((0-(player.getLayoutX() - ((stage.getWidth() - player.getWidth()) / 2))) < 0){
 				pane.setLayoutX(0-(player.getLayoutX() - ((stage.getWidth() - player.getWidth()) / 2)));
-			}else{
-				pane.setLayoutX(0-(player.getLayoutX()));
+			} else {
+				pane.setLayoutX(0.0);
 			}
 		}
 		
 		if(player.getLayoutY() > 0 && (player.getLayoutY() + ((stage.getHeight() + player.getHeight()) / 2)) < pane.getBoundsInLocal().getHeight()){
 			if((0-(player.getLayoutY() - ((stage.getHeight() - player.getHeight()) / 2))) < 0){
 				pane.setLayoutY(0-(player.getLayoutY() - ((stage.getHeight() - player.getHeight()) / 2)));
-			}else{
-				pane.setLayoutY(0-(player.getLayoutY()));
+			} else {
+				pane.setLayoutY(0.0);
 			}
 		}
 	}
