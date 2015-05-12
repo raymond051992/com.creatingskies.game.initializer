@@ -12,6 +12,19 @@
    <children>
       <VBox alignment="CENTER" layoutX="104.0" layoutY="56.0" prefHeight="550.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
+            <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="385.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <Label minWidth="100.0" text="User Level" />
+                  <ChoiceBox fx:id="typeChoices" minWidth="100.0" />
+                  <Label alignment="CENTER" minWidth="90.0" text="Status" />
+                  <ChoiceBox fx:id="statusChoices" minWidth="100.0" />
+               </children>
+            </HBox>
+            <Line endX="200.0" fill="#d0d0d0" startX="-200.0" stroke="#404040">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Line>
             <HBox alignment="CENTER_LEFT" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
                   <Label minWidth="100.0" text="Firstname" />
@@ -49,27 +62,14 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="371.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
-                  <Label minWidth="100.0" text="Security Question" wrapText="true" />
+                  <Label fx:id="questionChoicesLabel" minWidth="100.0" text="Security Question" wrapText="true" />
                   <ChoiceBox fx:id="questionChoices" prefWidth="375.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="346.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
-                  <Label minWidth="100.0" text="Answer" />
+                  <Label fx:id="securityAnswerFieldLabel" minWidth="100.0" text="Answer" />
                   <PasswordField fx:id="securityAnswerField" prefWidth="375.0" />
-               </children>
-            </HBox>
-            <Line endX="200.0" fill="#d0d0d0" startX="-200.0" stroke="#404040">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </Line>
-            <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="385.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-               <children>
-                  <Label minWidth="100.0" text="User Level" />
-                  <ChoiceBox fx:id="typeChoices" minWidth="100.0" />
-                  <Label alignment="CENTER" minWidth="90.0" text="Status" />
-                  <ChoiceBox fx:id="statusChoices" minWidth="100.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="35.0" layoutY="260.0" maxHeight="50.0" maxWidth="450.0" prefHeight="100.0" prefWidth="200.0">

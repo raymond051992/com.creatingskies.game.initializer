@@ -2,12 +2,14 @@ package com.creatingskies.game.config.user;
 
 import java.io.IOException;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -31,6 +33,8 @@ public class UserPropertiesController extends PropertiesViewController{
 	@FXML PasswordField passwordField;
 	@FXML PasswordField confirmPasswordField;
 	@FXML PasswordField securityAnswerField;
+	@FXML Label securityAnswerFieldLabel;
+	@FXML Label questionChoicesLabel;
 	
 	@FXML ChoiceBox<Status> statusChoices;
 	@FXML ChoiceBox<Type> typeChoices;
@@ -59,6 +63,18 @@ public class UserPropertiesController extends PropertiesViewController{
 		backToListButton.setVisible(isViewAction);
 		saveButton.setVisible(!isViewAction);
 		cancelButton.setVisible(!isViewAction);
+		
+		if(typeChoices.getSelectionModel().getSelectedItem() == Type.ADMIN){
+			questionChoices.setVisible(true);
+			securityAnswerField.setVisible(true);
+			questionChoicesLabel.setVisible(true);
+			securityAnswerFieldLabel.setVisible(true);
+		}else{
+			questionChoices.setVisible(false);
+			securityAnswerField.setVisible(false);
+			questionChoicesLabel.setVisible(false);
+			securityAnswerFieldLabel.setVisible(false);
+		}
 	}
 	
 	@Override
@@ -77,6 +93,22 @@ public class UserPropertiesController extends PropertiesViewController{
 		}else{
 			typeChoices.setValue(getUser().getType());
 	        statusChoices.setValue(getUser().getStatus());
+	        if(questionChoices.getItems() != null && !questionChoices.getItems().isEmpty()){
+	        	 if(getUser() != null && getUser().getSecurityQuestion() != null){
+	 	        	SecurityQuestion selectedQuestion = null;
+	 	        	
+	 	        	for(SecurityQuestion q : questionChoices.getItems()){
+	 	        		if(q.getIdNo().equals(getUser().getSecurityQuestion().getIdNo())){
+	 	        			selectedQuestion = q;
+	 	        		}
+	 	        	}
+	 	        	
+	 	        	if(selectedQuestion != null){
+	 	        		questionChoices.setValue(selectedQuestion);
+	 	        	}
+	 	        }
+	        }
+	       
 		}
 		
 		questionChoices.setConverter(new StringConverter<SecurityQuestion>() {
@@ -90,6 +122,22 @@ public class UserPropertiesController extends PropertiesViewController{
 				return null;
 			}
 		});
+		
+		typeChoices.getSelectionModel().selectedItemProperty()
+	        .addListener((ObservableValue<? extends Type> observable, 
+	        		Type oldValue, Type newValue) -> {
+    			if(newValue == Type.STAFF){
+    				questionChoices.setVisible(false);
+    				securityAnswerField.setVisible(false);
+    				questionChoicesLabel.setVisible(false);
+    				securityAnswerFieldLabel.setVisible(false);
+    			}else{
+    				questionChoices.setVisible(true);
+    				securityAnswerField.setVisible(true);
+    				questionChoicesLabel.setVisible(true);
+    				securityAnswerFieldLabel.setVisible(true);
+    			}
+	    });
 		initFields();
 	}
 	
@@ -153,8 +201,12 @@ public class UserPropertiesController extends PropertiesViewController{
             getUser().setPassword(passwordField.getText());
             getUser().setType(typeChoices.getValue());
             getUser().setStatus(statusChoices.getValue());
-            getUser().setSecurityQuestion(questionChoices.getValue());
-            getUser().setSecurityQuestionAnswer(securityAnswerField.getText());
+            
+            if(typeChoices.getSelectionModel().getSelectedItem() == Type.ADMIN){
+            	getUser().setSecurityQuestion(questionChoices.getValue());
+                getUser().setSecurityQuestionAnswer(securityAnswerField.getText());
+            }
+            
             new UserDao().saveOrUpdate(getUser());
             new UsersController().show();
         }
@@ -209,9 +261,12 @@ public class UserPropertiesController extends PropertiesViewController{
         	errorMessage += "Password must be a combination of both letters and numbers.\n";
         }
         
-        if (securityAnswerField.getText() == null || securityAnswerField.getText().length() == 0) {
-            errorMessage += "Answer for security question is required.\n";
+        if(typeChoices.getSelectionModel().getSelectedItem() == Type.ADMIN){
+        	if (securityAnswerField.getText() == null || securityAnswerField.getText().length() == 0) {
+                errorMessage += "Answer for security question is required.\n";
+            }
         }
+        
         
         if (errorMessage.length() == 0) {
             return true;

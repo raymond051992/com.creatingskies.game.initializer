@@ -77,11 +77,11 @@ public class ChangePasswordController extends ViewController {
 			return;
 		}
 		
-		questionLabel.setText(user.getSecurityQuestion().getQuestion());
 		
 		if(user.getType() == Type.STAFF){
 			showBox(staffInfoBox);
 		}else{
+			questionLabel.setText(user.getSecurityQuestion().getQuestion());
 			showBox(securityQuestionBox);
 		}
 		
