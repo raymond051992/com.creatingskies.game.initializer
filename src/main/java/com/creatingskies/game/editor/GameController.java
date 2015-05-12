@@ -8,10 +8,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 
 import com.creatingskies.game.classes.TableViewController;
@@ -115,7 +115,11 @@ public class GameController extends TableViewController{
 	}
 	
 	public void addNewGame(){
-		new ChooseCreateTypeDialogController().show();
+		if(gamesTable.getItems() != null && !gamesTable.getItems().isEmpty()){
+			new ChooseCreateTypeDialogController().show();
+		}else{
+			new GamePropertiesController().show(Action.ADD, new Game(),false,false);
+		}
 	}
 	
 	@Override

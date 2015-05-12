@@ -104,6 +104,10 @@ public class ChooseCreateTypeDialogController {
 				return null;
 			}
 		});
+		
+		if(gameComboBox.getItems() != null && !gameComboBox.getItems().isEmpty()){
+			gameComboBox.getSelectionModel().selectFirst();
+		}
 	}
 	
 	@FXML
