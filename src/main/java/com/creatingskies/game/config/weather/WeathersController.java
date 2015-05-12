@@ -1,6 +1,7 @@
 package com.creatingskies.game.config.weather;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -17,6 +18,8 @@ import com.creatingskies.game.classes.TableViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game.Type;
+import com.creatingskies.game.core.GameDao;
+import com.creatingskies.game.core.GameResult;
 import com.creatingskies.game.model.IRecord;
 import com.creatingskies.game.model.weather.Weather;
 import com.creatingskies.game.model.weather.WeatherDAO;
@@ -92,25 +95,25 @@ public class WeathersController extends TableViewController {
 
 	@Override
 	protected void editRecord(IRecord record) {
-		super.editRecord(record);
-		
-		if(record instanceof Weather){
+		if(isModificationValid((Weather) record, "edit")){
 			new WeatherPropertiesController().show(Action.ADD, (Weather) record);
 		}
 	}
 	
 	@Override
 	protected void deleteRecord(IRecord record) {
-		Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
-				"Are you sure you want to delete this weather?", null).showAndWait();
-		
-		if(result.get() == ButtonType.OK){
-			super.deleteRecord(record);
-			try {
-				new WeatherDAO().delete(record);
-				resetTableView();
-			} catch (Exception e) {
-				e.printStackTrace();
+		if(isModificationValid((Weather) record, "delete")){
+			Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
+					"Are you sure you want to delete this weather?", null).showAndWait();
+			
+			if(result.get() == ButtonType.OK){
+				super.deleteRecord(record);
+				try {
+					new WeatherDAO().delete(record);
+					resetTableView();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -123,6 +126,17 @@ public class WeathersController extends TableViewController {
 	@Override
 	protected String getViewTitle() {
 		return "Weather";
+	}
+	
+	private boolean isModificationValid(Weather weather, String action){
+		List<GameResult> results = new GameDao().findAllGameResultsByWeather(weather);
+		if(results == null || results.isEmpty()){
+			return true;
+		} else {
+			new AlertDialog(AlertType.ERROR, "Error", "", "You cannot " + action + " this record. The record shows that"
+					+ " this record is used in a game that has already been played.").showAndWait();
+			return false;
+		}
 	}
 
 }

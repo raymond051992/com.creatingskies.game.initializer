@@ -1,12 +1,16 @@
 package com.creatingskies.game.config.icon;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -18,6 +22,9 @@ import javafx.util.Callback;
 
 import com.creatingskies.game.classes.TableViewController;
 import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.core.GameDao;
+import com.creatingskies.game.core.GameResult;
 import com.creatingskies.game.core.MapDao;
 import com.creatingskies.game.core.TileImage;
 import com.creatingskies.game.model.Constant;
@@ -58,7 +65,7 @@ public class IconEditorController extends TableViewController{
 				cellData.getValue().getDifficulty() != null ? cellData
 						.getValue().getDifficulty().toString() : "N/A"));
 		
-		actionColumn.setCellFactory(generateCellFactory(Action.EDIT));
+		actionColumn.setCellFactory(generateCellFactory(Action.EDIT, Action.DELETE));
 		resetTableView();
 	}
 	
@@ -111,10 +118,7 @@ public class IconEditorController extends TableViewController{
 	@Override
 	protected void editRecord(IRecord record) {
 		super.editRecord(record);
-
-		if(record instanceof TileImage){
-			showDetailDialog((TileImage) record);
-		}
+		showDetailDialog((TileImage) record);
 	}
 	
 	private void showDetailDialog(TileImage tileImage){
@@ -123,6 +127,40 @@ public class IconEditorController extends TableViewController{
 	        mapDao.saveOrUpdate(tileImage);
 	        resetTableView();
 	    }
+	}
+	
+	@Override
+	protected void deleteRecord(IRecord record) {
+		if(isModificationValid((TileImage) record)){
+			Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
+					"Are you sure you want to delete this record?", null).showAndWait();
+			
+			if(result.get() == ButtonType.OK){
+				super.deleteRecord(record);
+				try {
+					mapDao.delete(record);
+					resetTableView();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	private boolean isModificationValid(TileImage tileImage){
+		if(tileImage.getSystemDefined()){
+			new AlertDialog(AlertType.ERROR, "Error", "", "You cannot delete system defined records.").showAndWait();
+			return false;
+		}
+		
+		List<GameResult> results = new GameDao().findAllGameResultsByTileImage(tileImage);
+		if(results == null || results.isEmpty()){
+			return true;
+		} else {
+			new AlertDialog(AlertType.ERROR, "Error", "", "You cannot delete this record. The record shows that"
+					+ " this record is used in a game that has already been played.").showAndWait();
+			return false;
+		}
 	}
 	
 }

@@ -1,6 +1,7 @@
 package com.creatingskies.game.config.obstacle;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -23,6 +24,8 @@ import com.creatingskies.game.classes.TableViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
 import com.creatingskies.game.core.Game.Type;
+import com.creatingskies.game.core.GameDao;
+import com.creatingskies.game.core.GameResult;
 import com.creatingskies.game.model.Constant;
 import com.creatingskies.game.model.IRecord;
 import com.creatingskies.game.model.obstacle.Obstacle;
@@ -144,26 +147,38 @@ public class ObstaclesController extends TableViewController{
 
 	@Override
 	protected void editRecord(IRecord record) {
-		super.editRecord(record);
-		
-		if(record instanceof Obstacle){
+		if(isModificationValid((Obstacle) record, "edit")){
+			super.editRecord(record);
 			new ObstaclePropertiesController().show(Action.ADD, (Obstacle) record);
 		}
 	}
 	
 	@Override
 	protected void deleteRecord(IRecord record) {
-		Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
-				"Are you sure you want to delete this obstacle?", null).showAndWait();
-		
-		if(result.get() == ButtonType.OK){
-			super.deleteRecord(record);
-			try {
-				obstacleDAO.delete(record);
-				resetTableView();
-			} catch (Exception e) {
-				e.printStackTrace();
+		if(isModificationValid((Obstacle) record, "delete")){
+			Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
+					"Are you sure you want to delete this obstacle?", null).showAndWait();
+			
+			if(result.get() == ButtonType.OK){
+				super.deleteRecord(record);
+				try {
+					obstacleDAO.delete(record);
+					resetTableView();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+		}
+	}
+	
+	private boolean isModificationValid(Obstacle obstacle, String action){
+		List<GameResult> results = new GameDao().findAllGameResultsByObstacle(obstacle);
+		if(results == null || results.isEmpty()){
+			return true;
+		} else {
+			new AlertDialog(AlertType.ERROR, "Error", "", "You cannot " + action + " this record. The record shows that"
+					+ " this record is used in a game that has already been played.").showAndWait();
+			return false;
 		}
 	}
 

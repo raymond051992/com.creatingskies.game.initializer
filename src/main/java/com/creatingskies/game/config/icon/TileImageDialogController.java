@@ -2,6 +2,7 @@ package com.creatingskies.game.config.icon;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,8 @@ import javafx.stage.StageStyle;
 
 import com.creatingskies.game.classes.ViewController;
 import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.core.GameDao;
+import com.creatingskies.game.core.GameResult;
 import com.creatingskies.game.core.MapDao;
 import com.creatingskies.game.core.TileImage;
 import com.creatingskies.game.model.Constant;
@@ -41,8 +44,8 @@ public class TileImageDialogController extends ViewController {
 	private boolean saveClicked = false;
 	private final String NO_FILE_MESSAGE = "Please choose a file.";
 	
-	public boolean show(TileImage tileImage,Stage owner) {
-	    try {
+	public boolean show(TileImage tileImage, Stage owner) {
+    	try {
 	        FXMLLoader loader = new FXMLLoader();
 	        loader.setLocation(getClass().getResource("TileImageDialog.fxml"));
 	        AnchorPane page = (AnchorPane) loader.load();
@@ -82,13 +85,16 @@ public class TileImageDialogController extends ViewController {
 	public void setTileImage(TileImage tileImage) {
         this.tileImage = tileImage;
         
-        nameField.setDisable(tileImage.getSystemDefined());
+        boolean allowModify = isModificationValid(tileImage, "edit");
+        
+        nameField.setDisable(tileImage.getSystemDefined() || !allowModify);
         nameField.setText(tileImage.getOwner());
         
         notApplicableLabel.setVisible(tileImage.getDifficulty() == null);
         difficultySlider.setVisible(tileImage.getDifficulty() != null);
         difficultySlider.setValue(tileImage.getDifficulty() != null ?
         		tileImage.getDifficulty() : 0.0);
+        difficultySlider.setDisable(!allowModify);
         
         fileNameField.setText(tileImage.getFileName() != null
         		&& !tileImage.getFileName().equals("") ?
@@ -177,5 +183,10 @@ public class TileImageDialogController extends ViewController {
             return false;
         }
     }
+    
+    private boolean isModificationValid(TileImage tileImage, String action){
+		List<GameResult> results = new GameDao().findAllGameResultsByTileImage(tileImage);
+		return (results == null || results.isEmpty());
+	}
 
 }
