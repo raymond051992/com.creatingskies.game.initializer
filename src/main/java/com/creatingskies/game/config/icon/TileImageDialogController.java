@@ -185,8 +185,11 @@ public class TileImageDialogController extends ViewController {
     }
     
     private boolean isModificationValid(TileImage tileImage, String action){
-		List<GameResult> results = new GameDao().findAllGameResultsByTileImage(tileImage);
-		return (results == null || results.isEmpty());
+		if(tileImage.getIdNo() != null){
+			List<GameResult> results = new GameDao().findAllGameResultsByTileImage(tileImage);
+			return (results == null || results.isEmpty());
+		}
+		return true;
 	}
 
 }
