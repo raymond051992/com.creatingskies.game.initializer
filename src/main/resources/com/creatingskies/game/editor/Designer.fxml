@@ -28,7 +28,7 @@
                      </font>
                   </Label>
                   <ImageView fx:id="selectedTileImageView" fitHeight="100.0" fitWidth="100.0" layoutX="165.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <ScrollPane hbarPolicy="NEVER" layoutX="36.0" layoutY="67.0" maxWidth="200.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="210.0">
+                  <ScrollPane hbarPolicy="NEVER" layoutX="36.0" layoutY="67.0" maxWidth="200.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="250.0">
                      <content>
                         <FlowPane maxWidth="200.0">
                            <children>

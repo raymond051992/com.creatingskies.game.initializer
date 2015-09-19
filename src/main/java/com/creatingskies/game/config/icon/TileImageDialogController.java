@@ -37,6 +37,9 @@ public class TileImageDialogController extends ViewController {
 	@FXML private Slider difficultySlider;
 	@FXML private Label notApplicableLabel;
 	
+	@FXML private Slider verticalTiltSlider;
+	@FXML private Slider horizontalTiltSlider;
+	
 	private Stage dialogStage;
 	private TileImage tileImage;
 	private Image defaultImage;
@@ -95,6 +98,10 @@ public class TileImageDialogController extends ViewController {
         difficultySlider.setValue(tileImage.getDifficulty() != null ?
         		tileImage.getDifficulty() : 0.0);
         difficultySlider.setDisable(!allowModify);
+        verticalTiltSlider.setValue(tileImage.getVerticalTilt() != null ? tileImage.getVerticalTilt() : 0);
+        horizontalTiltSlider.setValue(tileImage.getHorizontalTilt() != null ? tileImage.getHorizontalTilt() : 0);
+        verticalTiltSlider.setDisable(!allowModify);
+        horizontalTiltSlider.setDisable(!allowModify);
         
         fileNameField.setText(tileImage.getFileName() != null
         		&& !tileImage.getFileName().equals("") ?
@@ -145,6 +152,8 @@ public class TileImageDialogController extends ViewController {
     private void handleSave() {
         if (isInputValid()) {
             tileImage.setDifficulty((int) difficultySlider.getValue());
+            tileImage.setVerticalTilt((int) verticalTiltSlider.getValue());
+            tileImage.setHorizontalTilt((int) horizontalTiltSlider.getValue());
             tileImage.setOwner(nameField.getText());
             saveClicked = true;
             dialogStage.close();

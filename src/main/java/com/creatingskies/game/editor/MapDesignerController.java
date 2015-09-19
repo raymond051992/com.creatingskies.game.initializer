@@ -358,6 +358,8 @@ public class MapDesignerController {
 			.setText("Type: Tile \n"
 				+ "File Name: " + tileImage.getFileName() + "\n"
 				+ "Difficulty: " + tileImage.getDifficulty() + "\n"
+				+ "Vertical Tilt: " + (tileImage.getVerticalTilt() != null ? tileImage.getVerticalTilt() : 0) + "\n"
+				+ "Horizontal Tilt: " + (tileImage.getHorizontalTilt() != null ? tileImage.getHorizontalTilt() : 0) + "\n"
 				+ "Radius: 0");
 	}
 	

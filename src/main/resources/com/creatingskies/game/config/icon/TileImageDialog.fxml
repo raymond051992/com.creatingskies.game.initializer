@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane minWidth="600.0" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.config.icon.TileImageDialogController">
+<AnchorPane minWidth="600.0" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.config.icon.TileImageDialogController">
 	<children>
 		<GridPane hgap="10.0" layoutX="162.0" layoutY="120.0" prefHeight="400.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<columnConstraints>
@@ -18,11 +18,13 @@
 			<rowConstraints>
             <RowConstraints maxHeight="354.0" minHeight="10.0" prefHeight="327.0" vgrow="SOMETIMES" />
 				<RowConstraints maxHeight="354.0" minHeight="10.0" prefHeight="327.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="354.0" minHeight="10.0" prefHeight="327.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="354.0" minHeight="10.0" prefHeight="327.0" vgrow="SOMETIMES" />
 				<RowConstraints maxHeight="354.0" minHeight="10.0" prefHeight="327.0" vgrow="SOMETIMES" />
 				<RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-				<ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
+				<ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5">
 					<buttons>
 						<Button mnemonicParsing="false" onAction="#handleSave" text="Save" />
 						<Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
@@ -33,8 +35,8 @@
 				</ButtonBar>
 				<Slider fx:id="difficultySlider" majorTickUnit="1.0" max="7.0" minorTickCount="0" prefHeight="14.0" prefWidth="200.0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 				<Label text="Difficulty" GridPane.rowIndex="1" />
-				<Label text="Image" GridPane.rowIndex="2" />
-				<HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="15.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+				<Label text="Image" GridPane.rowIndex="4" />
+				<HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="15.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
 					<children>
 						<TextField fx:id="fileNameField" editable="false" HBox.hgrow="ALWAYS" />
 						<Button mnemonicParsing="false" onAction="#handleOpenBrowseDialog" text="Browse" />
@@ -47,6 +49,10 @@
             <Label fx:id="notApplicableLabel" text="N/A (Not applicable for this image)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Name" />
             <TextField fx:id="nameField" GridPane.columnIndex="1" />
+            <Label text="Vertical Tilt" GridPane.rowIndex="2" />
+            <Label text="Horizontal Tilt" GridPane.rowIndex="3" />
+            <Slider fx:id="verticalTiltSlider" majorTickUnit="1.0" max="7.0" min="-7.0" minorTickCount="0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Slider fx:id="horizontalTiltSlider" majorTickUnit="1.0" max="7.0" min="-7.0" minorTickCount="0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 			</children>
 			<padding>
 				<Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
