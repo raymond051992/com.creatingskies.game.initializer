@@ -5,7 +5,8 @@ public abstract class AbstractInputReader {
 	public abstract void init();
 	public abstract void destroy();
 	public abstract InputForce readInput();
-	public abstract void display(Double speed, Double slowFactor, Double degree);
+	public abstract void display(Double speed, Double slowFactor, Double degree,
+			Integer verticalTilt, Integer horizontalTilt);
 	
 	private boolean isResetButtonPressed = false;
 	private boolean isQuitButtonPressed = false;

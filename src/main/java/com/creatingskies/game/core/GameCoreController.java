@@ -110,6 +110,9 @@ public class GameCoreController extends PropertiesViewController {
 	private Double scaleFactorX = 15.0;
 	private Double scaleFactorY = 15.0;
 	
+	private Integer verticalTilt = 0;
+	private Integer horizontalTilt = 0;
+	
 	@Override
 	protected String getViewTitle() {
 		return "Game";
@@ -446,7 +449,7 @@ public class GameCoreController extends PropertiesViewController {
 			}
 		}
 		
-		inputReader.display(distance, totalSlowFactor, player.getRotate());
+		inputReader.display(distance, totalSlowFactor, player.getRotate(), verticalTilt, horizontalTilt);
 		warningImageView.setVisible(warningImageView.isVisible() && !encounteredBlockage);
 		stopImageView.setVisible(encounteredBlockage);
 		
@@ -507,8 +510,16 @@ public class GameCoreController extends PropertiesViewController {
 		for (Shape tileShape : tileShapes) {
 			Shape intersect = Shape.intersect(block, tileShape);
 			if (intersect.getBoundsInLocal().getWidth() != -1) {
-				tileSlowFactor = (double) Math.max(tileShape.getUserData() != null ?
-						Integer.valueOf(String.valueOf(tileShape.getUserData())) : 0, tileSlowFactor);
+				TileValueHolder holder = (TileValueHolder) tileShape.getUserData();
+				
+				tileSlowFactor = (double) Math.max(holder != null && holder.difficulty != null ?
+						holder.difficulty : 0, tileSlowFactor);
+				
+				verticalTilt = holder != null && holder.verticalTilt != null ?
+						verticalTilt : 0;
+				
+				horizontalTilt = holder != null && holder.horizontalTilt != null ?
+						horizontalTilt : 0;
 			}
 		}
 		
@@ -584,8 +595,14 @@ public class GameCoreController extends PropertiesViewController {
 	
 	public void createTileShapes(Tile tile, Integer defaultDifficulty){
 		Rectangle tileShape = createDefaultRectangle(tile);
-		tileShape.setUserData(tile.getBackImage() != null ?
-			tile.getBackImage().getDifficulty() : defaultDifficulty);
+		
+		TileValueHolder holder = new TileValueHolder();
+		holder.difficulty = tile.getBackImage() != null ?
+				tile.getBackImage().getDifficulty() : defaultDifficulty;
+		holder.verticalTilt = tile.getBackImage().getVerticalTilt();
+		holder.horizontalTilt = tile.getBackImage().getHorizontalTilt();
+		
+		tileShape.setUserData(holder);
 		pane.getChildren().add(tileShape);
 		tileShapes.add(tileShape);
 	}
@@ -692,6 +709,12 @@ public class GameCoreController extends PropertiesViewController {
 
 	public void setGroup(Group group) {
 		this.group = group;
+	}
+	
+	protected class TileValueHolder {
+		public Integer difficulty = 0;
+		public Integer verticalTilt = 0;
+		public Integer horizontalTilt = 0;
 	}
 	
 }

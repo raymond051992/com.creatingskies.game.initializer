@@ -88,6 +88,7 @@ public class KeyboardInputReader extends AbstractInputReader {
 	}
 	
 	@Override
-	public void display(Double speed, Double slowFactor, Double degree) {}
+	public void display(Double speed, Double slowFactor, Double degree,
+			Integer verticalTilt, Integer horizontalTilt) {}
 
 }
