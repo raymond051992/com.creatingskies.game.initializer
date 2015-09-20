@@ -12,11 +12,13 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 	private long interval = 50; 
 	private long duration = 0;
 	
+	private int previousValue = 0;
+	
 	private int previousVerticalTiltValue = 0;
 	private int previousHorizontalTiltValue = 0;
 	
-	private Integer[] verticalChannels;
-	private Integer[] horizontalChannels;
+	private Integer verticalChannels[] = {1, 2, 3, 4};
+	private Integer horizontalChannels[] = {5, 6, 7, 8};
 	
 	@Override
 	public void init() {
@@ -56,6 +58,12 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 		if(duration >= 500){
 			duration = 0;
 			
+			if(previousValue < slowFactor.intValue()){
+				display(++previousValue);
+			} else if(previousValue > slowFactor.intValue()){
+				display(--previousValue);
+			}
+			
 			if(previousVerticalTiltValue < verticalTilt){
 				displayTilt(++previousVerticalTiltValue, true);
 			} else if(previousVerticalTiltValue > verticalTilt){
@@ -70,6 +78,27 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 		}
 	}
 	
+	private void display(int data){
+		k8055.ClearDigitalChannel(1);
+		k8055.ClearDigitalChannel(2);
+		
+		if(data >= 4){
+//			maximum difficulty display is 3 due to tilting
+//			k8055.SetDigitalChannel(3);
+//			data -= 4;
+			data = 3;
+		}
+		
+		if(data >= 2){
+			k8055.SetDigitalChannel(2);
+			data -= 2;
+		}
+		
+		if(data >= 1){
+			k8055.SetDigitalChannel(1);
+			data -= 1;
+		}
+	}
 	
 	private void displayTilt(int data, boolean forVertical){
 		Integer[] channels = forVertical ? verticalChannels : horizontalChannels;
@@ -78,16 +107,22 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 			k8055.ClearDigitalChannel(channel);
 		}
 
-		if(data > 0){
-			k8055.SetDigitalChannel(channels[0]);
-		}
-		
-		data = Math.abs(data);
-		
 		if(data >= 4){
-			k8055.SetDigitalChannel(channels[3]);
-			data -= 4;
+//			maximum tilt is 3 due to limited output channel
+//			k8055.SetDigitalChannel(channels[3]);
+//			data -= 4;
+			data = 3;
 		}
+		
+		if(data <= -4){
+//			minimum tilt is -3 due to limited output channel
+//			k8055.SetDigitalChannel(channels[3]);
+//			data -= 4;
+			data = -3;
+		}
+		
+		data = data + 4;
+		data = data == 4 ? 0 : data;
 		
 		if(data >= 2){
 			k8055.SetDigitalChannel(channels[2]);
