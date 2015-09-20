@@ -375,6 +375,11 @@ public class GameCoreController extends PropertiesViewController {
 			    		confirmQuit();
 			    	}
 			    	
+			    	if(inputForce.left != 0 || inputForce.right != 0){
+			    		inputForce.left = inputForce.left == 0 ? 1 : inputForce.left;
+						inputForce.right = inputForce.right == 0 ? 1 : inputForce.right;
+			    	}
+			    	
 			    	computeRotation();
 					computeMovement();
 		    	}
@@ -599,8 +604,10 @@ public class GameCoreController extends PropertiesViewController {
 		TileValueHolder holder = new TileValueHolder();
 		holder.difficulty = tile.getBackImage() != null ?
 				tile.getBackImage().getDifficulty() : defaultDifficulty;
-		holder.verticalTilt = tile.getBackImage().getVerticalTilt();
-		holder.horizontalTilt = tile.getBackImage().getHorizontalTilt();
+		holder.verticalTilt = tile.getBackImage() != null ?
+				tile.getBackImage().getVerticalTilt() : 0;
+		holder.horizontalTilt = tile.getBackImage() != null ?
+				tile.getBackImage().getHorizontalTilt() : 0;
 		
 		tileShape.setUserData(holder);
 		pane.getChildren().add(tileShape);
