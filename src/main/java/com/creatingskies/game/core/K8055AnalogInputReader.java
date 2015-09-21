@@ -17,8 +17,8 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 	private int previousVerticalTiltValue = 0;
 	private int previousHorizontalTiltValue = 0;
 	
-	private Integer verticalChannels[] = {1, 2, 3, 4};
-	private Integer horizontalChannels[] = {5, 6, 7, 8};
+	private Integer verticalChannels[] = {3, 4, 5};
+	private Integer horizontalChannels[] = {6, 7, 8};
 	
 	@Override
 	public void init() {
@@ -107,22 +107,21 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 			k8055.ClearDigitalChannel(channel);
 		}
 
+//		maximum tilt is 3 due to limited output channel
 		if(data >= 4){
-//			maximum tilt is 3 due to limited output channel
-//			k8055.SetDigitalChannel(channels[3]);
-//			data -= 4;
 			data = 3;
 		}
 		
+//		minimum tilt is -3 due to limited output channel
 		if(data <= -4){
-//			minimum tilt is -3 due to limited output channel
-//			k8055.SetDigitalChannel(channels[3]);
-//			data -= 4;
 			data = -3;
 		}
 		
-		data = data + 4;
-		data = data == 4 ? 0 : data;
+		if(data > 0){
+			k8055.SetDigitalChannel(channels[0]);
+		}
+		
+		data = Math.abs(data);
 		
 		if(data >= 2){
 			k8055.SetDigitalChannel(channels[2]);
