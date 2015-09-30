@@ -71,6 +71,14 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML private ImageView warningImageView;
 	@FXML private ImageView stopImageView;
 	
+	@FXML private ImageView tiltUpImageView;
+	@FXML private ImageView tiltDownImageView;
+	@FXML private ImageView tiltLeftImageView;
+	@FXML private ImageView tiltRightImageView;
+	
+	@FXML private Label verticalTiltLevel;
+	@FXML private Label horizontalTiltLevel;
+	
 	private List<Shape> obstacles;
 	private List<Shape> obstacleEdges;
 	private List<Shape> tileShapes;
@@ -169,9 +177,11 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	public void init() {
-		inputReader = new K8055AnalogInputReader();
+		inputReader = new KeyboardInputReader();
 		
 		super.init();
+		initDashboard();
+		
 		MapDao mapDao = new MapDao();
 		Map map = mapDao.findMapWithDetails(getGameEvent().getGame().getMap().getIdNo());
 		
@@ -190,6 +200,15 @@ public class GameCoreController extends PropertiesViewController {
 		countDownTimer.play();
 	}
 	
+	private void initDashboard(){
+		tiltUpImageView.setVisible(false);
+		tiltDownImageView.setVisible(false);
+		tiltRightImageView.setVisible(false);
+		tiltLeftImageView.setVisible(false);
+		
+		verticalTiltLevel.setText("0");
+		horizontalTiltLevel.setText("0");
+	}
 	
 	private void resetsPlayerPosition(){
 		player.setLayoutX(startTilePoint.getColIndex() * getMainScreenTileWidth());
@@ -525,6 +544,8 @@ public class GameCoreController extends PropertiesViewController {
 				
 				horizontalTilt = holder != null && holder.horizontalTilt != null ?
 						horizontalTilt : 0;
+	
+				
 			}
 		}
 		
@@ -608,6 +629,7 @@ public class GameCoreController extends PropertiesViewController {
 				tile.getBackImage().getVerticalTilt() : 0;
 		holder.horizontalTilt = tile.getBackImage() != null ?
 				tile.getBackImage().getHorizontalTilt() : 0;
+		
 		
 		tileShape.setUserData(holder);
 		pane.getChildren().add(tileShape);

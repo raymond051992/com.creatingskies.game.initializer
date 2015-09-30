@@ -31,12 +31,15 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label style="-fx-font-weight: bold;" text="Obstacle Slow Factor" textFill="WHITE" GridPane.rowIndex="4">
+            <Label style="-fx-font-weight: bold;" text="Obstacle Slow Factor" textFill="WHITE" visible="false" GridPane.rowIndex="7">
                <font>
                   <Font size="14.0" />
                </font>
@@ -51,27 +54,27 @@
 										<Font size="24.0" />
 									</font>
 								</Label>
-            <Label fx:id="obstacleSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <Label fx:id="obstacleSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="tileSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <Label fx:id="tileSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="8">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Tile Slow Factor" textFill="WHITE" GridPane.rowIndex="5">
+            <Label style="-fx-font-weight: bold;" text="Tile Slow Factor" textFill="WHITE" visible="false" GridPane.rowIndex="8">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label style="-fx-font-weight: bold;" text="Weather Slow Factor" textFill="WHITE" GridPane.rowIndex="6">
+            <Label style="-fx-font-weight: bold;" text="Weather Slow Factor" textFill="WHITE" visible="false" GridPane.rowIndex="9">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="weatherSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Label fx:id="weatherSlowLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="9">
                <font>
                   <Font size="24.0" />
                </font>
@@ -92,6 +95,58 @@
                </font>
             </Label>
             <Label fx:id="speedLabel" style="-fx-font-weight: bold;" text="0.0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label prefHeight="20.0" prefWidth="93.0" style="-fx-font-weight: bold;" text="Vertical Tilt" textFill="WHITE" GridPane.rowIndex="4">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label prefHeight="20.0" prefWidth="123.0" style="-fx-font-weight: bold;" text="Horizontal Tilt" textFill="WHITE" GridPane.rowIndex="5">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="tiltUpImageView" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <image>
+                  <Image url="@../../../../images/fa-arrow-up_64_0_ffffff_none.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="40.0" />
+               </GridPane.margin>
+            </ImageView>
+            <ImageView fx:id="tiltDownImageView" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <image>
+                  <Image url="@../../../../images/fa-arrow-down_64_0_ffffff_none.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="40.0" />
+               </GridPane.margin>
+            </ImageView>
+            <ImageView fx:id="tiltLeftImageView" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <image>
+                  <Image url="@../../../../images/fa-arrow-left_64_0_ffffff_none.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="40.0" />
+               </GridPane.margin>
+            </ImageView>
+            <ImageView fx:id="tiltRightImageView" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <image>
+                  <Image url="@../../../../images/fa-arrow-right_64_0_ffffff_none.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="40.0" />
+               </GridPane.margin>
+            </ImageView>
+            <Label fx:id="verticalTiltLevel" style="-fx-font-weight: bold;" text="0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="horizontalTiltLevel" style="-fx-font-weight: bold;" text="0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <font>
                   <Font size="24.0" />
                </font>
