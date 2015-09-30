@@ -201,13 +201,13 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	private void initDashboard(){
-		tiltUpImageView.setVisible(false);
-		tiltDownImageView.setVisible(false);
-		tiltRightImageView.setVisible(false);
-		tiltLeftImageView.setVisible(false);
+		tiltUpImageView.setVisible(verticalTilt > 0);
+		tiltDownImageView.setVisible(verticalTilt < 0);
+		tiltRightImageView.setVisible(horizontalTilt > 0);
+		tiltLeftImageView.setVisible(horizontalTilt < 0);
 		
-		verticalTiltLevel.setText("0");
-		horizontalTiltLevel.setText("0");
+		verticalTiltLevel.setText(String.valueOf(Math.abs(verticalTilt)));
+		horizontalTiltLevel.setText(String.valueOf(Math.abs(horizontalTilt)));
 	}
 	
 	private void resetsPlayerPosition(){
@@ -341,7 +341,14 @@ public class GameCoreController extends PropertiesViewController {
 				} else if(tile.getEndPoint()){
 					createEndRectangle(tile);
 				}
-				
+			}
+			
+			if (tile.getObstacle() != null
+					|| tile.getStartPoint()
+					|| tile.getEndPoint()
+					|| (tile.getBackImage() != null
+						&& ((tile.getBackImage().getVerticalTilt() != null && tile.getBackImage().getVerticalTilt() != 0) 
+							|| (tile.getBackImage().getHorizontalTilt() != null && tile.getBackImage().getHorizontalTilt() != 0)))) {
 				createTileShapes(tile, map.getDefaultTileImage().getDifficulty());
 			}
 			
@@ -401,6 +408,7 @@ public class GameCoreController extends PropertiesViewController {
 			    	
 			    	computeRotation();
 					computeMovement();
+					initDashboard();
 		    	}
 		    }
 		}));
@@ -536,19 +544,20 @@ public class GameCoreController extends PropertiesViewController {
 			if (intersect.getBoundsInLocal().getWidth() != -1) {
 				TileValueHolder holder = (TileValueHolder) tileShape.getUserData();
 				
-				tileSlowFactor = (double) Math.max(holder != null && holder.difficulty != null ?
-						holder.difficulty : 0, tileSlowFactor);
-				
-				verticalTilt = holder != null && holder.verticalTilt != null ?
-						verticalTilt : 0;
-				
-				horizontalTilt = holder != null && holder.horizontalTilt != null ?
-						horizontalTilt : 0;
-	
-				
+				if(holder != null && (holder.verticalTilt != 0 && holder.horizontalTilt != 0)){
+					tileSlowFactor = (double) holder.difficulty;
+					verticalTilt = holder.verticalTilt;
+					horizontalTilt = holder.horizontalTilt;
+					
+					tileSlowLabel.setText(String.format("%.2f", tileSlowFactor));
+					return;
+				}
 			}
 		}
 		
+		tileSlowFactor = 0.0;
+		verticalTilt = 0;
+		horizontalTilt = 0;
 		tileSlowLabel.setText(String.format("%.2f", tileSlowFactor));
 	}
 	
@@ -629,7 +638,6 @@ public class GameCoreController extends PropertiesViewController {
 				tile.getBackImage().getVerticalTilt() : 0;
 		holder.horizontalTilt = tile.getBackImage() != null ?
 				tile.getBackImage().getHorizontalTilt() : 0;
-		
 		
 		tileShape.setUserData(holder);
 		pane.getChildren().add(tileShape);
