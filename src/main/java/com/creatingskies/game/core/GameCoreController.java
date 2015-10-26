@@ -621,6 +621,7 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML
 	@Override
 	protected void close() {
+		inputReader.destroy();
 		gameLoop = null;
 		mapTiles.getChildren().clear();
 		obstacles.clear();

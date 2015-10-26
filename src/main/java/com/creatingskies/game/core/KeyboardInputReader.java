@@ -45,6 +45,7 @@ public class KeyboardInputReader extends AbstractInputReader {
 	
 	@Override
 	public void destroy() {
+		k8055.ClearAllDigital();
 		k8055.CloseDevice();
 	}
 	
