@@ -5,6 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.creatingskies.game.classes.AbstractInputReader;
+import com.creatingskies.game.classes.AbstractInputReader.InputForce;
+import com.creatingskies.game.classes.PropertiesViewController;
+import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.core.Game.Type;
+import com.creatingskies.game.core.resources.GameResourcesManager;
+import com.creatingskies.game.model.Constant;
+import com.creatingskies.game.model.company.Group;
+import com.creatingskies.game.model.event.GameEvent;
+import com.creatingskies.game.util.Util;
+
 import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -33,18 +45,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-
-import com.creatingskies.game.classes.AbstractInputReader;
-import com.creatingskies.game.classes.AbstractInputReader.InputForce;
-import com.creatingskies.game.classes.PropertiesViewController;
-import com.creatingskies.game.common.MainLayout;
-import com.creatingskies.game.component.AlertDialog;
-import com.creatingskies.game.core.Game.Type;
-import com.creatingskies.game.core.resources.GameResourcesManager;
-import com.creatingskies.game.model.Constant;
-import com.creatingskies.game.model.company.Group;
-import com.creatingskies.game.model.event.GameEvent;
-import com.creatingskies.game.util.Util;
 
 public class GameCoreController extends PropertiesViewController {
 	
@@ -454,7 +454,8 @@ public class GameCoreController extends PropertiesViewController {
 		double totalSlowFactor = 0;
 		distance = 0;
 
-		totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
+//		totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
+		totalSlowFactor = (Math.abs(verticalTilt) + Math.abs(horizontalTilt)) / 2;
 		
 		if(inputForce.left != 0 && inputForce.right != 0){
 			distance = Math.max((((inputForce.left + inputForce.right)
@@ -544,7 +545,7 @@ public class GameCoreController extends PropertiesViewController {
 			if (intersect.getBoundsInLocal().getWidth() != -1) {
 				TileValueHolder holder = (TileValueHolder) tileShape.getUserData();
 				
-				if(holder != null && (holder.verticalTilt != 0 && holder.horizontalTilt != 0)){
+				if(holder != null && (holder.verticalTilt != 0 || holder.horizontalTilt != 0)){
 					tileSlowFactor = (double) holder.difficulty;
 					verticalTilt = holder.verticalTilt;
 					horizontalTilt = holder.horizontalTilt;

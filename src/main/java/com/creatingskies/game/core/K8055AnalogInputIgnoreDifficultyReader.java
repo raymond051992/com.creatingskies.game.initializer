@@ -56,26 +56,34 @@ public class K8055AnalogInputIgnoreDifficultyReader extends AbstractInputReader 
 		if(duration >= 500){
 			duration = 0;
 			
+			boolean shouldUpdateDisplay = false;
+			
 			if(previousVerticalTiltValue < verticalTilt){
-				displayTilt(++previousVerticalTiltValue, true);
+				shouldUpdateDisplay = true;
+				previousVerticalTiltValue++;
 			} else if(previousVerticalTiltValue > verticalTilt){
-				displayTilt(--previousVerticalTiltValue, true);
+				shouldUpdateDisplay = true;
+				previousVerticalTiltValue--;
 			}
 			
 			if(previousHorizontalTiltValue < horizontalTilt){
-				displayTilt(++previousHorizontalTiltValue, false);
+				shouldUpdateDisplay = true;
+				previousHorizontalTiltValue++;
 			} else if(previousHorizontalTiltValue > horizontalTilt){
-				displayTilt(--previousHorizontalTiltValue, false);
+				shouldUpdateDisplay = true;
+				previousHorizontalTiltValue--;
+			}
+			
+			if(shouldUpdateDisplay){
+				k8055.ClearAllDigital();
+				displayTilt(previousVerticalTiltValue, true);
+				displayTilt(previousHorizontalTiltValue, false);
 			}
 		}
 	}
 	
 	private void displayTilt(int data, boolean forVertical){
 		Integer[] channels = forVertical ? verticalChannels : horizontalChannels;
-		
-		for(Integer channel : channels){
-			k8055.ClearDigitalChannel(channel);
-		}
 
 		if(data > 0){
 			k8055.SetDigitalChannel(channels[0]);
