@@ -20,6 +20,7 @@ import com.creatingskies.game.util.Util;
 import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -177,7 +178,7 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	public void init() {
-		inputReader = new KeyboardInputReader();
+		inputReader = new K8055AnalogInputIgnoreDifficultyReader();
 		
 		super.init();
 		initDashboard();
@@ -416,16 +417,22 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	private void confirmQuit() {
-		Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
-				"Are you sure you want to quit this game?", null).showAndWait();
+		Platform.runLater(new Runnable(){
+			@Override
+			public void run() {
+				Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
+						"Are you sure you want to quit this game?", null).showAndWait();
+				
+				if(result.get() == ButtonType.OK){
+					closeGame();
+					return;
+				} else {
+					inputReader.setQuitButtonPressed(false);
+				}
+				gameLoop.play();
+			}
+		});
 		
-		if(result.get() == ButtonType.OK){
-			closeGame();
-			return;
-		} else {
-			inputReader.setQuitButtonPressed(false);
-		}
-		gameLoop.play();
 	}
 	
 	private void computeRotation(){
@@ -569,15 +576,22 @@ public class GameCoreController extends PropertiesViewController {
 			gameResourceManager.stop();
 			
 			saveGameResult();
-			new AlertDialog(AlertType.INFORMATION, "Finish!",  "Congratulations!",
-					" Company: " + group.getCompany().getName()
-					+ "\n Group: " + group.getName()
-					+ "\n Duration: " + String.format("%.2f", getDuration())
-					+ "\n Average Speed: " + String.format("%.2f", Util.computeSpeed(totalDistance, getDuration())))
-					.showAndWait();
+			
+			Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					new AlertDialog(AlertType.INFORMATION, "Finish!",  "Congratulations!",
+							" Company: " + group.getCompany().getName()
+							+ "\n Group: " + group.getName()
+							+ "\n Duration: " + String.format("%.2f", getDuration())
+							+ "\n Average Speed: " + String.format("%.2f", Util.computeSpeed(totalDistance, getDuration())))
+							.showAndWait();
 
-			close();
-			stage.close();
+					close();
+					stage.close();
+				}
+			});
 		}
 	}
 	
