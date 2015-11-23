@@ -27,7 +27,7 @@ public class K8055AnalogInputIgnoreDifficultyReader extends AbstractInputReader 
 
 	@Override
 	public void destroy() {
-		k8055.ClearAllDigital();
+		clearAllDigital();
 		k8055.CloseDevice();
 	}
 
@@ -76,14 +76,18 @@ public class K8055AnalogInputIgnoreDifficultyReader extends AbstractInputReader 
 			}
 			
 			if(shouldUpdateDisplay){
-				k8055.ClearAllDigital();
+				clearAllDigital();
 				displayTilt(previousVerticalTiltValue, true);
 				displayTilt(previousHorizontalTiltValue, false);
 			}
 		}
 	}
+
+	public void clearAllDigital() {
+		k8055.ClearAllDigital();
+	}
 	
-	private void displayTilt(int data, boolean forVertical){
+	public void displayTilt(int data, boolean forVertical){
 		Integer[] channels = forVertical ? verticalChannels : horizontalChannels;
 
 		if(data > 0){

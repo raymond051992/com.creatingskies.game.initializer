@@ -23,6 +23,7 @@ import com.creatingskies.game.config.icon.IconEditorController;
 import com.creatingskies.game.config.obstacle.ObstaclesController;
 import com.creatingskies.game.config.user.UsersController;
 import com.creatingskies.game.config.weather.WeathersController;
+import com.creatingskies.game.debugging.DeviceDebuggingController;
 import com.creatingskies.game.editor.GameController;
 import com.creatingskies.game.model.user.User.Type;
 import com.creatingskies.game.statistics.StatisticsController;
@@ -58,6 +59,7 @@ public class MainController extends ViewController{
 				createLauncher(2, "Weather", "/images/rec_weather.png", this::goToWeathersPage);
 				createLauncher(3, "Games", "/images/rec_game.png", this::goToGamesPage);
 				createLauncher(4, "Icon Editor", "/images/rec_editor.png", this::goToIconEditorPage);
+				createLauncher(8, "Device Debugging", "/images/debug.png", this::goToDeviceDebuggingPage);
 			}
 			createLauncher(5, "Companies", "/images/rec_company.png", this::goToCompaniesPage);
 			createLauncher(6, "Events", "/images/rec_events.png", this::goToEventsPage);
@@ -117,6 +119,10 @@ public class MainController extends ViewController{
 	
 	private void goToIconEditorPage(MouseEvent event){
 		new IconEditorController().show();
+	}
+	
+	private void goToDeviceDebuggingPage(MouseEvent event){
+		new DeviceDebuggingController().show();
 	}
 	
 }

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="loginContainer" maxHeight="350.0" maxWidth="500.0" minHeight="200.0" minWidth="500.0" prefHeight="350.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.debugging.DeviceDebuggingController">
+   <children>
+      <Button defaultButton="true" layoutX="277.0" layoutY="144.0" minWidth="100.0" mnemonicParsing="false" onAction="#testDisplayTiltValues" styleClass="button-primary" text="Debug" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="25.0" />
+      <Slider fx:id="horizontalSlider" blockIncrement="1.0" layoutX="25.0" layoutY="182.0" majorTickUnit="1.0" max="7.0" min="-7.0" minorTickCount="0" prefHeight="14.0" prefWidth="436.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" />
+      <Slider fx:id="verticalSlider" blockIncrement="1.0" layoutX="25.0" layoutY="65.0" majorTickUnit="1.0" max="7.0" min="-7.0" minorTickCount="0" prefHeight="14.0" prefWidth="436.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" />
+      <HBox layoutX="256.0" layoutY="303.0" prefHeight="17.0" prefWidth="200.0" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="25.0">
+         <children>
+            <Circle fx:id="c1" radius="10.0" stroke="#b22b2b" strokeType="INSIDE" strokeWidth="0.5">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="#ff8080" />
+                        <Stop color="#da5151" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </Circle>
+            <Circle fx:id="c2" radius="10.0" stroke="#b22b2b" strokeType="INSIDE" strokeWidth="0.5">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="#ff8080" />
+                        <Stop color="#da5151" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </Circle>
+            <Circle fx:id="c3" radius="10.0" stroke="#b22b2b" strokeType="INSIDE" strokeWidth="0.5">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="#ff8080" />
+                        <Stop color="#da5151" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </Circle>
+            <Circle fx:id="c4" radius="10.0" stroke="#b22b2b" strokeType="INSIDE" strokeWidth="0.5">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="#ff8080" />
+                        <Stop color="#da5151" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </Circle>
+            <Circle fx:id="c5" radius="10.0" stroke="#b22b2b" strokeType="INSIDE" strokeWidth="0.5">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="#ff8080" />
+                        <Stop color="#da5151" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </Circle>
+            <Circle fx:id="c6" radius="10.0" stroke="#b22b2b" strokeType="INSIDE" strokeWidth="0.5">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="#ff8080" />
+                        <Stop color="#da5151" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </Circle>
+            <Circle fx:id="c7" radius="10.0" stroke="#b22b2b" strokeType="INSIDE" strokeWidth="0.5">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="#ff8080" />
+                        <Stop color="#da5151" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </Circle>
+            <Circle fx:id="c8" radius="10.0" stroke="#b22b2b" strokeType="INSIDE" strokeWidth="0.5">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="#ff8080" />
+                        <Stop color="#da5151" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Circle>
+         </children>
+      </HBox>
+      <Label layoutX="275.0" layoutY="274.0" text="Expected Output" />
+      <Label layoutX="25.0" layoutY="32.0" text="Backward" textFill="#d0d0d0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="35.0" />
+      <Label layoutX="407.0" layoutY="40.0" text="Forward" textFill="#d0d0d0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="35.0" />
+      <Label layoutX="25.0" layoutY="149.0" text="Left" textFill="#d0d0d0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="150.0" />
+      <Label layoutX="448.0" layoutY="149.0" text="Right" textFill="#d0d0d0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="150.0" />
+      <Label layoutX="231.0" layoutY="35.0" text="Vertical" />
+      <Label layoutX="223.0" layoutY="150.0" text="Horizontal" />
+   </children>
+</AnchorPane>
