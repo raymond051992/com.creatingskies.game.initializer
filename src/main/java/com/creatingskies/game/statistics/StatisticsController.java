@@ -93,7 +93,7 @@ public class StatisticsController extends TableViewController {
 		
 		companyChoices.getItems().add(null);
 		companyChoices.getItems().addAll(FXCollections
-				.observableArrayList(new CompanyDAO().findAllCompanies()));
+				.observableArrayList(new CompanyDAO().findAllCompanies(false)));
 		companyChoices.setConverter(new StringConverter<Company>() {
 			@Override
 			public String toString(Company company) {

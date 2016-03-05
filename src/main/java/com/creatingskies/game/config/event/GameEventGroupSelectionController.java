@@ -55,7 +55,7 @@ public class GameEventGroupSelectionController {
 	}
 	
 	private List<Group> getAllGroups(final Company company){
-		return new CompanyDAO().findAllGroupsForCompany(company);
+		return new CompanyDAO().findAllGroupsForCompany(company,false);
 	}
 
 	public Stage getStage() {

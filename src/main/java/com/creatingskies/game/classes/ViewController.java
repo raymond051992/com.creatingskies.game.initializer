@@ -18,7 +18,7 @@ import com.creatingskies.game.util.Logger.Level;
 public abstract class ViewController extends Controller{
 	
 	public enum Action {
-		ADD, VIEW, EDIT, DELETE, ACTIVATE;
+		ADD, VIEW, EDIT, DELETE, ACTIVATE, ARCHIVE, RESTORE;
 	}
 	
 	protected abstract String getViewTitle();

@@ -178,7 +178,7 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	public void init() {
-		inputReader = new K8055AnalogInputIgnoreDifficultyReader();
+		inputReader = new KeyboardInputReader();
 		
 		super.init();
 		initDashboard();

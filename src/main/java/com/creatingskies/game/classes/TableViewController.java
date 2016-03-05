@@ -12,8 +12,10 @@ import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 
 import com.creatingskies.game.component.TableRowActivateButton;
+import com.creatingskies.game.component.TableRowArchiveButton;
 import com.creatingskies.game.component.TableRowDeleteButton;
 import com.creatingskies.game.component.TableRowEditButton;
+import com.creatingskies.game.component.TableRowRestoreButton;
 import com.creatingskies.game.component.TableRowViewButton;
 import com.creatingskies.game.model.IRecord;
 
@@ -78,6 +80,10 @@ public abstract class TableViewController extends ViewController{
 				box.getChildren().add(createDeleteButton(tableView, param, index));
 			} else if(action.equals(Action.ACTIVATE)){
 				box.getChildren().add(createActivateButton(tableView, param, index));
+			} else if(action.equals(Action.ARCHIVE)){
+				box.getChildren().add(createArchiveButton(tableView, param, index));
+			} else if(action.equals(Action.RESTORE)){
+				box.getChildren().add(createRestoreButton(tableView, param, index));
 			}
 		}
 		
@@ -110,6 +116,20 @@ public abstract class TableViewController extends ViewController{
 			TableColumn<? extends IRecord, Object> param, Integer index){
 		Button activateButton = new TableRowActivateButton();
 		activateButton.setOnAction(createActivateEventHandler(tableView, param, index));
+		return activateButton;
+	}
+	
+	private Button createArchiveButton(TableView<? extends IRecord> tableView,
+			TableColumn<? extends IRecord, Object> param, Integer index){
+		Button activateButton = new TableRowArchiveButton();
+		activateButton.setOnAction(createArchiveEventHandler(tableView, param, index));
+		return activateButton;
+	}
+	
+	private Button createRestoreButton(TableView<? extends IRecord> tableView,
+			TableColumn<? extends IRecord, Object> param, Integer index){
+		Button activateButton = new TableRowRestoreButton();
+		activateButton.setOnAction(createRestoreEventHandler(tableView, param, index));
 		return activateButton;
 	}
 	
@@ -173,6 +193,36 @@ public abstract class TableViewController extends ViewController{
 		};
 	}
 	
+	private EventHandler<ActionEvent> createArchiveEventHandler(TableView<? extends IRecord> tableView,
+			TableColumn<? extends IRecord, Object> param, Integer index) {
+		return new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				param.getTableView().getSelectionModel().select(index);
+				IRecord record = tableView.getSelectionModel().getSelectedItem();
+				if (record != null) {
+					currentAction = Action.ARCHIVE;
+					archiveRecord(record);
+				}
+			}
+		};
+	}
+	
+	private EventHandler<ActionEvent> createRestoreEventHandler(TableView<? extends IRecord> tableView,
+			TableColumn<? extends IRecord, Object> param, Integer index) {
+		return new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				param.getTableView().getSelectionModel().select(index);
+				IRecord record = tableView.getSelectionModel().getSelectedItem();
+				if (record != null) {
+					currentAction = Action.RESTORE;
+					restoreRecord(record);
+				}
+			}
+		};
+	}
+	
 	/*
 	 * Override this methods to add functionality to action buttons
 	 */
@@ -184,4 +234,7 @@ public abstract class TableViewController extends ViewController{
 	
 	protected void activateRecord(IRecord record){}
 	
+	protected void archiveRecord(IRecord record){}
+	
+	protected void restoreRecord(IRecord record){}
 }

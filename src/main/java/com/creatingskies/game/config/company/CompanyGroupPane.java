@@ -14,8 +14,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.component.TableRowArchiveButton;
 import com.creatingskies.game.component.TableRowDeleteButton;
 import com.creatingskies.game.component.TableRowEditButton;
+import com.creatingskies.game.component.TableRowRestoreButton;
 import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.model.company.CompanyDAO;
 import com.creatingskies.game.model.company.Group;
@@ -36,16 +38,20 @@ public class CompanyGroupPane extends AnchorPane{
 		Label groupName = new Label(group.getName());
 		TableRowEditButton editButton = new TableRowEditButton();
 		TableRowDeleteButton deleteButton = new TableRowDeleteButton();
+		TableRowArchiveButton archiveButton = new TableRowArchiveButton();
+		TableRowRestoreButton restoreButton = new TableRowRestoreButton();
 		
 		ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints();
         ColumnConstraints col3 = new ColumnConstraints();
         container.getColumnConstraints().addAll(col1,col2,col3);
-        
+        container.setHgap(5.0);
         groupName.setPrefWidth(Integer.MAX_VALUE);
         groupName.setStyle("-fx-font-weight:bold;-fx-font-size:14px;");
         editButton.setTooltip(new Tooltip("Edit Group and Teams"));
         deleteButton.setTooltip(new Tooltip("Delete Group and Teams"));
+        archiveButton.setTooltip(new Tooltip("Move group to archive"));
+        restoreButton.setTooltip(new Tooltip("Restore from archive"));
         
         editButton.setOnAction((event) -> {
         	if(new GroupDialogController().show(group)){
@@ -53,6 +59,20 @@ public class CompanyGroupPane extends AnchorPane{
         		groupName.setText(group.getName());
         		init();
         	};
+        });
+        
+        archiveButton.setOnAction((event) -> {
+        	this.group.setArchived(true);
+        	CompanyDAO companyDAO = new CompanyDAO();
+        	companyDAO.saveOrUpdate(group);
+        	init();
+        });
+        
+        restoreButton.setOnAction((event) -> {
+        	this.group.setArchived(false);
+        	CompanyDAO companyDAO = new CompanyDAO();
+        	companyDAO.saveOrUpdate(group);
+        	init();
         });
         
         deleteButton.setOnAction((event) -> {
@@ -78,9 +98,20 @@ public class CompanyGroupPane extends AnchorPane{
         
 		GridPane.setConstraints(groupName, 0, 0);
 		GridPane.setConstraints(editButton, 1, 0);
-		GridPane.setConstraints(deleteButton, 2, 0);
+		if(this.group.getArchived() == null || this.group.getArchived() == Boolean.FALSE){
+			GridPane.setConstraints(archiveButton, 2, 0);	
+		}else{
+			GridPane.setConstraints(restoreButton, 3, 0);
+		}
+		GridPane.setConstraints(deleteButton, 4, 0);
 		
 		container.getChildren().addAll(groupName,editButton,deleteButton);
+		
+		if(this.group.getArchived() == null || this.group.getArchived() == Boolean.FALSE){
+			container.getChildren().add(archiveButton);
+		}else{
+			container.getChildren().add(restoreButton);
+		}
 		return container;
 	}
 	

@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
@@ -36,15 +38,24 @@ public class CompanyController extends TableViewController{
 	
 	@FXML private FlowPane groupsFlowPane;
 	@FXML private Button addGroupButton;
+	@FXML private Button archiveButton;
+	@FXML private CheckBox showArchives;
 	
 	private Company selectedCompany;
 	
 	@Override
 	public void init() {
+		archiveButton.setVisible(false);
 		super.init();
 		initTable();
 		loadCompanies();
 		addGroupButton.setVisible(false);
+		showArchives.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			public void changed(javafx.beans.value.ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				loadCompanies();
+				archiveButton.setVisible(!companyTableView.getItems().isEmpty());
+			};
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -61,7 +72,7 @@ public class CompanyController extends TableViewController{
 	}
 	
 	private void loadCompanies(){
-		companyTableView.setItems(FXCollections.observableArrayList(new CompanyDAO().findAllCompanies()));
+		companyTableView.setItems(FXCollections.observableArrayList(new CompanyDAO().findAllCompanies(showArchives.isSelected())));
 	}
 	
 	@Override
@@ -98,7 +109,7 @@ public class CompanyController extends TableViewController{
 	public void showDetails(Company company){
 		groupsFlowPane.getChildren().clear();
 		if(company != null){
-			List<Group> groups = new CompanyDAO().findAllGroupsForCompany(company);
+			List<Group> groups = new CompanyDAO().findAllGroupsForCompany(company,showArchives.isSelected());
 			for(Group group : groups){
 				group.setTeams(new CompanyDAO().findAllTeamsForGroup(group));
 				for(Team team : group.getTeams()){
@@ -107,6 +118,12 @@ public class CompanyController extends TableViewController{
 				groupsFlowPane.getChildren().add(new CompanyGroupPane(group));
 			}
 			selectedCompany = company;
+			archiveButton.setVisible(true);
+			if(company.getArchived() == null || company.getArchived() == Boolean.FALSE){
+				archiveButton.setText("Archive");
+			}else{
+				archiveButton.setText("Restore");
+			}
 			addGroupButton.setVisible(true);
 		}else{
 			selectedCompany = company;
@@ -149,5 +166,21 @@ public class CompanyController extends TableViewController{
 	@Override
 	public TableView<? extends IRecord> getTableView() {
 		return companyTableView;
+	}
+	
+	@FXML
+	public void moveToArchive(){
+		if(selectedCompany != null){
+			if(selectedCompany.getArchived() == null || selectedCompany.getArchived() == Boolean.FALSE){
+				selectedCompany.setArchived(Boolean.TRUE);
+				archiveButton.setText("Restore");
+			}else{
+				selectedCompany.setArchived(Boolean.FALSE);
+				archiveButton.setText("Archive");
+			}
+			CompanyDAO companyDAO = new CompanyDAO();
+			companyDAO.saveOrUpdate(selectedCompany);
+			init();
+		}
 	}
 }

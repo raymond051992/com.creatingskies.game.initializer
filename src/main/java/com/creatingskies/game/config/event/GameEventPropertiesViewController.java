@@ -8,6 +8,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.creatingskies.game.classes.PropertiesViewController;
+import com.creatingskies.game.common.MainLayout;
+import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.core.Game;
+import com.creatingskies.game.core.GameConverter;
+import com.creatingskies.game.core.GameDao;
+import com.creatingskies.game.model.company.Company;
+import com.creatingskies.game.model.company.CompanyDAO;
+import com.creatingskies.game.model.event.GameEvent;
+import com.creatingskies.game.model.event.GameEventDao;
+import com.creatingskies.game.util.Util;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,18 +33,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import com.creatingskies.game.classes.PropertiesViewController;
-import com.creatingskies.game.common.MainLayout;
-import com.creatingskies.game.component.AlertDialog;
-import com.creatingskies.game.core.Game;
-import com.creatingskies.game.core.GameConverter;
-import com.creatingskies.game.core.GameDao;
-import com.creatingskies.game.model.company.Company;
-import com.creatingskies.game.model.company.CompanyDAO;
-import com.creatingskies.game.model.event.GameEvent;
-import com.creatingskies.game.model.event.GameEventDao;
-import com.creatingskies.game.util.Util;
 
 public class GameEventPropertiesViewController extends PropertiesViewController{
 
@@ -48,13 +48,12 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	@FXML private Button backToListButton;
 	@FXML private Button playButton;
 	
-	@SuppressWarnings("unchecked")
 	public void init(){
 		super.init();
 		
 		companyComboBox.getItems().clear();
 		companyComboBox.getItems().add(null);
-		companyComboBox.getItems().addAll((List<Company>) new CompanyDAO().findAll(Company.class));
+		companyComboBox.getItems().addAll((List<Company>) new CompanyDAO().findAllCompanies(false));
 		companyComboBox.setConverter(new StringConverter<Company>() {
 			@Override
 			public String toString(Company company) {
