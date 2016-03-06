@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane minWidth="600.0" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.config.icon.TileImageDialogController">
+<AnchorPane minWidth="600.0" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.71" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.creatingskies.game.config.icon.TileImageDialogController">
 	<children>
 		<GridPane hgap="10.0" layoutX="162.0" layoutY="120.0" prefHeight="400.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<columnConstraints>
@@ -46,13 +52,15 @@
                <GridPane.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </GridPane.margin></ImageView>
-            <Label fx:id="notApplicableLabel" text="N/A (Not applicable for this image)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="notApplicableDifficultyLabel" text="N/A (Not applicable for this image)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Name" />
             <TextField fx:id="nameField" GridPane.columnIndex="1" />
             <Label text="Vertical Tilt" GridPane.rowIndex="2" />
             <Label text="Horizontal Tilt" GridPane.rowIndex="3" />
-            <Slider fx:id="verticalTiltSlider" majorTickUnit="1.0" max="7.0" min="-7.0" minorTickCount="0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Slider fx:id="horizontalTiltSlider" majorTickUnit="1.0" max="7.0" min="-7.0" minorTickCount="0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Slider fx:id="verticalTiltSlider" majorTickUnit="1.0" max="3.0" min="-3.0" minorTickCount="0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Slider fx:id="horizontalTiltSlider" majorTickUnit="1.0" max="3.0" min="-3.0" minorTickCount="0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label fx:id="notApplicableVerticalTiltLabel" text="N/A (Not applicable for this image)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label fx:id="notApplicableHorizontalTiltLabel" text="N/A (Not applicable for this image)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 			</children>
 			<padding>
 				<Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />

@@ -53,7 +53,8 @@ public class GameCoreController extends PropertiesViewController {
 	private static final Double PREFERRED_MINIMAP_TILE_COUNT_X = 25.0;
 	private static final Double PREFERRED_MINIMAP_TILE_COUNT_Y = 25.0;
 	private static final Double MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER = 1.25;
-
+	private static final double INITIAL_PLAYER_ROTATION = -90.0;
+	
 	@FXML private Pane pane;
 	@FXML private AnchorPane mainContainer;
 	@FXML private AnchorPane weatherContainer;
@@ -77,6 +78,7 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML private ImageView tiltLeftImageView;
 	@FXML private ImageView tiltRightImageView;
 	
+	@FXML private Label difficultyLevel;
 	@FXML private Label verticalTiltLevel;
 	@FXML private Label horizontalTiltLevel;
 	
@@ -209,6 +211,7 @@ public class GameCoreController extends PropertiesViewController {
 		
 		verticalTiltLevel.setText(String.valueOf(Math.abs(verticalTilt)));
 		horizontalTiltLevel.setText(String.valueOf(Math.abs(horizontalTilt)));
+		difficultyLevel.setText(String.valueOf(tileSlowFactor));
 	}
 	
 	private void resetsPlayerPosition(){
@@ -348,9 +351,9 @@ public class GameCoreController extends PropertiesViewController {
 					|| tile.getStartPoint()
 					|| tile.getEndPoint()
 					|| (tile.getBackImage() != null
-						&& ((tile.getBackImage().getVerticalTilt() != null && tile.getBackImage().getVerticalTilt() != 0) 
-							|| (tile.getBackImage().getHorizontalTilt() != null && tile.getBackImage().getHorizontalTilt() != 0)))) {
-				createTileShapes(tile, map.getDefaultTileImage().getDifficulty());
+						&& ((tile.getVerticalTilt() != null && tile.getVerticalTilt() != 0) 
+							|| (tile.getHorizontalTilt() != null && tile.getHorizontalTilt() != 0)))) {
+				createTileShapes(tile, map.getDefaultTileImage());
 			}
 			
 			mapTiles.add(Util.bundle(backImage, frontImage), tile.getColIndex(), tile.getRowIndex());
@@ -373,8 +376,9 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML
 	private void handleReset(){
 		millisGameDuration = 0;
-		degreesPreferred = 0.0;
+		degreesPreferred = INITIAL_PLAYER_ROTATION;
 		player.setRotate(degreesPreferred);
+		miniPlayer.setRotate(degreesPreferred);
 		gameLoop.play();
 		gameResourceManager.start();
 	}
@@ -438,7 +442,6 @@ public class GameCoreController extends PropertiesViewController {
 	private void computeRotation(){
 		Double currentDeg = player.getRotate();
 		Double deltaDeg = ((45 / maxMovementSpeed) * (inputForce.left - inputForce.right));
-		
 		degreesPreferred = currentDeg + deltaDeg;
 		
 		if(currentDeg.compareTo(degreesPreferred) != 0){
@@ -448,6 +451,7 @@ public class GameCoreController extends PropertiesViewController {
 					degreesInterval * multiplier : deltaDeg * multiplier;
 			currentDeg += rotation; 
 		}
+		
 		player.setRotate(currentDeg);
 		miniPlayer.setRotate(currentDeg);
 	}
@@ -461,8 +465,8 @@ public class GameCoreController extends PropertiesViewController {
 		double totalSlowFactor = 0;
 		distance = 0;
 
-//		totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
-		totalSlowFactor = (Math.abs(verticalTilt) + Math.abs(horizontalTilt)) / 2;
+		totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
+//		totalSlowFactor = (Math.abs(verticalTilt) + Math.abs(horizontalTilt)) / 2;
 		
 		if(inputForce.left != 0 && inputForce.right != 0){
 			distance = Math.max((((inputForce.left + inputForce.right)
@@ -644,16 +648,16 @@ public class GameCoreController extends PropertiesViewController {
 		super.close();
 	}
 	
-	public void createTileShapes(Tile tile, Integer defaultDifficulty){
+	public void createTileShapes(Tile tile, TileImage defaultTileImage){
 		Rectangle tileShape = createDefaultRectangle(tile);
 		
 		TileValueHolder holder = new TileValueHolder();
 		holder.difficulty = tile.getBackImage() != null ?
-				tile.getBackImage().getDifficulty() : defaultDifficulty;
+				tile.getDifficulty() : defaultTileImage.getDifficulty();
 		holder.verticalTilt = tile.getBackImage() != null ?
-				tile.getBackImage().getVerticalTilt() : 0;
+				tile.getVerticalTilt() : defaultTileImage.getVerticalTilt();
 		holder.horizontalTilt = tile.getBackImage() != null ?
-				tile.getBackImage().getHorizontalTilt() : 0;
+				tile.getHorizontalTilt() : defaultTileImage.getHorizontalTilt();
 		
 		tileShape.setUserData(holder);
 		pane.getChildren().add(tileShape);
@@ -733,6 +737,9 @@ public class GameCoreController extends PropertiesViewController {
 		miniPlayer.setPrefWidth(getMiniScreenTileWidth() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
 		miniPlayer.setPrefHeight(getMiniScreenTileHeight() * MINIMAP_CORE_IMAGE_SIZE_MULTIPLIER);
 		miniPlayer.getChildren().addAll(miniPlayerCircle, miniplayerImageView);
+		
+		player.setRotate(INITIAL_PLAYER_ROTATION);
+		miniPlayer.setRotate(INITIAL_PLAYER_ROTATION);
 	}
 	
 	private double getMainScreenTileWidth(){

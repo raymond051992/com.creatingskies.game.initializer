@@ -4,6 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.creatingskies.game.classes.ViewController;
+import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.core.GameDao;
+import com.creatingskies.game.core.GameResult;
+import com.creatingskies.game.core.MapDao;
+import com.creatingskies.game.core.TileImage;
+import com.creatingskies.game.model.Constant;
+import com.creatingskies.game.util.Util;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,24 +28,17 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import com.creatingskies.game.classes.ViewController;
-import com.creatingskies.game.component.AlertDialog;
-import com.creatingskies.game.core.GameDao;
-import com.creatingskies.game.core.GameResult;
-import com.creatingskies.game.core.MapDao;
-import com.creatingskies.game.core.TileImage;
-import com.creatingskies.game.model.Constant;
-import com.creatingskies.game.util.Util;
-
 public class TileImageDialogController extends ViewController {
 
 	@FXML private TextField nameField;
 	@FXML private TextField fileNameField;
 	@FXML private ImageView previewImage;
 	
-	@FXML private Slider difficultySlider;
-	@FXML private Label notApplicableLabel;
+	@FXML private Label notApplicableDifficultyLabel;
+	@FXML private Label notApplicableVerticalTiltLabel;
+	@FXML private Label notApplicableHorizontalTiltLabel;
 	
+	@FXML private Slider difficultySlider;
 	@FXML private Slider verticalTiltSlider;
 	@FXML private Slider horizontalTiltSlider;
 	
@@ -93,13 +95,19 @@ public class TileImageDialogController extends ViewController {
         nameField.setDisable(tileImage.getSystemDefined() || !allowModify);
         nameField.setText(tileImage.getOwner());
         
-        notApplicableLabel.setVisible(tileImage.getDifficulty() == null);
+        notApplicableDifficultyLabel.setVisible(tileImage.getDifficulty() == null);
+        notApplicableVerticalTiltLabel.setVisible(tileImage.getVerticalTilt() == null);
+        notApplicableHorizontalTiltLabel.setVisible(tileImage.getHorizontalTilt() == null);
+
         difficultySlider.setVisible(tileImage.getDifficulty() != null);
-        difficultySlider.setValue(tileImage.getDifficulty() != null ?
-        		tileImage.getDifficulty() : 0.0);
-        difficultySlider.setDisable(!allowModify);
+        verticalTiltSlider.setVisible(tileImage.getVerticalTilt() != null);
+        horizontalTiltSlider.setVisible(tileImage.getHorizontalTilt() != null);
+        
+        difficultySlider.setValue(tileImage.getDifficulty() != null ? tileImage.getDifficulty() : 0.0);
         verticalTiltSlider.setValue(tileImage.getVerticalTilt() != null ? tileImage.getVerticalTilt() : 0);
         horizontalTiltSlider.setValue(tileImage.getHorizontalTilt() != null ? tileImage.getHorizontalTilt() : 0);
+
+        difficultySlider.setDisable(!allowModify);
         verticalTiltSlider.setDisable(!allowModify);
         horizontalTiltSlider.setDisable(!allowModify);
         

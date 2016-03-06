@@ -26,6 +26,7 @@ import javafx.stage.StageStyle;
 import com.creatingskies.game.classes.ViewController.Action;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.config.icon.TileDialogController;
 import com.creatingskies.game.config.icon.TileImageDialogController;
 import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.Map;
@@ -102,7 +103,7 @@ public class MapDesignerController {
 				frontImage.setImage(Util.byteArrayToImage(tile.getObstacle() != null ?
 						tile.getObstacle().getImage() : tile.getFrontImage().getImage()));
 			}
-
+			
 			Group group = new Group(backImage, frontImage);
 			mapTiles.add(group, tile.getColIndex(), tile.getRowIndex());
 			
@@ -120,6 +121,10 @@ public class MapDesignerController {
 					handleRemoveFrontImage(tile, frontImage, backImage);
 				} else {
 					handlePaintTile(tile, frontImage, backImage);
+				}
+				
+				if(event.getClickCount() == 2){
+					showTileDialog(tile);
 				}
 			}
 		});
@@ -402,6 +407,13 @@ public class MapDesignerController {
 	        new MapDao().saveOrUpdate(tileImage);
 	        initTileImageSelections();
 	        handleTimeImageSelection(tileImage, Util.byteArrayToImage(tileImage.getImage()));
+	    }
+	}
+	
+	private void showTileDialog(Tile tile){
+		boolean saveClicked = new TileDialogController().show(tile, stage);
+	    if (saveClicked) {
+	        new MapDao().saveOrUpdate(tile);
 	    }
 	}
 	

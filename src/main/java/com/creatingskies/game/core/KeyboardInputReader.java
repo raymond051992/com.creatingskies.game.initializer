@@ -8,7 +8,6 @@ import com.creatingskies.game.common.MainLayout;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import k8055.K8055JavaCall;
 
 public class KeyboardInputReader extends AbstractInputReader {
 
@@ -16,7 +15,7 @@ public class KeyboardInputReader extends AbstractInputReader {
 	private ConcurrentHashMap<KeyCode, Integer> leftCodes;
 	private ConcurrentHashMap<KeyCode, Integer> rightCodes;
 	
-	private K8055JavaCall k8055;
+//	private K8055JavaCall k8055;
 	
 	private long interval = 50; 
 	private long duration = 0;
@@ -24,15 +23,15 @@ public class KeyboardInputReader extends AbstractInputReader {
 	private int previousVerticalTiltValue = 0;
 	private int previousHorizontalTiltValue = 0;
 	
-	private Integer verticalChannels[] = {1, 2, 3, 4};
-	private Integer horizontalChannels[] = {5, 6, 7, 8};
+//	private Integer verticalChannels[] = {1, 2, 3, 4};
+//	private Integer horizontalChannels[] = {5, 6, 7, 8};
 	
 	@Override
 	public void init(){
 		inputForce = new InputForce();
 		
-		k8055 = new K8055JavaCall();
-		k8055.OpenDevice(0);
+//		k8055 = new K8055JavaCall();
+//		k8055.OpenDevice(0);
 		
 		initKeyCodes();
 		initKeyboardListeners();
@@ -45,8 +44,8 @@ public class KeyboardInputReader extends AbstractInputReader {
 	
 	@Override
 	public void destroy() {
-		k8055.ClearAllDigital();
-		k8055.CloseDevice();
+//		k8055.ClearAllDigital();
+//		k8055.CloseDevice();
 	}
 	
 	public void initKeyCodes() {
@@ -132,7 +131,7 @@ public class KeyboardInputReader extends AbstractInputReader {
 			}
 			
 			if(shouldUpdateTiltDisplay){
-				k8055.ClearAllDigital();
+//				k8055.ClearAllDigital();
 				displayTilt(previousVerticalTiltValue, true);
 				displayTilt(previousHorizontalTiltValue, false);
 			}
@@ -140,26 +139,26 @@ public class KeyboardInputReader extends AbstractInputReader {
 	}
 	
 	private void displayTilt(int data, boolean forVertical){
-		Integer[] channels = forVertical ? verticalChannels : horizontalChannels;
+//		Integer[] channels = forVertical ? verticalChannels : horizontalChannels;
 		
 		if(data > 0){
-			k8055.SetDigitalChannel(channels[0]);
+//			k8055.SetDigitalChannel(channels[0]);
 		}
 		
 		data = Math.abs(data);
 		
 		if(data >= 4){
-			k8055.SetDigitalChannel(channels[3]);
+//			k8055.SetDigitalChannel(channels[3]);
 			data -= 4;
 		}
 		
 		if(data >= 2){
-			k8055.SetDigitalChannel(channels[2]);
+//			k8055.SetDigitalChannel(channels[2]);
 			data -= 2;
 		}
 		
 		if(data >= 1){
-			k8055.SetDigitalChannel(channels[1]);
+//			k8055.SetDigitalChannel(channels[1]);
 			data -= 1;
 		}
 	}

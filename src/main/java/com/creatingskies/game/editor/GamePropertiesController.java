@@ -30,6 +30,7 @@ import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.core.Map;
 import com.creatingskies.game.core.MapDao;
 import com.creatingskies.game.core.Tile;
+import com.creatingskies.game.core.TileImage;
 import com.creatingskies.game.model.Constant;
 import com.creatingskies.game.model.weather.Weather;
 import com.creatingskies.game.model.weather.WeatherDAO;
@@ -320,7 +321,8 @@ public class GamePropertiesController extends PropertiesViewController{
 			MapDao mapDao = new MapDao();
 			String owner = gameTypeRowingButton.isSelected() ?
 					Constant.IMAGE_ROWING_TILE_OWNER : Constant.IMAGE_CYCLING_TILE_OWNER;
-			getMap().setDefaultTileImage(mapDao.findTileImageByOwner(owner));
+			TileImage defaultTileImage = mapDao.findTileImageByOwner(owner);
+			getMap().setDefaultTileImage(defaultTileImage);
 			
 			List<Tile> tiles = new ArrayList<Tile>();
 			for (int r = 0; r < getMap().getHeight(); r++) {
@@ -329,6 +331,9 @@ public class GamePropertiesController extends PropertiesViewController{
 					tile.setMap(getMap());
 					tile.setColIndex(c);
 					tile.setRowIndex(r);
+					tile.setDifficulty(defaultTileImage.getDifficulty());
+					tile.setVerticalTilt(defaultTileImage.getVerticalTilt());
+					tile.setHorizontalTilt(defaultTileImage.getHorizontalTilt());
 					tiles.add(tile);
 				}
 			}
