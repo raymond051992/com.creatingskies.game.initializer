@@ -1,27 +1,8 @@
 package com.creatingskies.game.editor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import com.creatingskies.game.classes.ViewController.Action;
 import com.creatingskies.game.common.MainLayout;
@@ -37,6 +18,29 @@ import com.creatingskies.game.model.Constant;
 import com.creatingskies.game.model.obstacle.Obstacle;
 import com.creatingskies.game.model.obstacle.ObstacleDAO;
 import com.creatingskies.game.util.Util;
+
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class MapDesignerController {
 	
@@ -55,6 +59,8 @@ public class MapDesignerController {
 	
 	@FXML private Button saveButton;
 	@FXML private Button cancelButton;
+	
+	@FXML private Button moveToArchiveButton;
 
 	private Obstacle selectedObstacle;
 	private TileImage selectedTileImage;
@@ -71,6 +77,8 @@ public class MapDesignerController {
 	
 	private Action currentAction;
 	private boolean copyFromOtherMap;
+	
+	private List<TileImage> selectedTileImages = new ArrayList<TileImage>();
 	
 	public void init(){
 		isEditable = (getCurrentAction() == Action.VIEW);
@@ -200,7 +208,7 @@ public class MapDesignerController {
 	private void initTileImageSelections(){
 		tileImageSelections.getChildren().clear();
 		MapDao mapDao = new MapDao();
-		List<TileImage> tileImages = mapDao.findAllTileImages(false);
+		List<TileImage> tileImages = mapDao.findAllTileImages(false,false);
 		tileImages.add(getMap().getDefaultTileImage());
 		
 		if(tileImages != null && !tileImages.isEmpty()){
@@ -344,11 +352,32 @@ public class MapDesignerController {
 					if(event.getClickCount() == 2){
 						showTileImageDialog(tileImage);
 					}
+					
+					if(event.isControlDown()){
+						DropShadow ds = new DropShadow( 20, Color.RED );
+						imageView.setEffect(ds);
+						selectedTileImages.add(tileImage);
+						moveToArchiveButton.setVisible(true);
+					}else{
+						removeAllSelectedTileImage();
+						moveToArchiveButton.setVisible(false);
+					}
 				}
 			});
 		}
 		
 		tileImageSelections.getChildren().add(imageView);
+	}
+	
+	private void removeAllSelectedTileImage(){
+		if(tileImageSelections.getChildren() != null){
+			for(Node node : tileImageSelections.getChildren()){
+				if(node instanceof ImageView){
+					node.setEffect(null);
+				}
+			}
+			selectedTileImages = new ArrayList<TileImage>();
+		}
 	}
 	
 	private void handleTimeImageSelection(TileImage tileImage, Image image){
@@ -433,6 +462,18 @@ public class MapDesignerController {
 			getMap().setTiles(null);
 		}
 		stage.close();
+	}
+	
+	@FXML
+	public void moveToArchive(){
+		if(selectedTileImages != null){
+			MapDao mapDao = new MapDao();
+			for(TileImage tileImage : selectedTileImages){
+				tileImage.setArchived(true);
+				mapDao.saveOrUpdate(tileImage);
+			}
+			initTileImageSelections();
+		}
 	}
 	
 	public Map getMap() {
