@@ -61,6 +61,7 @@ public class MapDesignerController {
 	@FXML private Button cancelButton;
 	
 	@FXML private Button moveToArchiveButton;
+	@FXML private Button viewArchivesButton;;
 
 	private Obstacle selectedObstacle;
 	private TileImage selectedTileImage;
@@ -358,9 +359,11 @@ public class MapDesignerController {
 						imageView.setEffect(ds);
 						selectedTileImages.add(tileImage);
 						moveToArchiveButton.setVisible(true);
+						viewArchivesButton.setVisible(false);
 					}else{
 						removeAllSelectedTileImage();
 						moveToArchiveButton.setVisible(false);
+						viewArchivesButton.setVisible(true);
 					}
 				}
 			});
@@ -472,9 +475,19 @@ public class MapDesignerController {
 				tileImage.setArchived(true);
 				mapDao.saveOrUpdate(tileImage);
 			}
+			selectedTileImages.clear();
 			initTileImageSelections();
+			moveToArchiveButton.setVisible(false);
+			viewArchivesButton.setVisible(true);
 		}
 	}
+	
+	@FXML
+	public void viewArchives(){
+		new ArchivedTilesDialogController().show(stage);
+		initTileImageSelections();
+	}
+
 	
 	public Map getMap() {
 		return getGame().getMap();
