@@ -3,6 +3,7 @@ package com.creatingskies.game.core;
 import k8055.K8055JavaCall;
 
 import com.creatingskies.game.classes.AbstractInputReader;
+import com.creatingskies.game.model.Constant;
 
 public class K8055AnalogInputReader extends AbstractInputReader {
 
@@ -35,8 +36,8 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 
 	@Override
 	public InputForce readInput() {
-		inputForce.right = (int) ((k8055.ReadAnalogChannel(1) * 7) / 255) * 2;
-		inputForce.left = (int) ((k8055.ReadAnalogChannel(2) * 7) / 255) * 2;
+		inputForce.right = (int) ((k8055.ReadAnalogChannel(1) * Constant.MAX_MOVESPEED) / 255) * 2;
+		inputForce.left = (int) ((k8055.ReadAnalogChannel(2) * Constant.MAX_MOVESPEED) / 255) * 2;
 		
 		if(k8055.ReadDigitalChannel(1) == 1) {
 			setResetButtonPressed(true);

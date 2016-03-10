@@ -95,7 +95,6 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private Double degreesInterval = 3.0;
 	private Double degreesPreferred = 0.0;
-	private Double maxMovementSpeed = 7.0;
 	
 	private StackPane player;
 	private StackPane miniPlayer;
@@ -180,7 +179,7 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	public void init() {
-		inputReader = new KeyboardInputReader();
+		inputReader = new K8055AnalogInputReader();
 		
 		super.init();
 		initDashboard();
@@ -441,7 +440,7 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private void computeRotation(){
 		Double currentDeg = player.getRotate();
-		Double deltaDeg = ((45 / maxMovementSpeed) * (inputForce.left - inputForce.right));
+		Double deltaDeg = ((45 / Constant.MAX_MOVESPEED) * (inputForce.left - inputForce.right));
 		degreesPreferred = currentDeg + deltaDeg;
 		
 		if(currentDeg.compareTo(degreesPreferred) != 0){
@@ -469,7 +468,7 @@ public class GameCoreController extends PropertiesViewController {
 		
 		if(inputForce.left != 0 && inputForce.right != 0){
 			distance = Math.max((((inputForce.left + inputForce.right)
-					/ (maxMovementSpeed * 2)) * maxMovementSpeed) - totalSlowFactor, 0.1);
+					/ (Constant.MAX_MOVESPEED * 2)) * Constant.MAX_MOVESPEED) - totalSlowFactor, 0.1);
 			
 			totalDistance += distance;
 			
@@ -771,7 +770,8 @@ public class GameCoreController extends PropertiesViewController {
 	}
 	
 	private Double getTotalSlowFactor(){
-		return weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
+		Double slowSummation = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
+		return Math.min(slowSummation, Constant.MAX_MOVESPEED);
 	}
 	
 	protected class TileValueHolder {
