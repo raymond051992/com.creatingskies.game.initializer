@@ -30,8 +30,12 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 
 	@Override
 	public void destroy() {
-		k8055.ClearAllDigital();
+		clearAllDigital();
 		k8055.CloseDevice();
+	}
+
+	public void clearAllDigital() {
+		k8055.ClearAllDigital();
 	}
 
 	@Override
@@ -61,9 +65,9 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 			duration = 0;
 			
 			if(previousValue < slowFactor.intValue()){
-				display(++previousValue);
+				displayDifficulty(++previousValue);
 			} else if(previousValue > slowFactor.intValue()){
-				display(--previousValue);
+				displayDifficulty(--previousValue);
 			}
 			
 			boolean shouldUpdateTiltDisplay = false;
@@ -85,21 +89,16 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 			}
 			
 			if(shouldUpdateTiltDisplay){
-				k8055.ClearAllDigital();
+				clearAllDigital();
 				displayTilt(previousVerticalTiltValue, true);
 				displayTilt(previousHorizontalTiltValue, false);
 			}
 		}
 	}
 	
-	private void display(int data){
-		k8055.ClearDigitalChannel(1);
-		k8055.ClearDigitalChannel(2);
-		
+	public void displayDifficulty(int data){
 		if(data >= 4){
 //			maximum difficulty display is 3 due to tilting
-//			k8055.SetDigitalChannel(3);
-//			data -= 4;
 			data = 3;
 		}
 		
@@ -114,7 +113,7 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 		}
 	}
 	
-	private void displayTilt(int data, boolean forVertical){
+	public void displayTilt(int data, boolean forVertical){
 		Integer[] channels = forVertical ? verticalChannels : horizontalChannels;
 		
 //		maximum tilt is 3 due to limited output channel

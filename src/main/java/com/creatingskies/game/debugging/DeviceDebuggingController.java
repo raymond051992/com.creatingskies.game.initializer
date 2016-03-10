@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.creatingskies.game.classes.ViewController;
 import com.creatingskies.game.common.MainLayout;
-import com.creatingskies.game.core.K8055AnalogInputIgnoreDifficultyReader;
+import com.creatingskies.game.core.K8055AnalogInputReader;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,13 +20,14 @@ import javafx.scene.shape.Circle;
 public class DeviceDebuggingController extends ViewController {
 	
 	/**
-	 * TODO Refactor someday. Used implementation-specific class to call
-	 * directly displayTilt on reader, cant use display method
+	 * TODO Re-factor. Used implementation-specific class to call
+	 * directly displayTilt on reader, can't use display method
 	 * on parent due to delay from previous display method call computation
 	 * and value change step by step display moderation.
 	 */
-	private K8055AnalogInputIgnoreDifficultyReader reader = new K8055AnalogInputIgnoreDifficultyReader();
+	private K8055AnalogInputReader reader = new K8055AnalogInputReader();
 
+	@FXML Slider difficultySlider;
 	@FXML Slider verticalSlider;
 	@FXML Slider horizontalSlider;
 	
@@ -39,6 +40,7 @@ public class DeviceDebuggingController extends ViewController {
 	@FXML Circle c7;
 	@FXML Circle c8;
 	
+	private List<Circle> difficultyCircles;
 	private List<Circle> verticalCircles;
 	private List<Circle> horizontalCircles;
 	
@@ -46,6 +48,7 @@ public class DeviceDebuggingController extends ViewController {
 	
 	public void initialize(){
 		super.init();
+		difficultyCircles = new ArrayList<Circle>();
 		verticalCircles = new ArrayList<Circle>();
 		horizontalCircles = new ArrayList<Circle>();
 		reader.init();
@@ -71,20 +74,27 @@ public class DeviceDebuggingController extends ViewController {
 	public void testDisplayTiltValues(){
 		if(defaultFill == null){
 			defaultFill = c1.getFill();
-			verticalCircles.addAll(Arrays.asList(c1, c2, c3, c4));
-			horizontalCircles.addAll(Arrays.asList(c5, c6, c7, c8));
+			difficultyCircles.addAll(Arrays.asList(c1, c2));
+			verticalCircles.addAll(Arrays.asList(c3, c4, c5));
+			horizontalCircles.addAll(Arrays.asList(c6, c7, c8));
 		}
 		
 		clearCirclesFill();
+		displayDifficulty((int) difficultySlider.getValue());
 		displayTilt((int) verticalSlider.getValue(), true);
 		displayTilt((int) horizontalSlider.getValue(), false);
 		
 		reader.clearAllDigital();
+		reader.displayDifficulty((int) difficultySlider.getValue());
 		reader.displayTilt((int) verticalSlider.getValue(), true);
 		reader.displayTilt((int) horizontalSlider.getValue(), false);
 	}
 	
 	private void clearCirclesFill(){
+		for(Circle c : difficultyCircles){
+			c.setFill(Color.WHITESMOKE);
+		}
+		
 		for(Circle c : horizontalCircles){
 			c.setFill(Color.WHITESMOKE);
 		}
@@ -103,11 +113,6 @@ public class DeviceDebuggingController extends ViewController {
 		
 		data = Math.abs(data);
 		
-		if(data >= 4){
-			circles.get(3).setFill(defaultFill);
-			data -= 4;
-		}
-		
 		if(data >= 2){
 			circles.get(2).setFill(defaultFill);
 			data -= 2;
@@ -115,6 +120,18 @@ public class DeviceDebuggingController extends ViewController {
 		
 		if(data >= 1){
 			circles.get(1).setFill(defaultFill);
+			data -= 1;
+		}
+	}
+	
+	public void displayDifficulty(int data){
+		if(data >= 2){
+			c2.setFill(defaultFill);
+			data -= 2;
+		}
+		
+		if(data >= 1){
+			c1.setFill(defaultFill);
 			data -= 1;
 		}
 	}
