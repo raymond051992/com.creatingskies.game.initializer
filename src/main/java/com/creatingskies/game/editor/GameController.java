@@ -66,7 +66,7 @@ public class GameController extends TableViewController{
 		if(results == null || results.isEmpty()){
 			new GamePropertiesController().show(Action.EDIT, (Game) record,true,false);
 		} else {
-			String errorMessage = "You cannot delete this game. The record shows that we have statistics report for this game.";
+			String errorMessage = "You cannot edit this game. The record shows that we have statistics report for this game.";
 			new AlertDialog(AlertType.ERROR, "Error", "", errorMessage).showAndWait();
 		}
 	}

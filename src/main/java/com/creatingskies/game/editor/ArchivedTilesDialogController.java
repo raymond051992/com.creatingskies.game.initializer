@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.core.MapDao;
 import com.creatingskies.game.core.TileImage;
 import com.creatingskies.game.model.Constant;

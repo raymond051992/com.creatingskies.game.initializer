@@ -211,7 +211,7 @@ public class GameCoreController extends PropertiesViewController {
 		
 		verticalTiltLevel.setText(String.valueOf(Math.abs(verticalTilt)));
 		horizontalTiltLevel.setText(String.valueOf(Math.abs(horizontalTilt)));
-		difficultyLevel.setText(String.valueOf(tileSlowFactor));
+		difficultyLevel.setText(String.valueOf(getTotalSlowFactor()));
 	}
 	
 	private void resetsPlayerPosition(){
@@ -351,8 +351,8 @@ public class GameCoreController extends PropertiesViewController {
 					|| tile.getStartPoint()
 					|| tile.getEndPoint()
 					|| (tile.getBackImage() != null
-						&& ((tile.getVerticalTilt() != null && tile.getVerticalTilt() != 0) 
-							|| (tile.getHorizontalTilt() != null && tile.getHorizontalTilt() != 0)))) {
+						&& ((tile.getBackImage().getVerticalTilt() != null && tile.getBackImage().getVerticalTilt() != 0) 
+							|| (tile.getBackImage().getHorizontalTilt() != null && tile.getBackImage().getHorizontalTilt() != 0)))) {
 				createTileShapes(tile, map.getDefaultTileImage());
 			}
 			
@@ -465,8 +465,7 @@ public class GameCoreController extends PropertiesViewController {
 		double totalSlowFactor = 0;
 		distance = 0;
 
-		totalSlowFactor = weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
-//		totalSlowFactor = (Math.abs(verticalTilt) + Math.abs(horizontalTilt)) / 2;
+		totalSlowFactor = getTotalSlowFactor();
 		
 		if(inputForce.left != 0 && inputForce.right != 0){
 			distance = Math.max((((inputForce.left + inputForce.right)
@@ -653,11 +652,11 @@ public class GameCoreController extends PropertiesViewController {
 		
 		TileValueHolder holder = new TileValueHolder();
 		holder.difficulty = tile.getBackImage() != null ?
-				tile.getDifficulty() : defaultTileImage.getDifficulty();
+				tile.getBackImage().getDifficulty() : defaultTileImage.getDifficulty();
 		holder.verticalTilt = tile.getBackImage() != null ?
-				tile.getVerticalTilt() : defaultTileImage.getVerticalTilt();
+				tile.getBackImage().getVerticalTilt() : defaultTileImage.getVerticalTilt();
 		holder.horizontalTilt = tile.getBackImage() != null ?
-				tile.getHorizontalTilt() : defaultTileImage.getHorizontalTilt();
+				tile.getBackImage().getHorizontalTilt() : defaultTileImage.getHorizontalTilt();
 		
 		tileShape.setUserData(holder);
 		pane.getChildren().add(tileShape);
@@ -675,8 +674,8 @@ public class GameCoreController extends PropertiesViewController {
 	
 	private void createObstacleEdge(Tile tile){
 		Circle obstacleEdge = new Circle();
-		obstacleEdge.setRadius(getMainScreenTileWidth() * tile.getObstacle().getRadius());
-		obstacleEdge.setUserData(tile.getObstacle().getDifficulty());
+		obstacleEdge.setRadius(getMainScreenTileWidth() * tile.getObstacleRadius());
+		obstacleEdge.setUserData(tile.getObstacleDifficulty());
 		
 		obstacleEdge.setLayoutX(tile.getColIndex() * getMainScreenTileWidth() + (getMainScreenTileWidth() / 2));
 		obstacleEdge.setLayoutY(tile.getRowIndex() * getMainScreenTileHeight() + (getMainScreenTileWidth() / 2));
@@ -769,6 +768,10 @@ public class GameCoreController extends PropertiesViewController {
 
 	public void setGroup(Group group) {
 		this.group = group;
+	}
+	
+	private Double getTotalSlowFactor(){
+		return weatherSlowFactor + obstacleSlowFactor + tileSlowFactor;
 	}
 	
 	protected class TileValueHolder {

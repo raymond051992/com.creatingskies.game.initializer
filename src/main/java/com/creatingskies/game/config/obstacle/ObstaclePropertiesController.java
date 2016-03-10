@@ -15,6 +15,7 @@ import javafx.stage.FileChooser;
 import com.creatingskies.game.classes.PropertiesViewController;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
+import com.creatingskies.game.core.Tile;
 import com.creatingskies.game.model.obstacle.Obstacle;
 import com.creatingskies.game.model.obstacle.ObstacleDAO;
 import com.creatingskies.game.util.Util;
@@ -29,6 +30,10 @@ public class ObstaclePropertiesController extends PropertiesViewController {
 	@FXML private TextField imageFileNameField;
 	
 	private final String NO_FILE_MESSAGE = "Please choose a file.";
+
+	public void show(Action action, Tile tile){
+		show(action, tile.getObstacle());
+	}
 	
 	public void show(Action action, Obstacle obstacle){
 		try {

@@ -7,8 +7,8 @@ import java.util.List;
 import com.creatingskies.game.classes.ViewController.Action;
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.component.AlertDialog;
-import com.creatingskies.game.config.icon.TileDialogController;
 import com.creatingskies.game.config.icon.TileImageDialogController;
+import com.creatingskies.game.config.obstacle.ObstacleDialogController;
 import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.Map;
 import com.creatingskies.game.core.MapDao;
@@ -62,7 +62,7 @@ public class MapDesignerController {
 	
 	@FXML private Button moveToArchiveButton;
 	@FXML private Button viewArchivesButton;;
-
+	
 	private Obstacle selectedObstacle;
 	private TileImage selectedTileImage;
 	
@@ -132,8 +132,8 @@ public class MapDesignerController {
 					handlePaintTile(tile, frontImage, backImage);
 				}
 				
-				if(event.getClickCount() == 2){
-					showTileDialog(tile);
+				if(event.getClickCount() == 2 && tile.getObstacle() != null){
+					showObstacleDialog(tile);
 				}
 			}
 		});
@@ -165,7 +165,7 @@ public class MapDesignerController {
 	private void handlePaintTile(Tile tile, ImageView frontImage, ImageView backImage) {
 		if(getCurrentAction() != null && (selectedTileImage != null || selectedObstacle != null)){
 			if(tile.getObstacle() == null){
-				tile.setObstacle(selectedObstacle != null ? selectedObstacle : null);
+				tile.setObstacleFields(selectedObstacle);
 			}
 			
 			if(selectedObstacle != null){
@@ -209,7 +209,7 @@ public class MapDesignerController {
 	private void initTileImageSelections(){
 		tileImageSelections.getChildren().clear();
 		MapDao mapDao = new MapDao();
-		List<TileImage> tileImages = mapDao.findAllTileImages(false,false);
+		List<TileImage> tileImages = mapDao.findAllTileImages(false, false);
 		tileImages.add(getMap().getDefaultTileImage());
 		
 		if(tileImages != null && !tileImages.isEmpty()){
@@ -354,13 +354,13 @@ public class MapDesignerController {
 						showTileImageDialog(tileImage);
 					}
 					
-					if(event.isControlDown()){
-						DropShadow ds = new DropShadow( 20, Color.RED );
+					if (event.isControlDown()) {
+						DropShadow ds = new DropShadow(20, Color.RED);
 						imageView.setEffect(ds);
 						selectedTileImages.add(tileImage);
 						moveToArchiveButton.setVisible(true);
 						viewArchivesButton.setVisible(false);
-					}else{
+					} else {
 						removeAllSelectedTileImage();
 						moveToArchiveButton.setVisible(false);
 						viewArchivesButton.setVisible(true);
@@ -372,10 +372,10 @@ public class MapDesignerController {
 		tileImageSelections.getChildren().add(imageView);
 	}
 	
-	private void removeAllSelectedTileImage(){
-		if(tileImageSelections.getChildren() != null){
-			for(Node node : tileImageSelections.getChildren()){
-				if(node instanceof ImageView){
+	private void removeAllSelectedTileImage() {
+		if (tileImageSelections.getChildren() != null) {
+			for (Node node : tileImageSelections.getChildren()) {
+				if (node instanceof ImageView) {
 					node.setEffect(null);
 				}
 			}
@@ -442,10 +442,14 @@ public class MapDesignerController {
 	    }
 	}
 	
-	private void showTileDialog(Tile tile){
-		boolean saveClicked = new TileDialogController().show(tile, stage);
+	private void showObstacleDialog(Tile tile){
+		System.out.println("Before. Tile Obstacle Difficulty: " + tile.getObstacleDifficulty()
+		+ ". Tile Obstacle Radius: " + tile.getObstacleRadius());
+		
+		boolean saveClicked = new ObstacleDialogController().show(tile, stage);
 	    if (saveClicked) {
-	        new MapDao().saveOrUpdate(tile);
+	        System.out.println("After. Tile Obstacle Difficulty: " + tile.getObstacleDifficulty()
+	        		+ ". Tile Obstacle Radius: " + tile.getObstacleRadius());
 	    }
 	}
 	
@@ -466,12 +470,12 @@ public class MapDesignerController {
 		}
 		stage.close();
 	}
-	
+
 	@FXML
-	public void moveToArchive(){
-		if(selectedTileImages != null){
+	public void moveToArchive() {
+		if (selectedTileImages != null) {
 			MapDao mapDao = new MapDao();
-			for(TileImage tileImage : selectedTileImages){
+			for (TileImage tileImage : selectedTileImages) {
 				tileImage.setArchived(true);
 				mapDao.saveOrUpdate(tileImage);
 			}
@@ -483,11 +487,10 @@ public class MapDesignerController {
 	}
 	
 	@FXML
-	public void viewArchives(){
+	public void viewArchives() {
 		new ArchivedTilesDialogController().show(stage);
 		initTileImageSelections();
 	}
-
 	
 	public Map getMap() {
 		return getGame().getMap();

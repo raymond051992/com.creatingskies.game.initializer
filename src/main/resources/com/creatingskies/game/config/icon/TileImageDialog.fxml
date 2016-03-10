@@ -39,7 +39,7 @@
 						<Insets />
 					</GridPane.margin>
 				</ButtonBar>
-				<Slider fx:id="difficultySlider" majorTickUnit="1.0" max="7.0" minorTickCount="0" prefHeight="14.0" prefWidth="200.0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+				<Slider fx:id="difficultySlider" majorTickUnit="1.0" max="3.0" minorTickCount="0" prefHeight="14.0" prefWidth="200.0" showTickLabels="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 				<Label text="Difficulty" GridPane.rowIndex="1" />
 				<Label text="Image" GridPane.rowIndex="4" />
 				<HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="15.0" GridPane.columnIndex="1" GridPane.rowIndex="4">

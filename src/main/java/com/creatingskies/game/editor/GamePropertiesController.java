@@ -331,9 +331,6 @@ public class GamePropertiesController extends PropertiesViewController{
 					tile.setMap(getMap());
 					tile.setColIndex(c);
 					tile.setRowIndex(r);
-					tile.setDifficulty(defaultTileImage.getDifficulty());
-					tile.setVerticalTilt(defaultTileImage.getVerticalTilt());
-					tile.setHorizontalTilt(defaultTileImage.getHorizontalTilt());
 					tiles.add(tile);
 				}
 			}
