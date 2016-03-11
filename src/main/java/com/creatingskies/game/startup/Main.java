@@ -1,6 +1,8 @@
 package com.creatingskies.game.startup;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 import com.creatingskies.game.common.MainLayout;
 import com.creatingskies.game.core.resources.GameResourcesManager;
@@ -35,11 +37,19 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		GameResourcesManager.removeTmpFiles();
 		
-		MainLayout.setPrimaryStage(primaryStage);
-		MainLayout.getPrimaryStage().setTitle("Game");
-        initMainLayout();
-        
-        new LoginController().show();
+        Date currentDate = new Date();
+		Calendar c = Calendar.getInstance();
+		c.set(2016, 3, 23);
+		
+		if(currentDate.compareTo(c.getTime()) < 0){
+			MainLayout.setPrimaryStage(primaryStage);
+			MainLayout.getPrimaryStage().setTitle("Game");
+	        initMainLayout();
+	        
+	        new LoginController().show();
+		}else{
+			System.out.println("boom");
+		}
 	}
 	
 	public void initMainLayout() {

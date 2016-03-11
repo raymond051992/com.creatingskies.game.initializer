@@ -157,8 +157,7 @@ public class IconEditorController extends TableViewController{
 		if(results == null || results.isEmpty()){
 			return true;
 		} else {
-			new AlertDialog(AlertType.ERROR, "Error", "", "You cannot delete this record. The record shows that"
-					+ " this record is used in a game that has already been played.").showAndWait();
+			new AlertDialog(AlertType.ERROR, "Error", "", "The action can't be completed because the file is currently active in a game.").showAndWait();
 			return false;
 		}
 	}

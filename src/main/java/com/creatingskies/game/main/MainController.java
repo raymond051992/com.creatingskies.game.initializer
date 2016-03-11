@@ -34,7 +34,7 @@ public class MainController extends ViewController{
 	
 	@Override
 	protected String getViewTitle() {
-		return null;
+		return "Game Editor";
 	}
 	
 	public void show(){

@@ -91,7 +91,7 @@ public class CompanyGroupPane extends AnchorPane{
     				}
     			}
     		}else{
-    			new AlertDialog(AlertType.ERROR, "Error", "", "You cannot delete this company. The record shows that we have an event for this group's company").showAndWait();
+    			new AlertDialog(AlertType.ERROR, "Error", "", "The action can't be completed because the file is currently active in a game").showAndWait();
     		}
     		init();
         });

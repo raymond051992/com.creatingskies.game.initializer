@@ -174,8 +174,15 @@ public class GameResourcesManager {
 			gameAudioThread.interrupt();
 			gameWeatherAudioResource.stop();
 			gameWeatherAudioThread.interrupt();
+			game = null;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		game = null;
 	}
 }

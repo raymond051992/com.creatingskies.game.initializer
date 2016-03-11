@@ -637,6 +637,7 @@ public class GameCoreController extends PropertiesViewController {
 	@FXML
 	@Override
 	protected void close() {
+		setCurrentRecord(null);
 		inputReader.destroy();
 		gameLoop = null;
 		mapTiles.getChildren().clear();
@@ -644,6 +645,12 @@ public class GameCoreController extends PropertiesViewController {
 		obstacleEdges.clear();
 		gameResourceManager.stop();
 		super.close();
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		close();
 	}
 	
 	public void createTileShapes(Tile tile, TileImage defaultTileImage){

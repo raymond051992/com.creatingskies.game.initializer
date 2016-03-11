@@ -156,6 +156,7 @@ public class GameEventPropertiesViewController extends PropertiesViewController{
 	@FXML
 	private void play(){
 		new GameEventGroupSelectionController().show(getGameEvent());
+		backToList();
 	}
 	
 	private boolean isValid(){

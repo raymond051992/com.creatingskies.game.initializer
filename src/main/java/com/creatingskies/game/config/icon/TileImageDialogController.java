@@ -195,7 +195,7 @@ public class TileImageDialogController extends ViewController {
             return true;
         } else {
 			new AlertDialog(AlertType.ERROR, "Invalid fields",
-					"Please correct invalid fields.", errorMessage)
+					"Please correct invalid fields.", errorMessage,dialogStage)
 					.showAndWait();
             return false;
         }

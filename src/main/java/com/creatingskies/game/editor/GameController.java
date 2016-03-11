@@ -21,6 +21,8 @@ import com.creatingskies.game.core.Game;
 import com.creatingskies.game.core.GameDao;
 import com.creatingskies.game.core.GameResult;
 import com.creatingskies.game.model.IRecord;
+import com.creatingskies.game.model.event.GameEvent;
+import com.creatingskies.game.model.event.GameEventDao;
 import com.creatingskies.game.model.user.User;
 
 public class GameController extends TableViewController{
@@ -66,22 +68,22 @@ public class GameController extends TableViewController{
 		if(results == null || results.isEmpty()){
 			new GamePropertiesController().show(Action.EDIT, (Game) record,true,false);
 		} else {
-			String errorMessage = "You cannot edit this game. The record shows that we have statistics report for this game.";
+			String errorMessage = "The action can't be completed because the file is currently active in a game.";
 			new AlertDialog(AlertType.ERROR, "Error", "", errorMessage).showAndWait();
 		}
 	}
 	
 	@Override
 	protected void deleteRecord(IRecord record) {
-		List<GameResult> results = new GameDao().findAllGameResultsByGame((Game) record);
+		List<GameEvent> results = new GameEventDao().findAllGameEventByGame((Game) record);
 		
 		if(results == null || results.isEmpty()){
 			Optional<ButtonType> result = new AlertDialog(AlertType.CONFIRMATION, "Confirmation Dialog",
 					"Are you sure you want to delete this game?", null).showAndWait();
 			
 			if(result.get() == ButtonType.OK){
-				super.deleteRecord(record);
 				try {
+					super.deleteRecord(record);
 					new GameDao().delete(record);
 					resetTableView();
 				} catch (Exception e) {
@@ -89,7 +91,7 @@ public class GameController extends TableViewController{
 				}
 			}
 		} else {
-			String errorMessage = "You cannot delete this game. The record shows that we have statistics report for this game.";
+			String errorMessage = "The action can't be completed because the file is currently active in a game.";
 			new AlertDialog(AlertType.ERROR, "Error", "", errorMessage).showAndWait();
 		}
 	}

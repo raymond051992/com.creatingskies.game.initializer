@@ -94,7 +94,7 @@ public class CompanyController extends TableViewController{
 				}
 			}
 		}else{
-			new AlertDialog(AlertType.ERROR, "Error", "", "You cannot delete this company. The record shows that we have an event for this company").showAndWait();
+			new AlertDialog(AlertType.ERROR, "Error", "", "The action can't be completed because the file is currently active in a game").showAndWait();
 		}
 	}
 	
