@@ -61,35 +61,39 @@ public class K8055AnalogInputReader extends AbstractInputReader {
 	public void display(Double speed, Double slowFactor, Double degree,
 			Integer verticalTilt, Integer horizontalTilt) {
 		duration += interval;
+		
 		if(duration >= 500){
 			duration = 0;
 			
+			boolean shouldUpdateDisplay = false;
+			
 			if(previousValue < slowFactor.intValue()){
-				displayDifficulty(++previousValue);
+				shouldUpdateDisplay = true;
+				previousValue++;
 			} else if(previousValue > slowFactor.intValue()){
-				displayDifficulty(--previousValue);
+				shouldUpdateDisplay = true;
+				previousValue--;
 			}
 			
-			boolean shouldUpdateTiltDisplay = false;
-			
 			if(previousVerticalTiltValue < verticalTilt){
-				shouldUpdateTiltDisplay = true;
+				shouldUpdateDisplay = true;
 				previousVerticalTiltValue++;
 			} else if(previousVerticalTiltValue > verticalTilt){
-				shouldUpdateTiltDisplay = true;
+				shouldUpdateDisplay = true;
 				previousVerticalTiltValue--;
 			}
 			
 			if(previousHorizontalTiltValue < horizontalTilt){
-				shouldUpdateTiltDisplay = true;
+				shouldUpdateDisplay = true;
 				previousHorizontalTiltValue++;
 			} else if(previousHorizontalTiltValue > horizontalTilt){
-				shouldUpdateTiltDisplay = true;
+				shouldUpdateDisplay = true;
 				previousHorizontalTiltValue--;
 			}
 			
-			if(shouldUpdateTiltDisplay){
+			if(shouldUpdateDisplay){
 				clearAllDigital();
+				displayDifficulty(previousValue);
 				displayTilt(previousVerticalTiltValue, true);
 				displayTilt(previousHorizontalTiltValue, false);
 			}
