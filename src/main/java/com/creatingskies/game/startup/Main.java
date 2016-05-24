@@ -37,19 +37,13 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		GameResourcesManager.removeTmpFiles();
 		
-        Date currentDate = new Date();
-		Calendar c = Calendar.getInstance();
-		c.set(2016, 3, 23);
+     
+		MainLayout.setPrimaryStage(primaryStage);
+		MainLayout.getPrimaryStage().setTitle("Game");
+        initMainLayout();
+        
+        new LoginController().show();
 		
-		if(currentDate.compareTo(c.getTime()) < 0){
-			MainLayout.setPrimaryStage(primaryStage);
-			MainLayout.getPrimaryStage().setTitle("Game");
-	        initMainLayout();
-	        
-	        new LoginController().show();
-		}else{
-			System.out.println("boom");
-		}
 	}
 	
 	public void initMainLayout() {
